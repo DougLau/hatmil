@@ -1,0 +1,10 @@
+[package]
+name = "hatmil"
+version = "0.1.0"
+description = "Simple HTML builder"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+keywords = ["html"]
+edition = "2024"
+
+[dependencies]
