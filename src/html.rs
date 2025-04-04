@@ -39,12 +39,12 @@ pub struct VoidElem<'h> {
 
 #[allow(dead_code)]
 impl Html {
-    /// Create a new HTML builder
+    /// Create an HTML builder
     pub fn new() -> Self {
         Self::default()
     }
 
-    /// Build the HTML into a String
+    /// Build the HTML into a `String`
     pub fn build(mut self) -> String {
         while let Some(elem) = self.stack.pop() {
             self.html.push_str("</");
@@ -71,7 +71,7 @@ impl Html {
         VoidElem { html: self }
     }
 
-    /// Add an attribute with value to an element
+    /// Add an attribute with value
     fn attr(&mut self, attr: &'static str, val: impl AsRef<str>) {
         match self.html.pop() {
             Some(gt) => assert_eq!(gt, '>'),
@@ -90,7 +90,7 @@ impl Html {
         self.html.push_str("\">");
     }
 
-    /// Add a boolean attribute to an element
+    /// Add a boolean attribute
     fn attr_bool(&mut self, attr: &'static str) {
         match self.html.pop() {
             Some(gt) => assert_eq!(gt, '>'),
@@ -101,12 +101,12 @@ impl Html {
         self.html.push('>');
     }
 
-    /// Add text content which will be escaped
+    /// Add text content
     pub fn text(&mut self, text: impl AsRef<str>) -> &mut Self {
         self.text_len(text, usize::MAX)
     }
 
-    /// Add text content which will be escaped
+    /// Add text content with a character limit
     pub fn text_len(&mut self, text: impl AsRef<str>, len: usize) -> &mut Self {
         for c in text.as_ref().chars().take(len) {
             match c {
@@ -138,30 +138,30 @@ impl Html {
 
 #[allow(dead_code)]
 impl<'h> Elem<'h> {
-    /// Add an attribute with value to an element
+    /// Add an attribute with value
     pub fn attr(self, attr: &'static str, val: impl AsRef<str>) -> Self {
         self.html.attr(attr, val);
         self
     }
 
-    /// Add a boolean attribute to an element
+    /// Add a boolean attribute
     pub fn attr_bool(self, attr: &'static str) -> Self {
         self.html.attr_bool(attr);
         self
     }
 
-    /// Add a `type` attribute to an element
+    /// Add a `type` attribute
     pub fn type_(self, val: impl AsRef<str>) -> Self {
         self.html.attr("type", val);
         self
     }
 
-    /// Add text content which will be escaped
+    /// Add text content
     pub fn text(self, text: impl AsRef<str>) -> &'h mut Html {
         self.html.text_len(text, usize::MAX)
     }
 
-    /// Add text content which will be escaped
+    /// Add text content with a character limit
     pub fn text_len(self, text: impl AsRef<str>, len: usize) -> &'h mut Html {
         self.html.text_len(text, len)
     }
@@ -173,30 +173,30 @@ impl<'h> Elem<'h> {
 }
 
 impl<'h> VoidElem<'h> {
-    /// Add an attribute with value to an element
+    /// Add an attribute with value
     pub fn attr(self, attr: &'static str, val: impl AsRef<str>) -> Self {
         self.html.attr(attr, val);
         self
     }
 
-    /// Add a boolean attribute to an element
+    /// Add a boolean attribute
     pub fn attr_bool(self, attr: &'static str) -> Self {
         self.html.attr_bool(attr);
         self
     }
 
-    /// Add a `type` attribute to an element
+    /// Add a `type` attribute
     pub fn type_(self, val: impl AsRef<str>) -> Self {
         self.html.attr("type", val);
         self
     }
 
-    /// Add text content which will be escaped
+    /// Add text content
     pub fn text(self, text: impl AsRef<str>) -> &'h mut Html {
         self.html.text_len(text, usize::MAX)
     }
 
-    /// Add text content which will be escaped
+    /// Add text content with a character limit
     pub fn text_len(self, text: impl AsRef<str>, len: usize) -> &'h mut Html {
         self.html.text_len(text, len)
     }
@@ -204,17 +204,23 @@ impl<'h> VoidElem<'h> {
 
 /// HTML element helper
 macro_rules! element {
-    ($(#[$doc:meta])*
-        $elem:ident
-    ) => {
+    ($elem:ident) => {
         impl Html {
-            $(#[$doc])*
+            #[doc = "Add `"]
+            #[doc = stringify!($elem)]
+            #[doc = "` [element]("]
+            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
+            #[doc = ")"]
             pub fn $elem(&mut self) -> Elem {
                 self.elem(stringify!($elem))
             }
         }
         impl<'h> Elem<'h> {
-            $(#[$doc])*
+            #[doc = "Add `"]
+            #[doc = stringify!($elem)]
+            #[doc = "` [element]("]
+            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
+            #[doc = ")"]
             pub fn $elem(self) -> Self {
                 self.html.elem(stringify!($elem))
             }
@@ -224,17 +230,23 @@ macro_rules! element {
 
 /// HTML Void element helper
 macro_rules! void_element {
-    ($(#[$doc:meta])*
-        $elem:ident
-    ) => {
+    ($elem:ident) => {
         impl Html {
-            $(#[$doc])*
+            #[doc = "Add `"]
+            #[doc = stringify!($elem)]
+            #[doc = "` [element]("]
+            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
+            #[doc = ")"]
             pub fn $elem(&mut self) -> VoidElem {
                 self.void_elem(stringify!($elem))
             }
         }
         impl<'h> Elem<'h> {
-            $(#[$doc])*
+            #[doc = "Add `"]
+            #[doc = stringify!($elem)]
+            #[doc = "` [element]("]
+            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
+            #[doc = ")"]
             pub fn $elem(self) -> VoidElem<'h> {
                 self.html.void_elem(stringify!($elem))
             }
@@ -242,114 +254,118 @@ macro_rules! void_element {
     }
 }
 
-element!(
-    /** The `a` element */
-    a
-);
-void_element!(
-    /** `area` element */
-    area
-);
-void_element!(
-    /** `base` element */
-    base
-);
-element!(
-    /** The `button` element */
-    button
-);
-element!(
-    /** The `br` element */
-    br
-);
-void_element!(
-    /** `col` element */
-    col
-);
-element!(
-    /** `div` element */
-    div
-);
-element!(
-    /** `em` element */
-    em
-);
-void_element!(
-    /** `embed` element */
-    embed
-);
-void_element!(
-    /** `hr` element */
-    hr
-);
-void_element!(
-    /** `input` element */
-    input
-);
-void_element!(
-    /** `img` element */
-    img
-);
-element!(
-    /** `label` element */
-    label
-);
-element!(
-    /** `li` element */
-    li
-);
-void_element!(
-    /** `link` element */
-    link
-);
-void_element!(
-    /** `meta` element */
-    meta
-);
-element!(
-    /** `meter` element */
-    meter
-);
-element!(
-    /** `p` element */
-    p
-);
-void_element!(
-    /** `param` element */
-    param
-);
-element!(
-    /** `ol` element */
-    ol
-);
-element!(
-    /** `option` element */
-    option
-);
-element!(
-    /** `select` element */
-    select
-);
-void_element!(
-    /** `source` element */
-    source
-);
-element!(
-    /** `span` element */
-    span
-);
-element!(
-    /** `textarea` element */
-    textarea
-);
-void_element!(
-    /** `track` element */
-    track
-);
-void_element!(
-    /** `wbr` element */
-    wbr
-);
+element!(a);
+element!(abbr);
+element!(address);
+void_element!(area);
+element!(article);
+element!(aside);
+element!(audio);
+element!(b);
+void_element!(base);
+element!(bdi);
+element!(bdo);
+element!(blockquote);
+element!(body);
+element!(br);
+element!(button);
+element!(canvas);
+element!(caption);
+element!(cite);
+element!(code);
+void_element!(col);
+element!(colgroup);
+element!(data);
+element!(datalist);
+element!(dd);
+element!(del);
+element!(details);
+element!(dfn);
+element!(dialog);
+element!(div);
+element!(dl);
+element!(dt);
+element!(em);
+void_element!(embed);
+element!(fieldset);
+element!(figcaption);
+element!(figure);
+element!(footer);
+element!(form);
+element!(h1);
+element!(h2);
+element!(h3);
+element!(h4);
+element!(h5);
+element!(h6);
+element!(head);
+element!(header);
+element!(hgroup);
+void_element!(hr);
+element!(html);
+element!(i);
+element!(iframe);
+void_element!(img);
+void_element!(input);
+element!(ins);
+element!(kbd);
+element!(label);
+element!(legend);
+element!(li);
+void_element!(link);
+element!(main);
+element!(map);
+element!(mark);
+element!(menu);
+void_element!(meta);
+element!(meter);
+element!(nav);
+element!(noscript);
+element!(object);
+element!(ol);
+element!(optgroup);
+element!(option);
+element!(output);
+element!(p);
+element!(picture);
+element!(pre);
+element!(progress);
+element!(q);
+element!(rp);
+element!(rt);
+element!(ruby);
+element!(s);
+element!(samp);
+element!(script);
+element!(search);
+element!(section);
+element!(select);
+element!(slot);
+element!(small);
+void_element!(source);
+element!(span);
+element!(strong);
+element!(style);
+element!(sub);
+element!(summary);
+element!(sup);
+element!(table);
+element!(tbody);
+element!(td);
+element!(template);
+element!(textarea);
+element!(tfoot);
+element!(th);
+element!(thead);
+element!(time);
+element!(title);
+element!(tr);
+void_element!(track);
+element!(u);
+element!(ul);
+element!(var);
+element!(video);
+void_element!(wbr);
 
 /// HTML attribute helper
 macro_rules! attribute {
