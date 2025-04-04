@@ -367,20 +367,26 @@ element!(var);
 element!(video);
 void_element!(wbr);
 
-/// HTML attribute helper
-macro_rules! attribute {
-    ($(#[$doc:meta])*
-        $attr:ident
-    ) => {
+/// HTML global attribute helper
+macro_rules! global_attribute {
+    ($attr:ident) => {
         impl<'h> Elem<'h> {
-            $(#[$doc])*
+            #[doc = "Add `"]
+            #[doc = stringify!($attr)]
+            #[doc = "` [attribute]("]
+            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/", stringify!($attr))]
+            #[doc = ")"]
             pub fn $attr(self, val: impl AsRef<str>) -> Self {
                 self.html.attr(stringify!($attr), val);
                 self
             }
         }
         impl<'h> VoidElem<'h> {
-            $(#[$doc])*
+            #[doc = "Add `"]
+            #[doc = stringify!($attr)]
+            #[doc = "` [attribute]("]
+            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/", stringify!($attr))]
+            #[doc = ")"]
             pub fn $attr(self, val: impl AsRef<str>) -> Self {
                 self.html.attr(stringify!($attr), val);
                 self
@@ -389,29 +395,59 @@ macro_rules! attribute {
     }
 }
 
-attribute!(
-    /** Add a `class` attribute to the element */
-    class
-);
-attribute!(
-    /** Add an `id` attribute to the element */
-    id
-);
+global_attribute!(class);
+global_attribute!(id);
+
+/// HTML attribute helper
+macro_rules! attribute {
+    ($attr:ident) => {
+        impl<'h> Elem<'h> {
+            #[doc = "Add `"]
+            #[doc = stringify!($attr)]
+            #[doc = "` [attribute]("]
+            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
+            #[doc = ")"]
+            pub fn $attr(self, val: impl AsRef<str>) -> Self {
+                self.html.attr(stringify!($attr), val);
+                self
+            }
+        }
+        impl<'h> VoidElem<'h> {
+            #[doc = "Add `"]
+            #[doc = stringify!($attr)]
+            #[doc = "` [attribute]("]
+            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
+            #[doc = ")"]
+            pub fn $attr(self, val: impl AsRef<str>) -> Self {
+                self.html.attr(stringify!($attr), val);
+                self
+            }
+        }
+    }
+}
+
+attribute!(size);
 
 /// HTML Boolean attribute helper
 macro_rules! boolean_attribute {
-    ($(#[$doc:meta])*
-        $attr:ident
-    ) => {
+    ($attr:ident) => {
         impl<'h> Elem<'h> {
-            $(#[$doc])*
+            #[doc = "Add `"]
+            #[doc = stringify!($attr)]
+            #[doc = "` [attribute]("]
+            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
+            #[doc = ")"]
             pub fn $attr(self) -> Self {
                 self.html.attr_bool(stringify!($attr));
                 self
             }
         }
         impl<'h> VoidElem<'h> {
-            $(#[$doc])*
+            #[doc = "Add `"]
+            #[doc = stringify!($attr)]
+            #[doc = "` [attribute]("]
+            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
+            #[doc = ")"]
             pub fn $attr(self) -> Self {
                 self.html.attr_bool(stringify!($attr));
                 self
@@ -420,10 +456,7 @@ macro_rules! boolean_attribute {
     }
 }
 
-boolean_attribute!(
-    /** `disabled` attribute */
-    disabled
-);
+boolean_attribute!(disabled);
 
 #[cfg(test)]
 mod test {
