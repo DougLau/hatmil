@@ -216,21 +216,17 @@ impl<'h> VoidElem<'h> {
 macro_rules! element {
     ($elem:ident) => {
         impl Html {
-            #[doc = "Add `"]
-            #[doc = stringify!($elem)]
-            #[doc = "` [element]("]
+            #[doc = concat!("Add [", stringify!($elem), "](")]
             #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
-            #[doc = ")"]
+            #[doc = ") element"]
             pub fn $elem(&mut self) -> Elem {
                 self.elem(stringify!($elem))
             }
         }
         impl<'h> Elem<'h> {
-            #[doc = "Add `"]
-            #[doc = stringify!($elem)]
-            #[doc = "` [element]("]
+            #[doc = concat!("Add [", stringify!($elem), "](")]
             #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
-            #[doc = ")"]
+            #[doc = ") element"]
             pub fn $elem(self) -> Self {
                 self.html.elem(stringify!($elem))
             }
@@ -242,21 +238,17 @@ macro_rules! element {
 macro_rules! void_element {
     ($elem:ident) => {
         impl Html {
-            #[doc = "Add `"]
-            #[doc = stringify!($elem)]
-            #[doc = "` [element]("]
+            #[doc = concat!("Add [", stringify!($elem), "](")]
             #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
-            #[doc = ")"]
+            #[doc = ") element"]
             pub fn $elem(&mut self) -> VoidElem {
                 self.void_elem(stringify!($elem))
             }
         }
         impl<'h> Elem<'h> {
-            #[doc = "Add `"]
-            #[doc = stringify!($elem)]
-            #[doc = "` [element]("]
+            #[doc = concat!("Add [", stringify!($elem), "](")]
             #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
-            #[doc = ")"]
+            #[doc = ") element"]
             pub fn $elem(self) -> VoidElem<'h> {
                 self.html.void_elem(stringify!($elem))
             }
