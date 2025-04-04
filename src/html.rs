@@ -21,6 +21,7 @@ pub fn opt_str(val: Option<impl Display>) -> String {
 }
 
 /// Simple HTML builder
+#[derive(Default)]
 pub struct Html {
     html: String,
     stack: Vec<&'static str>,
@@ -40,10 +41,7 @@ pub struct VoidElem<'h> {
 impl Html {
     /// Create a new HTML builder
     pub fn new() -> Self {
-        Html {
-            html: String::new(),
-            stack: Vec::new(),
-        }
+        Self::default()
     }
 
     /// Build the HTML into a String
