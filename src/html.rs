@@ -37,7 +37,6 @@ pub struct VoidElem<'h> {
     html: &'h mut Html,
 }
 
-#[allow(dead_code)]
 impl Html {
     /// Create an HTML builder
     pub fn new() -> Self {
@@ -136,7 +135,6 @@ impl Html {
     }
 }
 
-#[allow(dead_code)]
 impl<'h> Elem<'h> {
     /// Add an attribute with value
     pub fn attr(self, attr: &'static str, val: impl AsRef<str>) -> Self {
@@ -153,6 +151,12 @@ impl<'h> Elem<'h> {
     /// Add a `type` attribute
     pub fn type_(self, val: impl AsRef<str>) -> Self {
         self.html.attr("type", val);
+        self
+    }
+
+    /// Add a `for` attribute
+    pub fn for_(self, val: impl AsRef<str>) -> Self {
+        self.html.attr("for", val);
         self
     }
 
@@ -188,6 +192,12 @@ impl<'h> VoidElem<'h> {
     /// Add a `type` attribute
     pub fn type_(self, val: impl AsRef<str>) -> Self {
         self.html.attr("type", val);
+        self
+    }
+
+    /// Add a `for` attribute
+    pub fn for_(self, val: impl AsRef<str>) -> Self {
+        self.html.attr("for", val);
         self
     }
 
@@ -426,7 +436,14 @@ macro_rules! attribute {
     }
 }
 
+attribute!(height);
+attribute!(href);
+attribute!(max);
+attribute!(min);
 attribute!(size);
+attribute!(src);
+attribute!(value);
+attribute!(width);
 
 /// HTML Boolean attribute helper
 macro_rules! boolean_attribute {
