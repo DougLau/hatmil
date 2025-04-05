@@ -297,7 +297,7 @@ macro_rules! attributes {
     }
 }
 
-attributes![height, href, max, min, size, src, value, width];
+attributes![height, href, max, maxlength, min, size, src, value, width];
 
 /// HTML Boolean attribute helper
 macro_rules! boolean_attributes {
