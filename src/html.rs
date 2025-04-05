@@ -55,6 +55,13 @@ impl Html {
         Self::default()
     }
 
+    /// Create an HTML builder with a `doctype` preamble
+    pub fn with_doctype() -> Self {
+        let mut html = Html::default();
+        html.raw("<!doctype html>");
+        html
+    }
+
     /// Add an element
     fn elem(&mut self, elem: &'static str) -> Elem {
         self.html.push('<');
