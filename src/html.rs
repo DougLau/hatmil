@@ -34,8 +34,8 @@ pub fn opt_str(val: Option<impl ToString>) -> String {
 /// and `>` will automatically be escaped.  For content which has
 /// already been escaped, use the [raw](#method.raw) method.
 ///
-/// After creating all elements, use [build](#method.build) to get the
-/// HTML as a `String`.
+/// After creating all elements, use `String::from(html)` to get the HTML.
+/// All open tags will be closed automatically.
 #[derive(Default)]
 pub struct Html {
     html: String,
@@ -54,22 +54,21 @@ pub struct VoidElem<'h> {
     html: &'h mut Html,
 }
 
+impl From<Html> for String {
+    fn from(mut html: Html) -> Self {
+        while let Some(elem) = html.stack.pop() {
+            html.html.push_str("</");
+            html.html.push_str(elem);
+            html.html.push('>');
+        }
+        html.html
+    }
+}
+
 impl Html {
     /// Create an HTML builder
     pub fn new() -> Self {
         Self::default()
-    }
-
-    /// Build the HTML into a `String`
-    ///
-    /// All open tags are closed, and the final HTML is returned.
-    pub fn build(mut self) -> String {
-        while let Some(elem) = self.stack.pop() {
-            self.html.push_str("</");
-            self.html.push_str(elem);
-            self.html.push('>');
-        }
-        self.html
     }
 
     /// Add an element
@@ -408,23 +407,23 @@ mod test {
     fn html() {
         let mut html = Html::new();
         html.div();
-        assert_eq!(html.build(), String::from("<div></div>"));
+        assert_eq!(String::from(html), String::from("<div></div>"));
         let mut html = Html::new();
         html.div().id("test").attr_bool("spellcheck");
         assert_eq!(
-            html.build(),
+            String::from(html),
             String::from("<div id=\"test\" spellcheck></div>")
         );
         let mut html = Html::new();
         html.p().text("This is a paragraph");
-        assert_eq!(html.build(), String::from("<p>This is a paragraph</p>"));
+        assert_eq!(String::from(html), String::from("<p>This is a paragraph</p>"));
         let mut html = Html::new();
         html.em().text("You & I");
-        assert_eq!(html.build(), String::from("<em>You &amp; I</em>"));
+        assert_eq!(String::from(html), String::from("<em>You &amp; I</em>"));
         let mut html = Html::new();
         html.div().span().text("Test").end().raw("&quot;");
         assert_eq!(
-            html.build(),
+            String::from(html),
             String::from("<div><span>Test</span>&quot;</div>")
         );
     }
@@ -436,7 +435,7 @@ mod test {
         html.li().class("cat").text("nori").end();
         html.li().class("cat").text("chashu");
         assert_eq!(
-            html.build(),
+            String::from(html),
             String::from(
                 "<ol><li class=\"cat\">nori</li><li class=\"cat\">chashu</li></ol>"
             )
@@ -448,7 +447,7 @@ mod test {
         let mut html = Html::new();
         html.div().input().type_("text").text("Stuff");
         assert_eq!(
-            html.build(),
+            String::from(html),
             String::from("<div><input type=\"text\">Stuff</div>")
         );
     }
