@@ -107,7 +107,7 @@ impl Html {
         self.html.push_str("\">");
     }
 
-    /// Add a boolean attribute
+    /// Add a Boolean attribute
     fn attr_bool(&mut self, attr: &'static str) {
         match self.html.pop() {
             Some(gt) => assert_eq!(gt, '>'),
@@ -160,7 +160,7 @@ impl<'h> Elem<'h> {
         self
     }
 
-    /// Add a boolean attribute
+    /// Add a Boolean attribute
     pub fn attr_bool(self, attr: &'static str) -> Self {
         self.html.attr_bool(attr);
         self
@@ -201,7 +201,7 @@ impl<'h> VoidElem<'h> {
         self
     }
 
-    /// Add a boolean attribute
+    /// Add a Boolean attribute
     pub fn attr_bool(self, attr: &'static str) -> Self {
         self.html.attr_bool(attr);
         self
@@ -231,259 +231,168 @@ impl<'h> VoidElem<'h> {
 }
 
 /// HTML element helper
-macro_rules! element {
-    ($elem:ident) => {
+macro_rules! elements {
+    ( $( $elem:ident ),* ) => {
         impl Html {
-            #[doc = concat!("Add [", stringify!($elem), "](")]
-            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
-            #[doc = ") element"]
-            pub fn $elem(&mut self) -> Elem {
-                self.elem(stringify!($elem))
-            }
+            $(
+                #[doc = concat!("Add [", stringify!($elem), "](")]
+                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
+                #[doc = ") element"]
+                pub fn $elem(&mut self) -> Elem {
+                    self.elem(stringify!($elem))
+                }
+            )*
         }
         impl<'h> Elem<'h> {
-            #[doc = concat!("Add [", stringify!($elem), "](")]
-            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
-            #[doc = ") element"]
-            pub fn $elem(self) -> Self {
-                self.html.elem(stringify!($elem))
-            }
+            $(
+                #[doc = concat!("Add [", stringify!($elem), "](")]
+                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
+                #[doc = ") element"]
+                pub fn $elem(self) -> Self {
+                    self.html.elem(stringify!($elem))
+                }
+            )*
         }
     }
 }
+
+elements![
+    a, abbr, address, article, aside, audio, b, bdi, bdo, blockquote, body, br,
+    button, canvas, caption, cite, code, colgroup, data, datalist, dd, del,
+    details, dfn, dialog, div, dl, dt, em, fieldset, figcaption, figure,
+    footer, form, h1, h2, h3, h4, h5, h6, head, header, hgroup, html, i,
+    iframe, ins, kbd, label, legend, li, main, map, mark, menu, meter, nav,
+    noscript, object, ol, optgroup, option, output, p, picture, pre, progress,
+    q, rp, rt, ruby, s, samp, script, search, section, select, slot, small,
+    span, strong, style, sub, summary, sup, table, tbody, td, template,
+    textarea, tfoot, th, thead, time, title, tr, u, ul, var, video
+];
 
 /// HTML Void element helper
-macro_rules! void_element {
-    ($elem:ident) => {
+macro_rules! void_elements {
+    ( $( $elem:ident ),* ) => {
         impl Html {
-            #[doc = concat!("Add [", stringify!($elem), "](")]
-            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
-            #[doc = ") element"]
-            pub fn $elem(&mut self) -> VoidElem {
-                self.void_elem(stringify!($elem))
-            }
+            $(
+                #[doc = concat!("Add [", stringify!($elem), "](")]
+                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
+                #[doc = ") Void element"]
+                pub fn $elem(&mut self) -> VoidElem {
+                    self.void_elem(stringify!($elem))
+                }
+            )*
         }
         impl<'h> Elem<'h> {
-            #[doc = concat!("Add [", stringify!($elem), "](")]
-            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
-            #[doc = ") element"]
-            pub fn $elem(self) -> VoidElem<'h> {
-                self.html.void_elem(stringify!($elem))
-            }
+            $(
+                #[doc = concat!("Add [", stringify!($elem), "](")]
+                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
+                #[doc = ") Void element"]
+                pub fn $elem(self) -> VoidElem<'h> {
+                    self.html.void_elem(stringify!($elem))
+                }
+            )*
         }
     }
 }
 
-element!(a);
-element!(abbr);
-element!(address);
-void_element!(area);
-element!(article);
-element!(aside);
-element!(audio);
-element!(b);
-void_element!(base);
-element!(bdi);
-element!(bdo);
-element!(blockquote);
-element!(body);
-element!(br);
-element!(button);
-element!(canvas);
-element!(caption);
-element!(cite);
-element!(code);
-void_element!(col);
-element!(colgroup);
-element!(data);
-element!(datalist);
-element!(dd);
-element!(del);
-element!(details);
-element!(dfn);
-element!(dialog);
-element!(div);
-element!(dl);
-element!(dt);
-element!(em);
-void_element!(embed);
-element!(fieldset);
-element!(figcaption);
-element!(figure);
-element!(footer);
-element!(form);
-element!(h1);
-element!(h2);
-element!(h3);
-element!(h4);
-element!(h5);
-element!(h6);
-element!(head);
-element!(header);
-element!(hgroup);
-void_element!(hr);
-element!(html);
-element!(i);
-element!(iframe);
-void_element!(img);
-void_element!(input);
-element!(ins);
-element!(kbd);
-element!(label);
-element!(legend);
-element!(li);
-void_element!(link);
-element!(main);
-element!(map);
-element!(mark);
-element!(menu);
-void_element!(meta);
-element!(meter);
-element!(nav);
-element!(noscript);
-element!(object);
-element!(ol);
-element!(optgroup);
-element!(option);
-element!(output);
-element!(p);
-element!(picture);
-element!(pre);
-element!(progress);
-element!(q);
-element!(rp);
-element!(rt);
-element!(ruby);
-element!(s);
-element!(samp);
-element!(script);
-element!(search);
-element!(section);
-element!(select);
-element!(slot);
-element!(small);
-void_element!(source);
-element!(span);
-element!(strong);
-element!(style);
-element!(sub);
-element!(summary);
-element!(sup);
-element!(table);
-element!(tbody);
-element!(td);
-element!(template);
-element!(textarea);
-element!(tfoot);
-element!(th);
-element!(thead);
-element!(time);
-element!(title);
-element!(tr);
-void_element!(track);
-element!(u);
-element!(ul);
-element!(var);
-element!(video);
-void_element!(wbr);
+void_elements![
+    area, base, col, embed, hr, img, input, link, meta, source, track, wbr
+];
 
 /// HTML global attribute helper
-macro_rules! global_attribute {
-    ($attr:ident) => {
+macro_rules! global_attributes {
+    ( $( $attr:ident ),* ) => {
         impl<'h> Elem<'h> {
-            #[doc = "Add `"]
-            #[doc = stringify!($attr)]
-            #[doc = "` [attribute]("]
-            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/", stringify!($attr))]
-            #[doc = ")"]
-            pub fn $attr(self, val: impl AsRef<str>) -> Self {
-                self.html.attr(stringify!($attr), val);
-                self
-            }
+            $(
+                #[doc = concat!("Add `", stringify!($attr), "` ")]
+                #[doc = "global [attribute]("]
+                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/", stringify!($attr))]
+                #[doc = ")"]
+                pub fn $attr(self, val: impl AsRef<str>) -> Self {
+                    self.html.attr(stringify!($attr), val);
+                    self
+                }
+            )*
         }
         impl<'h> VoidElem<'h> {
-            #[doc = "Add `"]
-            #[doc = stringify!($attr)]
-            #[doc = "` [attribute]("]
-            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/", stringify!($attr))]
-            #[doc = ")"]
-            pub fn $attr(self, val: impl AsRef<str>) -> Self {
-                self.html.attr(stringify!($attr), val);
-                self
-            }
+            $(
+                #[doc = concat!("Add `", stringify!($attr), "` ")]
+                #[doc = "global [attribute]("]
+                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/", stringify!($attr))]
+                #[doc = ")"]
+                pub fn $attr(self, val: impl AsRef<str>) -> Self {
+                    self.html.attr(stringify!($attr), val);
+                    self
+                }
+            )*
         }
     }
 }
 
-global_attribute!(class);
-global_attribute!(id);
+global_attributes![class, id];
 
 /// HTML attribute helper
-macro_rules! attribute {
-    ($attr:ident) => {
+macro_rules! attributes {
+    ( $( $attr:ident ),* ) => {
         impl<'h> Elem<'h> {
-            #[doc = "Add `"]
-            #[doc = stringify!($attr)]
-            #[doc = "` [attribute]("]
-            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
-            #[doc = ")"]
-            pub fn $attr(self, val: impl AsRef<str>) -> Self {
-                self.html.attr(stringify!($attr), val);
-                self
-            }
+            $(
+                #[doc = concat!("Add `", stringify!($attr), "` ")]
+                #[doc = "[attribute]("]
+                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
+                #[doc = ")"]
+                pub fn $attr(self, val: impl AsRef<str>) -> Self {
+                    self.html.attr(stringify!($attr), val);
+                    self
+                }
+            )*
         }
         impl<'h> VoidElem<'h> {
-            #[doc = "Add `"]
-            #[doc = stringify!($attr)]
-            #[doc = "` [attribute]("]
-            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
-            #[doc = ")"]
-            pub fn $attr(self, val: impl AsRef<str>) -> Self {
-                self.html.attr(stringify!($attr), val);
-                self
-            }
+            $(
+                #[doc = concat!("Add `", stringify!($attr), "` ")]
+                #[doc = "[attribute]("]
+                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
+                #[doc = ")"]
+                pub fn $attr(self, val: impl AsRef<str>) -> Self {
+                    self.html.attr(stringify!($attr), val);
+                    self
+                }
+            )*
         }
     }
 }
 
-attribute!(height);
-attribute!(href);
-attribute!(max);
-attribute!(min);
-attribute!(size);
-attribute!(src);
-attribute!(value);
-attribute!(width);
+attributes![height, href, max, min, size, src, value, width];
 
 /// HTML Boolean attribute helper
-macro_rules! boolean_attribute {
-    ($attr:ident) => {
+macro_rules! boolean_attributes {
+    ( $( $attr:ident ),* ) => {
         impl<'h> Elem<'h> {
-            #[doc = "Add `"]
-            #[doc = stringify!($attr)]
-            #[doc = "` [attribute]("]
-            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
-            #[doc = ")"]
-            pub fn $attr(self) -> Self {
-                self.html.attr_bool(stringify!($attr));
-                self
-            }
+            $(
+                #[doc = concat!("Add `", stringify!($attr), "` ")]
+                #[doc = "Boolean [attribute]("]
+                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
+                #[doc = ")"]
+                pub fn $attr(self) -> Self {
+                    self.html.attr_bool(stringify!($attr));
+                    self
+                }
+            )*
         }
         impl<'h> VoidElem<'h> {
-            #[doc = "Add `"]
-            #[doc = stringify!($attr)]
-            #[doc = "` [attribute]("]
-            #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
-            #[doc = ")"]
-            pub fn $attr(self) -> Self {
-                self.html.attr_bool(stringify!($attr));
-                self
-            }
+            $(
+                #[doc = concat!("Add `", stringify!($attr), "` ")]
+                #[doc = "Boolean [attribute]("]
+                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
+                #[doc = ")"]
+                pub fn $attr(self) -> Self {
+                    self.html.attr_bool(stringify!($attr));
+                    self
+                }
+            )*
         }
     }
 }
 
-boolean_attribute!(disabled);
+boolean_attributes![disabled];
 
 #[cfg(test)]
 mod test {
