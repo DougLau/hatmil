@@ -140,14 +140,14 @@ impl Html {
 
     /// Add raw content
     ///
-    /// WARNING: The text is used verbatim, with no escaping; do not call with
-    /// untrusted content.
+    /// **WARNING**: The text is used verbatim, with no escaping; do not call
+    /// with untrusted content.
     pub fn raw(&mut self, text: impl AsRef<str>) -> &mut Self {
         self.html.push_str(text.as_ref());
         self
     }
 
-    /// End the current element
+    /// End the leaf element
     ///
     /// Add a closing tag (e.g. `</span>`).
     pub fn end(&mut self) -> &mut Self {
