@@ -388,54 +388,88 @@ mod test {
     use super::*;
 
     #[test]
-    fn html() {
+    fn div() {
         let mut html = Html::new();
         html.div();
-        assert_eq!(String::from(html), String::from("<div></div>"));
-        let mut html = Html::new();
-        html.div().id("test").attr_bool("spellcheck");
-        assert_eq!(
-            String::from(html),
-            String::from("<div id=\"test\" spellcheck></div>")
-        );
-        let mut html = Html::new();
-        html.p().text("This is a paragraph");
-        assert_eq!(
-            String::from(html),
-            String::from("<p>This is a paragraph</p>")
-        );
-        let mut html = Html::new();
-        html.em().text("You & I");
-        assert_eq!(String::from(html), String::from("<em>You &amp; I</em>"));
-        let mut html = Html::new();
-        html.div().span().text("Test").end().raw("&quot;");
-        assert_eq!(
-            String::from(html),
-            String::from("<div><span>Test</span>&quot;</div>")
-        );
+        let html = String::from(html);
+        assert_eq!(html, "<div></div>");
     }
 
     #[test]
-    fn ol() {
+    fn boolean() {
         let mut html = Html::new();
-        html.ol();
-        html.li().class("cat").text("nori").end();
-        html.li().class("cat").text("chashu");
-        assert_eq!(
-            String::from(html),
-            String::from(
-                "<ol><li class=\"cat\">nori</li><li class=\"cat\">chashu</li></ol>"
-            )
-        );
+        html.div().id("test").attr_bool("spellcheck");
+        let html = String::from(html);
+        assert_eq!(html, "<div id=\"test\" spellcheck></div>");
+    }
+
+    #[test]
+    fn paragraph() {
+        let mut html = Html::new();
+        html.p().text("This is a paragraph");
+        let html = String::from(html);
+        assert_eq!(html, "<p>This is a paragraph</p>");
+    }
+
+    #[test]
+    fn escaping() {
+        let mut html = Html::new();
+        html.em().text("You & I");
+        let html = String::from(html);
+        assert_eq!(html, "<em>You &amp; I</em>");
+    }
+
+    #[test]
+    fn raw_burger() {
+        let mut html = Html::new();
+        html.span().text("Raw").raw(" <em>Burger</em>!");
+        let html = String::from(html);
+        assert_eq!(html, "<span>Raw <em>Burger</em>!</span>");
     }
 
     #[test]
     fn void() {
         let mut html = Html::new();
         html.div().input().type_("text").text("Stuff");
+        let html = String::from(html);
+        assert_eq!(html, "<div><input type=\"text\">Stuff</div>");
+    }
+
+    #[test]
+    fn html() {
+        let mut html = Html::new();
+        html.ol();
+        html.li().class("cat").text("nori").end();
+        html.li().class("cat").text("chashu");
+        let html = String::from(html);
         assert_eq!(
-            String::from(html),
-            String::from("<div><input type=\"text\">Stuff</div>")
+            html,
+            "<ol><li class=\"cat\">nori</li><li class=\"cat\">chashu</li></ol>"
+        );
+    }
+
+    #[test]
+    fn build_html() {
+        let mut html = Html::new();
+        html.div().p().text("Paragraph Text").end();
+        html.pre().text("Preformatted Text");
+        let html = String::from(html);
+        assert_eq!(
+            &html,
+            "<div><p>Paragraph Text</p><pre>Preformatted Text</pre></div>"
+        );
+    }
+
+    #[test]
+    fn html_builder() {
+        let mut html = Html::new();
+        html.html().attr("lang", "en");
+        html.head().title().text("Title!").end().end();
+        html.body().h1().text("Header!");
+        let html = String::from(html);
+        assert_eq!(
+            html,
+            "<html lang=\"en\"><head><title>Title!</title></head><body><h1>Header!</h1></body></html>"
         );
     }
 }
