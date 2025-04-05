@@ -236,74 +236,6 @@ impl<'h> VoidElem<'h> {
     }
 }
 
-/// HTML element helper
-macro_rules! elements {
-    ( $( $elem:ident ),* ) => {
-        impl Html {
-            $(
-                #[doc = concat!("Add [", stringify!($elem), "](")]
-                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
-                #[doc = ") element"]
-                pub fn $elem(&mut self) -> Elem {
-                    self.elem(stringify!($elem))
-                }
-            )*
-        }
-        impl<'h> Elem<'h> {
-            $(
-                #[doc = concat!("Add [", stringify!($elem), "](")]
-                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
-                #[doc = ") element"]
-                pub fn $elem(self) -> Self {
-                    self.html.elem(stringify!($elem))
-                }
-            )*
-        }
-    }
-}
-
-elements![
-    a, abbr, address, article, aside, audio, b, bdi, bdo, blockquote, body, br,
-    button, canvas, caption, cite, code, colgroup, data, datalist, dd, del,
-    details, dfn, dialog, div, dl, dt, em, fieldset, figcaption, figure,
-    footer, form, h1, h2, h3, h4, h5, h6, head, header, hgroup, html, i,
-    iframe, ins, kbd, label, legend, li, main, map, mark, menu, meter, nav,
-    noscript, object, ol, optgroup, option, output, p, picture, pre, progress,
-    q, rp, rt, ruby, s, samp, script, search, section, select, slot, small,
-    span, strong, style, sub, summary, sup, table, tbody, td, template,
-    textarea, tfoot, th, thead, time, title, tr, u, ul, var, video
-];
-
-/// HTML Void element helper
-macro_rules! void_elements {
-    ( $( $elem:ident ),* ) => {
-        impl Html {
-            $(
-                #[doc = concat!("Add [", stringify!($elem), "](")]
-                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
-                #[doc = ") Void element"]
-                pub fn $elem(&mut self) -> VoidElem {
-                    self.void_elem(stringify!($elem))
-                }
-            )*
-        }
-        impl<'h> Elem<'h> {
-            $(
-                #[doc = concat!("Add [", stringify!($elem), "](")]
-                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
-                #[doc = ") Void element"]
-                pub fn $elem(self) -> VoidElem<'h> {
-                    self.html.void_elem(stringify!($elem))
-                }
-            )*
-        }
-    }
-}
-
-void_elements![
-    area, base, col, embed, hr, img, input, link, meta, source, track, wbr
-];
-
 /// HTML global attribute helper
 macro_rules! global_attributes {
     ( $( $attr:ident ),* ) => {
@@ -399,6 +331,74 @@ macro_rules! boolean_attributes {
 }
 
 boolean_attributes![autofocus, checked, disabled, inert, readonly, required];
+
+/// HTML element helper
+macro_rules! elements {
+    ( $( $elem:ident ),* ) => {
+        impl Html {
+            $(
+                #[doc = concat!("Add [", stringify!($elem), "](")]
+                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
+                #[doc = ") element"]
+                pub fn $elem(&mut self) -> Elem {
+                    self.elem(stringify!($elem))
+                }
+            )*
+        }
+        impl<'h> Elem<'h> {
+            $(
+                #[doc = concat!("Add [", stringify!($elem), "](")]
+                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
+                #[doc = ") child element"]
+                pub fn $elem(self) -> Self {
+                    self.html.elem(stringify!($elem))
+                }
+            )*
+        }
+    }
+}
+
+elements![
+    a, abbr, address, article, aside, audio, b, bdi, bdo, blockquote, body, br,
+    button, canvas, caption, cite, code, colgroup, data, datalist, dd, del,
+    details, dfn, dialog, div, dl, dt, em, fieldset, figcaption, figure,
+    footer, form, h1, h2, h3, h4, h5, h6, head, header, hgroup, html, i,
+    iframe, ins, kbd, label, legend, li, main, map, mark, menu, meter, nav,
+    noscript, object, ol, optgroup, option, output, p, picture, pre, progress,
+    q, rp, rt, ruby, s, samp, script, search, section, select, slot, small,
+    span, strong, style, sub, summary, sup, table, tbody, td, template,
+    textarea, tfoot, th, thead, time, title, tr, u, ul, var, video
+];
+
+/// HTML Void element helper
+macro_rules! void_elements {
+    ( $( $elem:ident ),* ) => {
+        impl Html {
+            $(
+                #[doc = concat!("Add [", stringify!($elem), "](")]
+                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
+                #[doc = ") Void element"]
+                pub fn $elem(&mut self) -> VoidElem {
+                    self.void_elem(stringify!($elem))
+                }
+            )*
+        }
+        impl<'h> Elem<'h> {
+            $(
+                #[doc = concat!("Add [", stringify!($elem), "](")]
+                #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
+                #[doc = ") child Void element"]
+                pub fn $elem(self) -> VoidElem<'h> {
+                    self.html.void_elem(stringify!($elem))
+                }
+            )*
+        }
+    }
+}
+
+void_elements![
+    area, base, col, embed, hr, img, input, link, meta, source, track, wbr
+];
 
 #[cfg(test)]
 mod test {
