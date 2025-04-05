@@ -1,11 +1,5 @@
 Simple HTML builder
 
-Elements can be created with methods of the same name:
-
-* [a](struct.Html.html#method.a)
-* [abbr](struct.Html.html#method.abbr)
-* [address](struct.Html.html#method.address)
-
 ```rust
 use hatmil::Html;
 

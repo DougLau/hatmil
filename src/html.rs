@@ -21,6 +21,24 @@ pub fn opt_str(val: Option<impl Display>) -> String {
 }
 
 /// Simple HTML builder
+///
+/// Elements can be created using methods with a matching name, such as
+/// [a](#method.a), [body](#method.body), [div](#method.div),
+/// [html](#method.html), and [ol](#method.ol).
+/// These methods return an [Elem](struct.Elem.html), which borrows
+/// from the `Html`, and can be closed with the [end](#method.end) method.
+/// [Void] elements, like [img](#method.img) and [input](#method.input),
+/// do not need to be closed.
+///
+/// Text content can be added using the [text](#method.text) or
+/// [text_len](#method.text_len) methods.  Characters such as `&`, `<`,
+/// and `>` will automatically be escaped.  For content which has
+/// already been escaped, use the [raw](#method.raw) method.
+///
+/// After creating all elements, use [build](#method.build) to get the
+/// HTML as a `String`.
+///
+/// [Void]: https://developer.mozilla.org/en-US/docs/Glossary/Void_element
 #[derive(Default)]
 pub struct Html {
     html: String,
