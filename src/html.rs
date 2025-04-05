@@ -137,6 +137,8 @@ impl Html {
 
 impl<'h> Elem<'h> {
     /// Add an attribute with value
+    ///
+    /// The characters `&` and `"` in `val` will automatically be escaped.
     pub fn attr(self, attr: &'static str, val: impl AsRef<str>) -> Self {
         self.html.attr(attr, val);
         self

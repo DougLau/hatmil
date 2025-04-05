@@ -5,8 +5,8 @@ name, such as [a], [body], [div], or [table].  These methods return an [Elem],
 which borrows from the `Html`, and can be closed with the [end] method.
 [VoidElem] elements, like [img] and [input], do not need to be closed.
 
-Text content can be added using the [text] or [text_len] methods.  Characters
-such as `&`, `<`, and `>` will automatically be escaped.  For content which
+Text content can be added using the [text] or [text_len] methods.  The
+characters `&`, `<`, and `>` will automatically be escaped.  For content which
 has already been escaped, use the [raw] method.
 
 After creating all elements, use `String::from(html)` to get the HTML.
