@@ -2,9 +2,8 @@
 //
 // Copyright (C) 2025  Douglas P Lau
 //
-use std::fmt::Display;
 
-/// Get optional `str` reference
+/// Get `str` reference from an `Option`
 pub fn opt_ref(val: &Option<impl AsRef<str>>) -> &str {
     match val {
         Some(v) => v.as_ref(),
@@ -12,8 +11,8 @@ pub fn opt_ref(val: &Option<impl AsRef<str>>) -> &str {
     }
 }
 
-/// Get optional String
-pub fn opt_str(val: Option<impl Display>) -> String {
+/// Get `String` from an `Option`
+pub fn opt_str(val: Option<impl ToString>) -> String {
     match val {
         Some(v) => v.to_string(),
         None => String::new(),
