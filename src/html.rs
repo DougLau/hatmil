@@ -148,7 +148,9 @@ impl<'h> Elem<'h> {
         self
     }
 
-    /// Add a Boolean attribute
+    /// Add a [Boolean] attribute
+    ///
+    /// [Boolean]: https://developer.mozilla.org/en-US/docs/Glossary/Boolean/HTML
     pub fn attr_bool(self, attr: &'static str) -> Self {
         self.html.attr_bool(attr);
         self
@@ -192,12 +194,16 @@ impl<'h> Elem<'h> {
 
 impl<'h> VoidElem<'h> {
     /// Add an attribute with value
+    ///
+    /// The characters `&` and `"` in `val` will automatically be escaped.
     pub fn attr(self, attr: &'static str, val: impl AsRef<str>) -> Self {
         self.html.attr(attr, val);
         self
     }
 
-    /// Add a Boolean attribute
+    /// Add a [Boolean] attribute
+    ///
+    /// [Boolean]: https://developer.mozilla.org/en-US/docs/Glossary/Boolean/HTML
     pub fn attr_bool(self, attr: &'static str) -> Self {
         self.html.attr_bool(attr);
         self
