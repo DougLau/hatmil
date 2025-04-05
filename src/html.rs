@@ -10,12 +10,12 @@ pub struct Html {
     stack: Vec<&'static str>,
 }
 
-/// Borrowed HTML element
+/// Element borrowed from an [Html]
 pub struct Elem<'h> {
     html: &'h mut Html,
 }
 
-/// Borrowed HTML [Void] element
+/// [Void] element borrowed from an [Html]
 ///
 /// [Void]: https://developer.mozilla.org/en-US/docs/Glossary/Void_element
 pub struct VoidElem<'h> {
@@ -94,13 +94,17 @@ impl Html {
     }
 
     /// Add text content
+    ///
+    /// The characters `&`, `<` and `>` in `text` will automatically be
+    /// escaped.
     pub fn text(&mut self, text: impl AsRef<str>) -> &mut Self {
         self.text_len(text, usize::MAX)
     }
 
-    /// Add text content with a character limit
+    /// Add text content with a maximum character limit
     ///
-    /// The `text` will be truncated at `len` characters.
+    /// The characters `&`, `<` and `>` in `text` will automatically be
+    /// escaped.
     pub fn text_len(&mut self, text: impl AsRef<str>, len: usize) -> &mut Self {
         for c in text.as_ref().chars().take(len) {
             match c {
@@ -115,7 +119,7 @@ impl Html {
 
     /// Add raw content
     ///
-    /// **WARNING**: The text is used verbatim, with no escaping; do not call
+    /// **WARNING**: `text` is used verbatim, with no escaping; do not call
     /// with untrusted content.
     pub fn raw(&mut self, text: impl AsRef<str>) -> &mut Self {
         self.html.push_str(text.as_ref());
@@ -163,13 +167,17 @@ impl<'h> Elem<'h> {
     }
 
     /// Add text content
+    ///
+    /// The characters `&`, `<` and `>` in `text` will automatically be
+    /// escaped.
     pub fn text(self, text: impl AsRef<str>) -> &'h mut Html {
         self.html.text_len(text, usize::MAX)
     }
 
-    /// Add text content with a character limit
+    /// Add text content with a maximum character limit
     ///
-    /// The `text` will be truncated at `len` characters.
+    /// The characters `&`, `<` and `>` in `text` will automatically be
+    /// escaped.
     pub fn text_len(self, text: impl AsRef<str>, len: usize) -> &'h mut Html {
         self.html.text_len(text, len)
     }
@@ -203,7 +211,8 @@ impl<'h> VoidElem<'h> {
 
     /// End the element
     ///
-    /// Since Void elements have no closing tags, this only returns the `Html`
+    /// Since Void elements have no closing tags, this simply returns the
+    /// [Html] to allow chaining method calls.
     pub fn end(self) -> &'h mut Html {
         self.html
     }
