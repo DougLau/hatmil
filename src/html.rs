@@ -3,22 +3,6 @@
 // Copyright (C) 2025  Douglas P Lau
 //
 
-/// Get `str` reference from an `Option`
-pub fn opt_ref(val: &Option<impl AsRef<str>>) -> &str {
-    match val {
-        Some(v) => v.as_ref(),
-        None => "",
-    }
-}
-
-/// Get `String` from an `Option`
-pub fn opt_str(val: Option<impl ToString>) -> String {
-    match val {
-        Some(v) => v.to_string(),
-        None => String::new(),
-    }
-}
-
 /// Simple HTML builder
 ///
 /// Elements can be created using methods with a matching name, such as
@@ -416,7 +400,10 @@ mod test {
         );
         let mut html = Html::new();
         html.p().text("This is a paragraph");
-        assert_eq!(String::from(html), String::from("<p>This is a paragraph</p>"));
+        assert_eq!(
+            String::from(html),
+            String::from("<p>This is a paragraph</p>")
+        );
         let mut html = Html::new();
         html.em().text("You & I");
         assert_eq!(String::from(html), String::from("<em>You &amp; I</em>"));

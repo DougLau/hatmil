@@ -6,4 +6,4 @@
 
 mod html;
 
-pub use html::{Elem, Html, VoidElem, opt_ref, opt_str};
+pub use html::{Elem, Html, VoidElem};
