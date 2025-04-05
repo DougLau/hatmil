@@ -392,7 +392,7 @@ macro_rules! boolean_attributes {
     }
 }
 
-boolean_attributes![disabled];
+boolean_attributes![autofocus, checked, disabled, inert, readonly, required];
 
 #[cfg(test)]
 mod test {
