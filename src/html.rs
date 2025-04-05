@@ -239,7 +239,7 @@ macro_rules! global_attributes {
     }
 }
 
-global_attributes![class, id];
+global_attributes![class, dir, hidden, id, lang];
 
 /// HTML attribute helper
 macro_rules! attributes {
@@ -453,7 +453,7 @@ mod test {
     #[test]
     fn html_builder() {
         let mut html = Html::new();
-        html.html().attr("lang", "en");
+        html.html().lang("en");
         html.head().title().text("Title!").end().end();
         html.body().h1().text("Header!");
         let html = String::from(html);
