@@ -26,8 +26,8 @@ pub fn opt_str(val: Option<impl ToString>) -> String {
 /// [html](#method.html), and [ol](#method.ol).
 /// These methods return an [Elem](struct.Elem.html), which borrows
 /// from the `Html`, and can be closed with the [end](#method.end) method.
-/// [Void] elements, like [img](#method.img) and [input](#method.input),
-/// do not need to be closed.
+/// [VoidElem](struct.VoidElem.html) elements, like [img](#method.img) and
+/// [input](#method.input), do not need to be closed.
 ///
 /// Text content can be added using the [text](#method.text) or
 /// [text_len](#method.text_len) methods.  Characters such as `&`, `<`,
@@ -36,8 +36,6 @@ pub fn opt_str(val: Option<impl ToString>) -> String {
 ///
 /// After creating all elements, use [build](#method.build) to get the
 /// HTML as a `String`.
-///
-/// [Void]: https://developer.mozilla.org/en-US/docs/Glossary/Void_element
 #[derive(Default)]
 pub struct Html {
     html: String,
@@ -49,7 +47,9 @@ pub struct Elem<'h> {
     html: &'h mut Html,
 }
 
-/// Borrowed HTML Void element
+/// Borrowed HTML [Void] element
+///
+/// [Void]: https://developer.mozilla.org/en-US/docs/Glossary/Void_element
 pub struct VoidElem<'h> {
     html: &'h mut Html,
 }
@@ -123,6 +123,8 @@ impl Html {
     }
 
     /// Add text content with a character limit
+    ///
+    /// The `text` will be truncated at `len` characters.
     pub fn text_len(&mut self, text: impl AsRef<str>, len: usize) -> &mut Self {
         for c in text.as_ref().chars().take(len) {
             match c {
@@ -136,6 +138,9 @@ impl Html {
     }
 
     /// Add raw content
+    ///
+    /// WARNING: The text is used verbatim, with no escaping; do not call with
+    /// untrusted content.
     pub fn raw(&mut self, text: impl AsRef<str>) -> &mut Self {
         self.html.push_str(text.as_ref());
         self
@@ -183,6 +188,8 @@ impl<'h> Elem<'h> {
     }
 
     /// Add text content with a character limit
+    ///
+    /// The `text` will be truncated at `len` characters.
     pub fn text_len(self, text: impl AsRef<str>, len: usize) -> &'h mut Html {
         self.html.text_len(text, len)
     }
