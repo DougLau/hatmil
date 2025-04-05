@@ -4,22 +4,6 @@
 //
 
 /// Simple HTML builder
-///
-/// Elements can be created using methods with a matching name, such as
-/// [a](#method.a), [body](#method.body), [div](#method.div),
-/// [html](#method.html), and [ol](#method.ol).
-/// These methods return an [Elem](struct.Elem.html), which borrows
-/// from the `Html`, and can be closed with the [end](#method.end) method.
-/// [VoidElem](struct.VoidElem.html) elements, like [img](#method.img) and
-/// [input](#method.input), do not need to be closed.
-///
-/// Text content can be added using the [text](#method.text) or
-/// [text_len](#method.text_len) methods.  Characters such as `&`, `<`,
-/// and `>` will automatically be escaped.  For content which has
-/// already been escaped, use the [raw](#method.raw) method.
-///
-/// After creating all elements, use `String::from(html)` to get the HTML.
-/// All open tags will be closed automatically.
 #[derive(Default)]
 pub struct Html {
     html: String,
