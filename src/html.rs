@@ -201,14 +201,11 @@ impl<'h> VoidElem<'h> {
         self
     }
 
-    /// Add text content
-    pub fn text(self, text: impl AsRef<str>) -> &'h mut Html {
-        self.html.text_len(text, usize::MAX)
-    }
-
-    /// Add text content with a character limit
-    pub fn text_len(self, text: impl AsRef<str>, len: usize) -> &'h mut Html {
-        self.html.text_len(text, len)
+    /// End the element
+    ///
+    /// Since Void elements have no closing tags, this only returns the `Html`
+    pub fn end(self) -> &'h mut Html {
+        self.html
     }
 }
 
@@ -423,9 +420,9 @@ mod test {
     #[test]
     fn void() {
         let mut html = Html::new();
-        html.div().input().type_("text").text("Stuff");
+        html.div().input().type_("text");
         let html = String::from(html);
-        assert_eq!(html, "<div><input type=\"text\">Stuff</div>");
+        assert_eq!(html, "<div><input type=\"text\"></div>");
     }
 
     #[test]
