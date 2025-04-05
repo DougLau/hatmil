@@ -61,6 +61,8 @@ impl Html {
     }
 
     /// Build the HTML into a `String`
+    ///
+    /// All open tags are closed, and the final HTML is returned.
     pub fn build(mut self) -> String {
         while let Some(elem) = self.stack.pop() {
             self.html.push_str("</");
@@ -147,6 +149,8 @@ impl Html {
     }
 
     /// End the current element
+    ///
+    /// Add a closing tag (e.g. `</span>`).
     pub fn end(&mut self) -> &mut Self {
         if let Some(elem) = self.stack.pop() {
             self.html.push_str("</");
@@ -195,6 +199,8 @@ impl<'h> Elem<'h> {
     }
 
     /// End the element
+    ///
+    /// Adds the closing tag (e.g. `</span>`).
     pub fn end(self) -> &'h mut Html {
         self.html.end()
     }
@@ -216,12 +222,6 @@ impl<'h> VoidElem<'h> {
     /// Add a `type` attribute
     pub fn type_(self, val: impl AsRef<str>) -> Self {
         self.html.attr("type", val);
-        self
-    }
-
-    /// Add a `for` attribute
-    pub fn for_(self, val: impl AsRef<str>) -> Self {
-        self.html.attr("for", val);
         self
     }
 
