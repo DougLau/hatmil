@@ -6,7 +6,7 @@ license = "MIT OR Apache-2.0"
 documentation = "https://docs.rs/hatmil"
 repository = "https://github.com/DougLau/hatmil"
 readme = "README.md"
-keywords = ["html"]
+keywords = ["html", "builder", "generator"]
 edition = "2024"
 
 [dependencies]
