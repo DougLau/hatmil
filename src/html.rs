@@ -286,7 +286,9 @@ macro_rules! attributes {
     }
 }
 
-attributes![height, href, max, maxlength, min, size, src, value, width];
+attributes![
+    height, href, max, maxlength, min, name, size, src, value, width
+];
 
 /// HTML Boolean attribute helper
 macro_rules! boolean_attributes {
@@ -318,7 +320,9 @@ macro_rules! boolean_attributes {
     }
 }
 
-boolean_attributes![autofocus, checked, disabled, inert, readonly, required];
+boolean_attributes![
+    autofocus, checked, disabled, inert, multiple, readonly, required, selected
+];
 
 /// HTML element helper
 macro_rules! elements {
