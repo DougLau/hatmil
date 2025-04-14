@@ -254,7 +254,23 @@ macro_rules! global_attributes {
     }
 }
 
-global_attributes![class, dir, hidden, id, lang];
+global_attributes![
+    accesskey,
+    class,
+    contenteditable,
+    dir,
+    draggable,
+    enterkeyhint,
+    hidden,
+    id,
+    inputmode,
+    lang,
+    role,
+    tabindex
+];
+
+/* autofocus, inret are global + Boolean */
+/* style conflicts with the style element */
 
 /// HTML attribute helper
 macro_rules! attributes {
