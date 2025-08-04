@@ -7,6 +7,7 @@ documentation = "https://docs.rs/hatmil"
 repository = "https://github.com/DougLau/hatmil"
 readme = "README.md"
 keywords = ["html", "builder", "generator"]
+categories = ["web-programming", "encoding"]
 edition = "2024"
 
 [dependencies]
