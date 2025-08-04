@@ -9,8 +9,8 @@ Text content can be added using the [text] or [text_len] methods, which will
 automatically escape characters as needed.  For content which has already been
 escaped, use the [raw] method.
 
-After creating all elements, use `String::from(html)` to get the HTML.
-All open tags will be closed automatically.
+After creating all elements, use [Display] ([format], `to_string()`, etc) to
+get the HTML.  All open tags will be closed automatically.
 
 ```rust
 use hatmil::Html;
@@ -18,18 +18,19 @@ use hatmil::Html;
 let mut html = Html::new();
 html.div().id("a_div").text("Hello").end();
 html.button().class("rounded").text("Press Me!");
-let html = String::from(html);
 assert_eq!(
-    html,
+    html.to_string(),
     "<div id=\"a_div\">Hello</div><button class=\"rounded\">Press Me!</button>"
 );
 ```
 
 [a]: https://docs.rs/hatmil/latest/hatmil/struct.Html.html#method.a
 [body]: https://docs.rs/hatmil/latest/hatmil/struct.Html.html#method.body
+[Display]: https://doc.rust-lang.org/std/fmt/trait.Display.html
 [div]: https://docs.rs/hatmil/latest/hatmil/struct.Html.html#method.div
 [Elem]: https://docs.rs/hatmil/latest/hatmil/struct.Elem.html
 [end]: https://docs.rs/hatmil/latest/hatmil/struct.Html.html#method.end
+[format]: https://doc.rust-lang.org/std/macro.format.html
 [Html]: https://docs.rs/hatmil/latest/hatmil/struct.Html.html
 [img]: https://docs.rs/hatmil/latest/hatmil/struct.Html.html#method.img
 [input]: https://docs.rs/hatmil/latest/hatmil/struct.Html.html#method.input

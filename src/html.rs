@@ -2,6 +2,7 @@
 //
 // Copyright (C) 2025  Douglas P Lau
 //
+use std::fmt;
 
 /// Simple HTML builder
 #[derive(Default)]
@@ -22,14 +23,13 @@ pub struct VoidElem<'h> {
     html: &'h mut Html,
 }
 
-impl From<Html> for String {
-    fn from(mut html: Html) -> Self {
-        while let Some(elem) = html.stack.pop() {
-            html.html.push_str("</");
-            html.html.push_str(elem);
-            html.html.push('>');
+impl fmt::Display for Html {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.html)?;
+        for elem in self.stack.iter().rev() {
+            write!(f, "</{elem}>")?;
         }
-        html.html
+        Ok(())
     }
 }
 
@@ -416,48 +416,42 @@ mod test {
     fn div() {
         let mut html = Html::new();
         html.div();
-        let html = String::from(html);
-        assert_eq!(html, "<div></div>");
+        assert_eq!(html.to_string(), "<div></div>");
     }
 
     #[test]
     fn boolean() {
         let mut html = Html::new();
         html.div().id("test").attr_bool("spellcheck");
-        let html = String::from(html);
-        assert_eq!(html, "<div id=\"test\" spellcheck></div>");
+        assert_eq!(html.to_string(), "<div id=\"test\" spellcheck></div>");
     }
 
     #[test]
     fn paragraph() {
         let mut html = Html::new();
         html.p().text("This is a paragraph");
-        let html = String::from(html);
-        assert_eq!(html, "<p>This is a paragraph</p>");
+        assert_eq!(html.to_string(), "<p>This is a paragraph</p>");
     }
 
     #[test]
     fn escaping() {
         let mut html = Html::new();
         html.em().text("You & I");
-        let html = String::from(html);
-        assert_eq!(html, "<em>You &amp; I</em>");
+        assert_eq!(html.to_string(), "<em>You &amp; I</em>");
     }
 
     #[test]
     fn raw_burger() {
         let mut html = Html::new();
         html.span().text("Raw").raw(" <em>Burger</em>!");
-        let html = String::from(html);
-        assert_eq!(html, "<span>Raw <em>Burger</em>!</span>");
+        assert_eq!(html.to_string(), "<span>Raw <em>Burger</em>!</span>");
     }
 
     #[test]
     fn void() {
         let mut html = Html::new();
         html.div().input().type_("text");
-        let html = String::from(html);
-        assert_eq!(html, "<div><input type=\"text\"></div>");
+        assert_eq!(html.to_string(), "<div><input type=\"text\"></div>");
     }
 
     #[test]
@@ -466,9 +460,8 @@ mod test {
         html.ol();
         html.li().class("cat").text("nori").end();
         html.li().class("cat").text("chashu");
-        let html = String::from(html);
         assert_eq!(
-            html,
+            html.to_string(),
             "<ol><li class=\"cat\">nori</li><li class=\"cat\">chashu</li></ol>"
         );
     }
@@ -478,9 +471,8 @@ mod test {
         let mut html = Html::new();
         html.div().p().text("Paragraph Text").end();
         html.pre().text("Preformatted Text");
-        let html = String::from(html);
         assert_eq!(
-            &html,
+            html.to_string(),
             "<div><p>Paragraph Text</p><pre>Preformatted Text</pre></div>"
         );
     }
@@ -491,9 +483,8 @@ mod test {
         html.html().lang("en");
         html.head().title().text("Title!").end().end();
         html.body().h1().text("Header!");
-        let html = String::from(html);
         assert_eq!(
-            html,
+            html.to_string(),
             "<html lang=\"en\"><head><title>Title!</title></head><body><h1>Header!</h1></body></html>"
         );
     }
