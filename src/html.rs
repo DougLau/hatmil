@@ -2,6 +2,7 @@
 //
 // Copyright (C) 2025  Douglas P Lau
 //
+use crate::svg::Svg;
 use std::fmt;
 
 /// Simple HTML builder
@@ -59,7 +60,7 @@ impl Html {
     }
 
     /// Add an element
-    fn elem(&mut self, elem: &'static str) -> Elem<'_> {
+    pub(crate) fn elem(&mut self, elem: &'static str) -> Elem<'_> {
         self.html.push('<');
         self.html.push_str(elem);
         self.html.push('>');
@@ -75,8 +76,22 @@ impl Html {
         VoidElem { html: self }
     }
 
+    /// Add an SVG element
+    pub(crate) fn svg_elem(&mut self, elem: &'static str) -> Svg<'_> {
+        self.html.push('<');
+        self.html.push_str(elem);
+        self.html.push('>');
+        self.stack.push(elem);
+        Svg::new(self)
+    }
+
+    /// Add an SVG element
+    pub fn svg(&mut self) -> Svg<'_> {
+        self.svg_elem("svg")
+    }
+
     /// Add an attribute with value
-    fn attr(&mut self, attr: &'static str, val: impl AsRef<str>) {
+    pub(crate) fn attr(&mut self, attr: &'static str, val: impl AsRef<str>) {
         match self.html.pop() {
             Some(gt) => assert_eq!(gt, '>'),
             None => unreachable!(),
@@ -95,7 +110,7 @@ impl Html {
     }
 
     /// Add a Boolean attribute
-    fn attr_bool(&mut self, attr: &'static str) {
+    pub(crate) fn attr_bool(&mut self, attr: &'static str) {
         match self.html.pop() {
             Some(gt) => assert_eq!(gt, '>'),
             None => unreachable!(),

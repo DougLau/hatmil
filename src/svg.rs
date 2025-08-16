@@ -1,0 +1,128 @@
+// svg.rs
+// Copyright (C) 2025  Douglas P Lau
+//
+use crate::html::Html;
+
+/// SVG element borrowed from an [Html]
+pub struct Svg<'h> {
+    html: &'h mut Html,
+}
+
+impl<'h> Svg<'h> {
+    /// Create a new SVG element
+    pub(crate) fn new(html: &'h mut Html) -> Self {
+        Svg { html }
+    }
+
+    /// Add an attribute with value
+    ///
+    /// The characters `&` and `"` in `val` will automatically be escaped.
+    fn attr(self, attr: &'static str, val: impl AsRef<str>) -> Self {
+        self.html.attr(attr, val);
+        self
+    }
+
+    /// Add a [Boolean] attribute
+    ///
+    /// [Boolean]: https://developer.mozilla.org/en-US/docs/Glossary/Boolean/HTML
+    fn attr_bool(self, attr: &'static str) -> Self {
+        self.html.attr_bool(attr);
+        self
+    }
+
+    /// End the element
+    ///
+    /// Adds the closing tag (e.g. `</svg>`)
+    pub fn end(&mut self) {
+        self.html.end();
+    }
+}
+
+/// SVG element helper
+macro_rules! elements {
+    ( $( $elem:ident $snake:ident ),* ) => {
+        impl<'h> Svg<'h> {
+            $(
+                #[doc = concat!("Add [", stringify!($elem), "](")]
+                #[doc = concat!(
+                    "https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/",
+                     stringify!($elem)
+                )]
+                #[doc = ") child element"]
+                pub fn $snake(self) -> Self {
+                    self.html.svg_elem(stringify!($elem))
+                }
+            )*
+        }
+    }
+}
+
+elements![
+    a a,
+    animate animate,
+    animateMotion animate_motion,
+    animateTransform animate_transform,
+    circle circle,
+    clipPath clip_path,
+    defs defs,
+    desc desc,
+    ellipse ellipse,
+    feBlend fe_blend,
+    feComponentTransfer fe_component_transfer,
+    feComposite fe_composite,
+    feConvolveMatrix fe_convolve_matrix,
+    feDiffuseLighting fe_diffuse_lighting,
+    feDisplacementMap fe_displacement_map,
+    feDistantLight fe_distant_light,
+    feDropShadow fe_drop_shadow,
+    feFlood fe_flood,
+    feFuncA fe_func_a,
+    feFuncB fe_func_b,
+    feFuncG fe_func_g,
+    feFuncR fe_func_r,
+    feGaussianBlur fe_gaussian_blur,
+    feImage fe_image,
+    feMerge fe_merge,
+    feMergeNode fe_merge_node,
+    feMorphology fe_morphology,
+    feOffset fe_offset,
+    fePointLight fe_point_light,
+    feSpecularLighting fe_specular_lighting,
+    feSpotLight fe_spot_light,
+    feTile fe_tile,
+    feTurbulence fe_turbulence,
+    filter filter,
+    foreignObject foreign_object,
+    g g,
+    image image,
+    line line,
+    linearGradient linear_gradient,
+    marker marker,
+    mask mask,
+    metadata metadata,
+    mpath mpath,
+    path path,
+    pattern pattern,
+    polygon polygon,
+    polyline polyline,
+    radialGradient radial_gradient,
+    rect rect,
+    script script,
+    set set,
+    stop stop,
+    style style,
+    svg svg,
+    switch switch,
+    symbol symbol,
+    text text,
+    textPath text_path,
+    title title,
+    tspan tspan,
+    r#use r#use,
+    view view
+];
+
+#[cfg(test)]
+mod test {
+    use super::*;
+}
