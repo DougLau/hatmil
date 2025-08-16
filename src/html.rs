@@ -35,6 +35,7 @@ impl fmt::Display for Html {
 
 impl From<Html> for String {
     fn from(mut html: Html) -> Self {
+        // zero-copy alternative to fmt::Display
         while let Some(elem) = html.stack.pop() {
             html.html.push_str("</");
             html.html.push_str(elem);
@@ -58,7 +59,7 @@ impl Html {
     }
 
     /// Add an element
-    fn elem(&mut self, elem: &'static str) -> Elem {
+    fn elem(&mut self, elem: &'static str) -> Elem<'_> {
         self.html.push('<');
         self.html.push_str(elem);
         self.html.push('>');
@@ -67,7 +68,7 @@ impl Html {
     }
 
     /// Add a Void element
-    fn void_elem(&mut self, elem: &'static str) -> VoidElem {
+    fn void_elem(&mut self, elem: &'static str) -> VoidElem<'_> {
         self.html.push('<');
         self.html.push_str(elem);
         self.html.push('>');
@@ -359,7 +360,7 @@ macro_rules! elements {
                 #[doc = concat!("Add [", stringify!($elem), "](")]
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
                 #[doc = ") element"]
-                pub fn $elem(&mut self) -> Elem {
+                pub fn $elem(&mut self) -> Elem<'_> {
                     self.elem(stringify!($elem))
                 }
             )*
@@ -385,7 +386,7 @@ macro_rules! void_elements {
                 #[doc = concat!("Add [", stringify!($elem), "](")]
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
                 #[doc = ") Void element"]
-                pub fn $elem(&mut self) -> VoidElem {
+                pub fn $elem(&mut self) -> VoidElem<'_> {
                     self.void_elem(stringify!($elem))
                 }
             )*
