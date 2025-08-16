@@ -33,6 +33,17 @@ impl fmt::Display for Html {
     }
 }
 
+impl From<Html> for String {
+    fn from(mut html: Html) -> Self {
+        while let Some(elem) = html.stack.pop() {
+            html.html.push_str("</");
+            html.html.push_str(elem);
+            html.html.push('>');
+        }
+        html.html
+    }
+}
+
 impl Html {
     /// Create an HTML builder
     pub fn new() -> Self {
@@ -486,6 +497,18 @@ mod test {
         assert_eq!(
             html.to_string(),
             "<html lang=\"en\"><head><title>Title!</title></head><body><h1>Header!</h1></body></html>"
+        );
+    }
+
+    #[test]
+    fn string_from() {
+        let mut html = Html::new();
+        html.html();
+        html.head().title().text("Head").end().end();
+        html.body().text("Body");
+        assert_eq!(
+            String::from(html),
+            "<html><head><title>Head</title></head><body>Body</body></html>"
         );
     }
 }
