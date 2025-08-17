@@ -3,7 +3,9 @@
 //
 use crate::html::Html;
 
-/// SVG element borrowed from an [Html]
+/// SVG element borrowed from [Html svg] method
+///
+/// [Html svg]: struct.Html.html#method.svg
 pub struct Svg<'h> {
     html: &'h mut Html,
 }

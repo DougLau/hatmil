@@ -169,7 +169,13 @@ impl Html {
 impl<'h> Elem<'h> {
     /// Add an attribute with value
     ///
+    /// NOTE: dedicated methods such as [id] or [name] should be used when
+    ///       available.
+    ///
     /// The characters `&` and `"` in `val` will automatically be escaped.
+    ///
+    /// [id]: #method.id
+    /// [name]: #method.name
     pub fn attr(self, attr: &'static str, val: impl AsRef<str>) -> Self {
         self.html.attr(attr, val);
         self
