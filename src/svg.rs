@@ -17,16 +17,8 @@ impl<'h> Svg<'h> {
     /// Add an attribute with value
     ///
     /// The characters `&` and `"` in `val` will automatically be escaped.
-    fn attr(self, attr: &'static str, val: impl AsRef<str>) -> Self {
+    pub fn attr(self, attr: &'static str, val: impl AsRef<str>) -> Self {
         self.html.attr(attr, val);
-        self
-    }
-
-    /// Add a [Boolean] attribute
-    ///
-    /// [Boolean]: https://developer.mozilla.org/en-US/docs/Glossary/Boolean/HTML
-    fn attr_bool(self, attr: &'static str) -> Self {
-        self.html.attr_bool(attr);
         self
     }
 
@@ -125,4 +117,25 @@ elements![
 #[cfg(test)]
 mod test {
     use super::*;
+
+    #[test]
+    fn svg() {
+        let mut html = Html::new();
+        html.svg();
+        assert_eq!(html.to_string(), "<svg></svg>");
+    }
+
+    #[test]
+    fn circle() {
+        let mut html = Html::new();
+        html.svg()
+            .circle()
+            .attr("cx", "50")
+            .attr("cy", "25")
+            .attr("r", "5");
+        assert_eq!(
+            html.to_string(),
+            "<svg><circle cx=\"50\" cy=\"25\" r=\"5\"></circle></svg>"
+        );
+    }
 }
