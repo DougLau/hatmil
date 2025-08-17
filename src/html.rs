@@ -283,6 +283,7 @@ macro_rules! global_attributes {
 
 global_attributes![
     accesskey,
+    autocapitalize,
     class,
     contenteditable,
     dir,
@@ -296,7 +297,7 @@ global_attributes![
     tabindex
 ];
 
-/* autofocus, inret are global + Boolean */
+/* autofocus, inert are global + Boolean */
 /* style conflicts with the style element */
 
 /// HTML attribute helper
@@ -330,7 +331,38 @@ macro_rules! attributes {
 }
 
 attributes![
-    height, href, max, maxlength, min, name, size, src, value, width
+    accept,
+    action,
+    allow,
+    alt,
+    autocomplete,
+    autoplay,
+    cols,
+    colspan,
+    content,
+    controls,
+    coords,
+    crossorigin,
+    datetime,
+    decoding,
+    height,
+    high,
+    href,
+    low,
+    max,
+    maxlength,
+    min,
+    name,
+    optimum,
+    placeholder,
+    rel,
+    rows,
+    size,
+    src,
+    step,
+    target,
+    value,
+    width
 ];
 
 /// HTML Boolean attribute helper
