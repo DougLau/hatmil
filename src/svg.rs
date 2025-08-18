@@ -45,6 +45,15 @@ impl<'h> Svg<'h> {
     pub fn link(self) -> VoidElem<'h> {
         self.html.void_elem("link")
     }
+
+    /// Add [use] child element
+    ///
+    /// NOTE: use `r#use()` to invoke
+    ///
+    /// [use]: https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/use
+    pub fn r#use(self) -> Self {
+        self.html.svg_elem("use")
+    }
 }
 
 /// SVG element helper
@@ -126,7 +135,6 @@ svg_elements![
     textPath text_path,
     title title,
     tspan tspan,
-    r#use r#use,
     view view,
 ];
 
