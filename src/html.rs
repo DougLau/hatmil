@@ -207,14 +207,18 @@ impl<'h> Elem<'h> {
         self
     }
 
-    /// Add a `type` attribute
-    pub fn type_(self, val: impl AsRef<str>) -> Self {
+    ///  Add [type](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/type) attribute
+    ///
+    /// NOTE: use `r#type(...)` to invoke
+    pub fn r#type(self, val: impl AsRef<str>) -> Self {
         self.html.attr("type", val);
         self
     }
 
-    /// Add a `for` attribute
-    pub fn for_(self, val: impl AsRef<str>) -> Self {
+    ///  Add [for](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/for) attribute
+    ///
+    /// NOTE: use `r#for(...)` to invoke
+    pub fn r#for(self, val: impl AsRef<str>) -> Self {
         self.html.attr("for", val);
         self
     }
@@ -260,8 +264,10 @@ impl<'h> VoidElem<'h> {
         self
     }
 
-    /// Add a `type` attribute
-    pub fn type_(self, val: impl AsRef<str>) -> Self {
+    ///  Add [type](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/type) attribute
+    ///
+    /// NOTE: use `r#type(...)` to invoke
+    pub fn r#type(self, val: impl AsRef<str>) -> Self {
         self.html.attr("type", val);
         self
     }
@@ -533,7 +539,7 @@ mod test {
     #[test]
     fn void() {
         let mut html = Html::new();
-        html.div().input().type_("text");
+        html.div().input().r#type("text");
         assert_eq!(html.to_string(), "<div><input type=\"text\"></div>");
     }
 
