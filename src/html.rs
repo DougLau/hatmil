@@ -69,7 +69,7 @@ impl Html {
     }
 
     /// Add a Void element
-    fn void_elem(&mut self, elem: &'static str) -> VoidElem<'_> {
+    pub(crate) fn void_elem(&mut self, elem: &'static str) -> VoidElem<'_> {
         self.html.push('<');
         self.html.push_str(elem);
         self.html.push('>');

@@ -1,7 +1,7 @@
 // svg.rs
 // Copyright (C) 2025  Douglas P Lau
 //
-use crate::html::Html;
+use crate::html::{Elem, Html, VoidElem};
 
 /// SVG element borrowed from [Html svg] method
 ///
@@ -30,11 +30,26 @@ impl<'h> Svg<'h> {
     pub fn end(&mut self) {
         self.html.end();
     }
+
+    /// Add [foreignObject] child element
+    ///
+    /// [foreignObject]: https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/foreignObject
+    pub fn foreign_object(self) -> Elem<'h> {
+        self.html.elem("foreignObject")
+    }
+
+    /// Add [link] child element (e.g. [CSS])
+    ///
+    /// [CSS]: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorials/SVG_from_scratch/SVG_and_CSS
+    /// [link]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link
+    pub fn link(self) -> VoidElem<'h> {
+        self.html.void_elem("link")
+    }
 }
 
 /// SVG element helper
-macro_rules! elements {
-    ( $( $elem:ident $snake:ident ),* ) => {
+macro_rules! svg_elements {
+    ( $( $elem:ident $snake:ident ),* $(,)? ) => {
         impl<'h> Svg<'h> {
             $(
                 #[doc = concat!("Add [", stringify!($elem), "](")]
@@ -51,7 +66,7 @@ macro_rules! elements {
     }
 }
 
-elements![
+svg_elements![
     a a,
     animate animate,
     animateMotion animate_motion,
@@ -86,7 +101,6 @@ elements![
     feTile fe_tile,
     feTurbulence fe_turbulence,
     filter filter,
-    foreignObject foreign_object,
     g g,
     image image,
     line line,
@@ -113,7 +127,7 @@ elements![
     title title,
     tspan tspan,
     r#use r#use,
-    view view
+    view view,
 ];
 
 #[cfg(test)]
