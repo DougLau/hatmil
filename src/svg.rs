@@ -12,7 +12,7 @@ pub struct Svg<'h> {
 
 impl<'h> Svg<'h> {
     /// Create a new SVG element
-    pub(crate) fn new(html: &'h mut Html) -> Self {
+    pub fn new(html: &'h mut Html) -> Self {
         Svg { html }
     }
 
