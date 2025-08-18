@@ -120,6 +120,24 @@ impl Html {
         self.html.push('>');
     }
 
+    /// Add a comment
+    ///
+    /// The characters `-`, `<` and `>` in `com` will automatically be
+    /// escaped.
+    pub fn comment(&mut self, com: impl AsRef<str>) -> &mut Self {
+        self.html.push_str("<!--");
+        for c in com.as_ref().chars() {
+            match c {
+                '-' => self.html.push_str("&hyphen;"),
+                '<' => self.html.push_str("&lt;"),
+                '>' => self.html.push_str("&gt;"),
+                _ => self.html.push(c),
+            }
+        }
+        self.html.push_str("-->");
+        self
+    }
+
     /// Add text content
     ///
     /// The characters `&`, `<` and `>` in `text` will automatically be
@@ -564,5 +582,19 @@ mod test {
             String::from(html),
             "<html><head><title>Head</title></head><body>Body</body></html>"
         );
+    }
+
+    #[test]
+    fn comment() {
+        let mut html = Html::new();
+        html.comment("comment");
+        assert_eq!(html.to_string(), "<!--comment-->");
+    }
+
+    #[test]
+    fn comment_escape() {
+        let mut html = Html::new();
+        html.comment("<-->");
+        assert_eq!(html.to_string(), "<!--&lt;&hyphen;&hyphen;&gt;-->");
     }
 }
