@@ -371,20 +371,26 @@ mod test {
     fn svg() {
         let mut html = Html::new();
         html.svg();
-        assert_eq!(html.to_string(), "<svg></svg>");
+        assert_eq!(html.to_string(), "<svg />");
     }
 
     #[test]
     fn circle() {
         let mut html = Html::new();
-        html.svg()
-            .circle()
-            .attr("cx", "50")
-            .attr("cy", "25")
-            .attr("r", "5");
+        html.svg().circle().cx("50").cy("25").r("5");
         assert_eq!(
             html.to_string(),
-            "<svg><circle cx=\"50\" cy=\"25\" r=\"5\"></circle></svg>"
+            "<svg><circle cx=\"50\" cy=\"25\" r=\"5\" /></svg>"
+        );
+    }
+
+    #[test]
+    fn path() {
+        let mut html = Html::new();
+        html.svg().path().d("M0 0 100 0 50 50z");
+        assert_eq!(
+            html.to_string(),
+            "<svg><path d=\"M0 0 100 0 50 50z\" /></svg>"
         );
     }
 }

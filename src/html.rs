@@ -14,6 +14,8 @@ pub struct Html {
     html: String,
     /// Tag stack
     stack: Vec<&'static str>,
+    /// Current tag empty
+    empty: bool,
 }
 
 /// Element borrowed from an [Html]
@@ -30,9 +32,20 @@ pub struct VoidElem<'h> {
 
 impl fmt::Display for Html {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.html)?;
+        let mut empty = self.empty;
+        if empty && let Some(html) = self.html.strip_suffix('>') {
+            write!(f, "{}", html)?;
+        } else {
+            write!(f, "{}", self.html)?;
+            empty = false;
+        }
         for elem in self.stack.iter().rev() {
-            write!(f, "</{elem}>")?;
+            if empty {
+                write!(f, " />")?;
+            } else {
+                write!(f, "</{elem}>")?;
+            }
+            empty = false;
         }
         Ok(())
     }
@@ -77,6 +90,7 @@ impl Html {
         self.html.push_str(elem);
         self.html.push('>');
         self.stack.push(elem);
+        self.empty = true;
         Elem { html: self }
     }
 
@@ -85,6 +99,7 @@ impl Html {
         self.html.push('<');
         self.html.push_str(elem);
         self.html.push('>');
+        self.empty = false;
         VoidElem { html: self }
     }
 
@@ -94,6 +109,7 @@ impl Html {
         self.html.push_str(elem);
         self.html.push('>');
         self.stack.push(elem);
+        self.empty = true;
         Svg::new(self)
     }
 
@@ -147,6 +163,7 @@ impl Html {
             }
         }
         self.html.push_str("-->");
+        self.empty = false;
         self
     }
 
@@ -171,6 +188,7 @@ impl Html {
                 _ => self.html.push(c),
             }
         }
+        self.empty = false;
         self
     }
 
@@ -180,6 +198,7 @@ impl Html {
     /// with untrusted content.
     pub fn raw(&mut self, text: impl AsRef<str>) -> &mut Self {
         self.html.push_str(text.as_ref());
+        self.empty = false;
         self
     }
 
@@ -188,10 +207,16 @@ impl Html {
     /// Add a closing tag (e.g. `</span>`).
     pub fn end(&mut self) -> &mut Self {
         if let Some(elem) = self.stack.pop() {
-            self.html.push_str("</");
+            if self.empty && self.html.ends_with('>') {
+                self.html.pop();
+                self.html.push('/');
+            } else {
+                self.html.push_str("</");
+            }
             self.html.push_str(elem);
             self.html.push('>');
         }
+        self.empty = false;
         self
     }
 }
@@ -525,14 +550,14 @@ mod test {
     fn div() {
         let mut html = Html::new();
         html.div();
-        assert_eq!(html.to_string(), "<div></div>");
+        assert_eq!(html.to_string(), "<div />");
     }
 
     #[test]
     fn boolean() {
         let mut html = Html::new();
         html.div().id("test").attr_bool("spellcheck");
-        assert_eq!(html.to_string(), "<div id=\"test\" spellcheck></div>");
+        assert_eq!(html.to_string(), "<div id=\"test\" spellcheck />");
     }
 
     #[test]
