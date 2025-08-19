@@ -8,7 +8,11 @@ use std::fmt;
 /// Simple HTML builder
 #[derive(Default)]
 pub struct Html {
+    /// XML compatibility (self-closing tags include `/`)
+    xml_compatible: bool,
+    /// HTML document text
     html: String,
+    /// Tag stack
     stack: Vec<&'static str>,
 }
 
@@ -50,6 +54,14 @@ impl Html {
     /// Create an HTML builder
     pub fn new() -> Self {
         Self::default()
+    }
+
+    /// Create an XML-compatible HTML builder
+    pub fn new_xml_compatible() -> Self {
+        Html {
+            xml_compatible: true,
+            ..Default::default()
+        }
     }
 
     /// Create an HTML builder with a `doctype` preamble
@@ -277,7 +289,15 @@ impl<'h> VoidElem<'h> {
     /// Since Void elements have no closing tags, this simply returns the
     /// [Html] to allow chaining method calls.
     pub fn end(self) -> &'h mut Html {
-        self.html
+        let html = self.html;
+        if html.xml_compatible {
+            match html.html.pop() {
+                Some(gt) => assert_eq!(gt, '>'),
+                None => unreachable!(),
+            }
+            html.html.push_str("/>");
+        }
+        html
     }
 }
 
@@ -602,5 +622,12 @@ mod test {
         let mut html = Html::new();
         html.comment("<-->");
         assert_eq!(html.to_string(), "<!--&lt;&hyphen;&hyphen;&gt;-->");
+    }
+
+    #[test]
+    fn xml() {
+        let mut html = Html::new_xml_compatible();
+        html.link().rel("stylesheet").end();
+        assert_eq!(html.to_string(), "<link rel=\"stylesheet\"/>");
     }
 }
