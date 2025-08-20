@@ -14,7 +14,7 @@ pub struct Html {
     html: String,
     /// Tag stack
     stack: Vec<&'static str>,
-    /// Current tag empty
+    /// Current tag empty + XML compatible
     empty: bool,
 }
 
@@ -90,7 +90,7 @@ impl Html {
         self.html.push_str(elem);
         self.html.push('>');
         self.stack.push(elem);
-        self.empty = true;
+        self.empty = self.xml_compatible;
         Elem { html: self }
     }
 
@@ -550,14 +550,14 @@ mod test {
     fn div() {
         let mut html = Html::new();
         html.div();
-        assert_eq!(html.to_string(), "<div />");
+        assert_eq!(html.to_string(), "<div></div>");
     }
 
     #[test]
     fn boolean() {
         let mut html = Html::new();
         html.div().id("test").attr_bool("spellcheck");
-        assert_eq!(html.to_string(), "<div id=\"test\" spellcheck />");
+        assert_eq!(html.to_string(), "<div id=\"test\" spellcheck></div>");
     }
 
     #[test]
@@ -660,6 +660,6 @@ mod test {
     fn end() {
         let mut html = Html::new();
         html.span().name("a span").end();
-        assert_eq!(html.to_string(), "<span name=\"a span\" />");
+        assert_eq!(html.to_string(), "<span name=\"a span\"></span>");
     }
 }
