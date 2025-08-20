@@ -209,12 +209,12 @@ impl Html {
         if let Some(elem) = self.stack.pop() {
             if self.empty && self.html.ends_with('>') {
                 self.html.pop();
-                self.html.push('/');
+                self.html.push_str(" />");
             } else {
                 self.html.push_str("</");
+                self.html.push_str(elem);
+                self.html.push('>');
             }
-            self.html.push_str(elem);
-            self.html.push('>');
         }
         self.empty = false;
         self
@@ -320,7 +320,7 @@ impl<'h> VoidElem<'h> {
                 Some(gt) => assert_eq!(gt, '>'),
                 None => unreachable!(),
             }
-            html.html.push_str("/>");
+            html.html.push_str(" />");
         }
         html
     }
@@ -653,6 +653,13 @@ mod test {
     fn xml() {
         let mut html = Html::new_xml_compatible();
         html.link().rel("stylesheet").end();
-        assert_eq!(html.to_string(), "<link rel=\"stylesheet\"/>");
+        assert_eq!(html.to_string(), "<link rel=\"stylesheet\" />");
+    }
+
+    #[test]
+    fn end() {
+        let mut html = Html::new();
+        html.span().name("a span").end();
+        assert_eq!(html.to_string(), "<span name=\"a span\" />");
     }
 }
