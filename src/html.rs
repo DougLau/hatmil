@@ -397,21 +397,31 @@ macro_rules! global_attributes {
 global_attributes![
     accesskey,
     autocapitalize,
+    /* autocorrect, */
     /* autofocus, */
     class,
     contenteditable,
+    /* data-* */
     dir,
     draggable,
     enterkeyhint,
+    exportparts,
     hidden,
     id,
     /* inert, */
+    /* is, */
     inputmode,
     lang,
+    nonce,
+    part,
+    popover,
     role,
+    /* slot, */
+    spellcheck,
     /* style, */
+    tabindex,
     /* title, */
-    tabindex
+    translate
 ];
 
 /// HTML attribute helper
