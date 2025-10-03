@@ -2,6 +2,7 @@
 //
 // Copyright (C) 2025  Douglas P Lau
 //
+use crate::chariter::CharIter;
 use crate::svg::Svg;
 use std::fmt;
 
@@ -119,7 +120,10 @@ impl Html {
     }
 
     /// Add an attribute with value
-    pub(crate) fn attr(&mut self, attr: &'static str, val: impl AsRef<str>) {
+    pub(crate) fn attr<'a, V>(&mut self, attr: &'static str, val: V)
+    where
+        V: Into<CharIter<'a>>,
+    {
         match self.html.pop() {
             Some(gt) => assert_eq!(gt, '>'),
             None => unreachable!(),
@@ -127,7 +131,7 @@ impl Html {
         self.html.push(' ');
         self.html.push_str(attr);
         self.html.push_str("=\"");
-        for c in val.as_ref().chars() {
+        for c in val.into().chars() {
             match c {
                 '&' => self.html.push_str("&amp;"),
                 '"' => self.html.push_str("&quot;"),
@@ -152,9 +156,12 @@ impl Html {
     ///
     /// The characters `-`, `<` and `>` in `com` will automatically be
     /// escaped.
-    pub fn comment(&mut self, com: impl AsRef<str>) -> &mut Self {
+    pub fn comment<'a, V>(&mut self, com: V) -> &mut Self
+    where
+        V: Into<CharIter<'a>>,
+    {
         self.html.push_str("<!--");
-        for c in com.as_ref().chars() {
+        for c in com.into().chars() {
             match c {
                 '-' => self.html.push_str("&hyphen;"),
                 '<' => self.html.push_str("&lt;"),
@@ -171,7 +178,10 @@ impl Html {
     ///
     /// The characters `&`, `<` and `>` in `text` will automatically be
     /// escaped.
-    pub fn text(&mut self, text: impl AsRef<str>) -> &mut Self {
+    pub fn text<'a, V>(&mut self, text: V) -> &mut Self
+    where
+        V: Into<CharIter<'a>>,
+    {
         self.text_len(text, usize::MAX)
     }
 
@@ -179,8 +189,11 @@ impl Html {
     ///
     /// The characters `&`, `<` and `>` in `text` will automatically be
     /// escaped.
-    pub fn text_len(&mut self, text: impl AsRef<str>, len: usize) -> &mut Self {
-        for c in text.as_ref().chars().take(len) {
+    pub fn text_len<'a, V>(&mut self, text: V, len: usize) -> &mut Self
+    where
+        V: Into<CharIter<'a>>,
+    {
+        for c in text.into().chars().take(len) {
             match c {
                 '&' => self.html.push_str("&amp;"),
                 '<' => self.html.push_str("&lt;"),
@@ -231,7 +244,10 @@ impl<'h> Elem<'h> {
     ///
     /// [id]: #method.id
     /// [name]: #method.name
-    pub fn attr(self, attr: &'static str, val: impl AsRef<str>) -> Self {
+    pub fn attr<'a, V>(self, attr: &'static str, val: V) -> Self
+    where
+        V: Into<CharIter<'a>>,
+    {
         self.html.attr(attr, val);
         self
     }
@@ -247,7 +263,10 @@ impl<'h> Elem<'h> {
     ///  Add [type](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/type) attribute
     ///
     /// NOTE: use `r#type(...)` to invoke
-    pub fn r#type(self, val: impl AsRef<str>) -> Self {
+    pub fn r#type<'a, V>(self, val: V) -> Self
+    where
+        V: Into<CharIter<'a>>,
+    {
         self.html.attr("type", val);
         self
     }
@@ -255,7 +274,10 @@ impl<'h> Elem<'h> {
     ///  Add [for](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/for) attribute
     ///
     /// NOTE: use `r#for(...)` to invoke
-    pub fn r#for(self, val: impl AsRef<str>) -> Self {
+    pub fn r#for<'a, V>(self, val: V) -> Self
+    where
+        V: Into<CharIter<'a>>,
+    {
         self.html.attr("for", val);
         self
     }
@@ -264,7 +286,10 @@ impl<'h> Elem<'h> {
     ///
     /// The characters `&`, `<` and `>` in `text` will automatically be
     /// escaped.
-    pub fn text(self, text: impl AsRef<str>) -> &'h mut Html {
+    pub fn text<'a, V>(self, text: V) -> &'h mut Html
+    where
+        V: Into<CharIter<'a>>,
+    {
         self.html.text_len(text, usize::MAX)
     }
 
@@ -272,7 +297,10 @@ impl<'h> Elem<'h> {
     ///
     /// The characters `&`, `<` and `>` in `text` will automatically be
     /// escaped.
-    pub fn text_len(self, text: impl AsRef<str>, len: usize) -> &'h mut Html {
+    pub fn text_len<'a, V>(self, text: V, len: usize) -> &'h mut Html
+    where
+        V: Into<CharIter<'a>>,
+    {
         self.html.text_len(text, len)
     }
 
@@ -288,7 +316,10 @@ impl<'h> VoidElem<'h> {
     /// Add an attribute with value
     ///
     /// The characters `&` and `"` in `val` will automatically be escaped.
-    pub fn attr(self, attr: &'static str, val: impl AsRef<str>) -> Self {
+    pub fn attr<'a, V>(self, attr: &'static str, val: V) -> Self
+    where
+        V: Into<CharIter<'a>>,
+    {
         self.html.attr(attr, val);
         self
     }
@@ -304,7 +335,10 @@ impl<'h> VoidElem<'h> {
     ///  Add [type](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/type) attribute
     ///
     /// NOTE: use `r#type(...)` to invoke
-    pub fn r#type(self, val: impl AsRef<str>) -> Self {
+    pub fn r#type<'a, V>(self, val: V) -> Self
+    where
+        V: Into<CharIter<'a>>,
+    {
         self.html.attr("type", val);
         self
     }
@@ -335,7 +369,9 @@ macro_rules! global_attributes {
                 #[doc = "global [attribute]("]
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/", stringify!($attr))]
                 #[doc = ")"]
-                pub fn $attr(self, val: impl AsRef<str>) -> Self {
+                pub fn $attr<'a, V>(self, val: V) -> Self
+                    where V: Into<CharIter<'a>>
+                {
                     self.html.attr(stringify!($attr), val);
                     self
                 }
@@ -347,7 +383,9 @@ macro_rules! global_attributes {
                 #[doc = "global [attribute]("]
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/", stringify!($attr))]
                 #[doc = ")"]
-                pub fn $attr(self, val: impl AsRef<str>) -> Self {
+                pub fn $attr<'a, V>(self, val: V) -> Self
+                    where V: Into<CharIter<'a>>
+                {
                     self.html.attr(stringify!($attr), val);
                     self
                 }
@@ -384,7 +422,9 @@ macro_rules! attributes {
                 #[doc = "[attribute]("]
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
                 #[doc = ")"]
-                pub fn $attr(self, val: impl AsRef<str>) -> Self {
+                pub fn $attr<'a, V>(self, val: V) -> Self
+                    where V: Into<CharIter<'a>>
+                {
                     self.html.attr(stringify!($attr), val);
                     self
                 }
@@ -396,7 +436,9 @@ macro_rules! attributes {
                 #[doc = "[attribute]("]
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
                 #[doc = ")"]
-                pub fn $attr(self, val: impl AsRef<str>) -> Self {
+                pub fn $attr<'a, V>(self, val: V) -> Self
+                    where V: Into<CharIter<'a>>
+                {
                     self.html.attr(stringify!($attr), val);
                     self
                 }
@@ -661,5 +703,12 @@ mod test {
         let mut html = Html::new();
         html.span().name("a span").end();
         assert_eq!(html.to_string(), "<span name=\"a span\"></span>");
+    }
+
+    #[test]
+    fn image() {
+        let mut html = Html::new();
+        html.img().width(100).height(50).end();
+        assert_eq!(html.to_string(), "<img width=\"100\" height=\"50\">");
     }
 }
