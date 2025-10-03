@@ -2,7 +2,7 @@
 //
 // Copyright (C) 2025  Douglas P Lau
 //
-use crate::chariter::CharIter;
+use crate::value::Value;
 use crate::svg::Svg;
 use std::fmt;
 
@@ -122,7 +122,7 @@ impl Html {
     /// Add an attribute with value
     pub(crate) fn attr<'a, V>(&mut self, attr: &'static str, val: V)
     where
-        V: Into<CharIter<'a>>,
+        V: Into<Value<'a>>,
     {
         match self.html.pop() {
             Some(gt) => assert_eq!(gt, '>'),
@@ -158,7 +158,7 @@ impl Html {
     /// escaped.
     pub fn comment<'a, V>(&mut self, com: V) -> &mut Self
     where
-        V: Into<CharIter<'a>>,
+        V: Into<Value<'a>>,
     {
         self.html.push_str("<!--");
         for c in com.into().chars() {
@@ -180,7 +180,7 @@ impl Html {
     /// escaped.
     pub fn text<'a, V>(&mut self, text: V) -> &mut Self
     where
-        V: Into<CharIter<'a>>,
+        V: Into<Value<'a>>,
     {
         self.text_len(text, usize::MAX)
     }
@@ -191,7 +191,7 @@ impl Html {
     /// escaped.
     pub fn text_len<'a, V>(&mut self, text: V, len: usize) -> &mut Self
     where
-        V: Into<CharIter<'a>>,
+        V: Into<Value<'a>>,
     {
         for c in text.into().chars().take(len) {
             match c {
@@ -246,7 +246,7 @@ impl<'h> Elem<'h> {
     /// [name]: #method.name
     pub fn attr<'a, V>(self, attr: &'static str, val: V) -> Self
     where
-        V: Into<CharIter<'a>>,
+        V: Into<Value<'a>>,
     {
         self.html.attr(attr, val);
         self
@@ -265,7 +265,7 @@ impl<'h> Elem<'h> {
     /// NOTE: use `r#type(...)` to invoke
     pub fn r#type<'a, V>(self, val: V) -> Self
     where
-        V: Into<CharIter<'a>>,
+        V: Into<Value<'a>>,
     {
         self.html.attr("type", val);
         self
@@ -276,7 +276,7 @@ impl<'h> Elem<'h> {
     /// NOTE: use `r#for(...)` to invoke
     pub fn r#for<'a, V>(self, val: V) -> Self
     where
-        V: Into<CharIter<'a>>,
+        V: Into<Value<'a>>,
     {
         self.html.attr("for", val);
         self
@@ -288,7 +288,7 @@ impl<'h> Elem<'h> {
     /// escaped.
     pub fn text<'a, V>(self, text: V) -> &'h mut Html
     where
-        V: Into<CharIter<'a>>,
+        V: Into<Value<'a>>,
     {
         self.html.text_len(text, usize::MAX)
     }
@@ -299,7 +299,7 @@ impl<'h> Elem<'h> {
     /// escaped.
     pub fn text_len<'a, V>(self, text: V, len: usize) -> &'h mut Html
     where
-        V: Into<CharIter<'a>>,
+        V: Into<Value<'a>>,
     {
         self.html.text_len(text, len)
     }
@@ -318,7 +318,7 @@ impl<'h> VoidElem<'h> {
     /// The characters `&` and `"` in `val` will automatically be escaped.
     pub fn attr<'a, V>(self, attr: &'static str, val: V) -> Self
     where
-        V: Into<CharIter<'a>>,
+        V: Into<Value<'a>>,
     {
         self.html.attr(attr, val);
         self
@@ -337,7 +337,7 @@ impl<'h> VoidElem<'h> {
     /// NOTE: use `r#type(...)` to invoke
     pub fn r#type<'a, V>(self, val: V) -> Self
     where
-        V: Into<CharIter<'a>>,
+        V: Into<Value<'a>>,
     {
         self.html.attr("type", val);
         self
@@ -370,7 +370,7 @@ macro_rules! global_attributes {
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/", stringify!($attr))]
                 #[doc = ")"]
                 pub fn $attr<'a, V>(self, val: V) -> Self
-                    where V: Into<CharIter<'a>>
+                    where V: Into<Value<'a>>
                 {
                     self.html.attr(stringify!($attr), val);
                     self
@@ -384,7 +384,7 @@ macro_rules! global_attributes {
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/", stringify!($attr))]
                 #[doc = ")"]
                 pub fn $attr<'a, V>(self, val: V) -> Self
-                    where V: Into<CharIter<'a>>
+                    where V: Into<Value<'a>>
                 {
                     self.html.attr(stringify!($attr), val);
                     self
@@ -424,7 +424,7 @@ macro_rules! attributes {
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
                 #[doc = ")"]
                 pub fn $attr<'a, V>(self, val: V) -> Self
-                    where V: Into<CharIter<'a>>
+                    where V: Into<Value<'a>>
                 {
                     self.html.attr(stringify!($attr), val);
                     self
@@ -438,7 +438,7 @@ macro_rules! attributes {
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
                 #[doc = ")"]
                 pub fn $attr<'a, V>(self, val: V) -> Self
-                    where V: Into<CharIter<'a>>
+                    where V: Into<Value<'a>>
                 {
                     self.html.attr(stringify!($attr), val);
                     self

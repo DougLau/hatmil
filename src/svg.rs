@@ -1,7 +1,7 @@
 // svg.rs
 // Copyright (C) 2025  Douglas P Lau
 //
-use crate::chariter::CharIter;
+use crate::value::Value;
 use crate::html::{Elem, Html, VoidElem};
 
 /// SVG element borrowed from [Html svg] method
@@ -22,7 +22,7 @@ impl<'h> Svg<'h> {
     /// The characters `&` and `"` in `val` will automatically be escaped.
     pub fn attr<'a, V>(self, attr: &'static str, val: V) -> Self
     where
-        V: Into<CharIter<'a>>,
+        V: Into<Value<'a>>,
     {
         self.html.attr(attr, val);
         self
@@ -154,7 +154,7 @@ macro_rules! svg_attributes {
                 )]
                 #[doc = ") attribute"]
                 pub fn $snake<'a, V>(self, val: V) -> Self
-                    where V: Into<CharIter<'a>>
+                    where V: Into<Value<'a>>
                 {
                     self.html.attr($attr, val);
                     self
