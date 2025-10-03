@@ -1,8 +1,8 @@
 // svg.rs
 // Copyright (C) 2025  Douglas P Lau
 //
-use crate::value::Value;
 use crate::html::{Elem, Html, VoidElem};
+use crate::value::Value;
 
 /// SVG element borrowed from [Html svg] method
 ///

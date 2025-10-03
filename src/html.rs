@@ -2,8 +2,8 @@
 //
 // Copyright (C) 2025  Douglas P Lau
 //
-use crate::value::Value;
 use crate::svg::Svg;
+use crate::value::Value;
 use std::fmt;
 
 /// Simple HTML builder
