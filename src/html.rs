@@ -397,6 +397,7 @@ macro_rules! global_attributes {
 global_attributes![
     accesskey,
     autocapitalize,
+    /* autofocus, */
     class,
     contenteditable,
     dir,
@@ -404,14 +405,14 @@ global_attributes![
     enterkeyhint,
     hidden,
     id,
+    /* inert, */
     inputmode,
     lang,
     role,
+    /* style, */
+    /* title, */
     tabindex
 ];
-
-/* autofocus, inert are global + Boolean */
-/* style conflicts with the style element */
 
 /// HTML attribute helper
 macro_rules! attributes {
@@ -513,7 +514,9 @@ macro_rules! boolean_attributes {
 }
 
 boolean_attributes![
-    autofocus, checked, disabled, inert, multiple, readonly, required, selected
+    autofocus, /* also global */
+    checked, disabled, inert, /* also global */
+    multiple, readonly, required, selected
 ];
 
 /// HTML element helper
