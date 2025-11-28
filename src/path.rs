@@ -5,6 +5,17 @@ use std::fmt;
 use std::fmt::Write;
 
 /// SVG Path definition
+///
+/// ```rust
+/// # use hatmil::PathDef;
+/// let mut path = PathDef::new();
+/// path.precision(3);
+/// path.move_to([5, 5]);
+/// path.line((10.1, 20.2));
+/// path.cubic(None, (20, 25), (50, 55));
+/// path.close();
+/// println!("{path}");
+/// ```
 #[derive(Clone, Default)]
 pub struct PathDef {
     /// Absolute vs. relative output mode
@@ -222,9 +233,32 @@ impl PathDef {
         p: P,
     ) where
         P: Into<(V, V)>,
-        V: Into<f64>,
+        V: Into<f64> + Copy,
     {
-        todo!();
+        let rx = rx.into();
+        let ry = ry.into();
+        let angle = angle.into();
+        let p = p.into();
+        let (mut x, mut y) = (p.0.into(), p.1.into());
+        if self.absolute {
+            self.d.push('A');
+        } else {
+            self.d.push('a');
+            x -= self.x;
+            y -= self.y;
+        }
+        self.value(rx);
+        self.d.push(' ');
+        self.value(ry);
+        self.d.push(' ');
+        self.value(angle);
+        self.d.push(' ');
+        self.d.push(if large_arc { '1' } else { '0' });
+        self.d.push(' ');
+        self.d.push(if sweep { '1' } else { '0' });
+        self.d.push(' ');
+        self.point(x, y);
+        (self.x, self.y) = (p.0.into(), p.1.into());
     }
 }
 
@@ -292,6 +326,13 @@ mod test {
         let mut path = PathDef::new();
         path.quad(None, [0, 10]);
         assert_eq!(path.to_string(), "t0,10");
+    }
+
+    #[test]
+    fn arc() {
+        let mut path = PathDef::new();
+        path.arc(20, 25, 90, true, false, [50, 10]);
+        assert_eq!(path.to_string(), "a20 25 90 1 0 50,10");
     }
 
     #[test]
