@@ -393,10 +393,16 @@ mod test {
     #[test]
     fn path() {
         let mut html = Html::new();
-        html.svg().path().d("M0 0 100 0 50 50z");
+        let mut path = crate::PathDef::new();
+        path.absolute(true)
+            .move_to((0, 0))
+            .line((100, 0))
+            .line((50, 50))
+            .close();
+        html.svg().path().d(String::from(path));
         assert_eq!(
             html.to_string(),
-            "<svg><path d=\"M0 0 100 0 50 50z\" /></svg>"
+            "<svg><path d=\"M0,0H100L50,50z\" /></svg>"
         );
     }
 }

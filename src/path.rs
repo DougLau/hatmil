@@ -51,13 +51,15 @@ impl PathDef {
     }
 
     /// Set absolute or relative output mode
-    pub fn absolute(&mut self, absolute: bool) {
+    pub fn absolute(&mut self, absolute: bool) -> &mut Self {
         self.absolute = absolute;
+        self
     }
 
     /// Set the precision in decimal places
-    pub fn precision(&mut self, digits: usize) {
+    pub fn precision(&mut self, digits: usize) -> &mut Self {
         self.precision = digits;
+        self
     }
 
     /// Check if two values are equal with specified precision
@@ -80,12 +82,13 @@ impl PathDef {
     }
 
     /// Close the current subpath
-    pub fn close(&mut self) {
+    pub fn close(&mut self) -> &mut Self {
         self.d.push('z');
+        self
     }
 
     /// Move to a point, starting a new subpath
-    pub fn move_to<P, V>(&mut self, p: P)
+    pub fn move_to<P, V>(&mut self, p: P) -> &mut Self
     where
         P: Into<(V, V)>,
         V: Into<f64> + Copy,
@@ -101,10 +104,11 @@ impl PathDef {
         }
         self.point(x, y);
         (self.x, self.y) = (p.0.into(), p.1.into());
+        self
     }
 
     /// Draw a line to the given point
-    pub fn line<P, V>(&mut self, p: P)
+    pub fn line<P, V>(&mut self, p: P) -> &mut Self
     where
         P: Into<(V, V)>,
         V: Into<f64> + Copy,
@@ -132,10 +136,11 @@ impl PathDef {
             }
         }
         (self.x, self.y) = (p.0.into(), p.1.into());
+        self
     }
 
     /// Draw a cubic Bézier curve
-    pub fn cubic<P, V>(&mut self, p1: Option<P>, p2: P, p: P)
+    pub fn cubic<P, V>(&mut self, p1: Option<P>, p2: P, p: P) -> &mut Self
     where
         P: Into<(V, V)>,
         V: Into<f64> + Copy,
@@ -181,10 +186,11 @@ impl PathDef {
             }
         }
         (self.x, self.y) = (p.0.into(), p.1.into());
+        self
     }
 
     /// Draw a quadratic Bézier curve
-    pub fn quad<P, V>(&mut self, p1: Option<P>, p: P)
+    pub fn quad<P, V>(&mut self, p1: Option<P>, p: P) -> &mut Self
     where
         P: Into<(V, V)>,
         V: Into<f64> + Copy,
@@ -220,6 +226,7 @@ impl PathDef {
             }
         }
         (self.x, self.y) = (p.0.into(), p.1.into());
+        self
     }
 
     /// Draw an elliptical arc
@@ -231,7 +238,8 @@ impl PathDef {
         large_arc: bool,
         sweep: bool,
         p: P,
-    ) where
+    ) -> &mut Self
+    where
         P: Into<(V, V)>,
         V: Into<f64> + Copy,
     {
@@ -259,6 +267,7 @@ impl PathDef {
         self.d.push(' ');
         self.point(x, y);
         (self.x, self.y) = (p.0.into(), p.1.into());
+        self
     }
 }
 
@@ -268,7 +277,7 @@ mod test {
 
     #[test]
     fn empty() {
-        let mut path = PathDef::new();
+        let path = PathDef::new();
         assert_eq!(path.to_string(), "");
     }
 
