@@ -74,11 +74,18 @@ impl PathDef {
     /// Write one value
     fn value(&mut self, v: f64) {
         write!(&mut self.d, "{v:.0$}", self.precision).unwrap();
+        if self.precision > 0 {
+            while self.d.ends_with('0') {
+                self.d.pop();
+            }
+        }
     }
 
     /// Write one point
     fn point(&mut self, x: f64, y: f64) {
-        write!(&mut self.d, "{x:.0$} {y:.0$}", self.precision).unwrap();
+        self.value(x);
+        self.d.push(' ');
+        self.value(y);
     }
 
     /// Close the current subpath
@@ -360,5 +367,15 @@ mod test {
         path.line([2.2222, 9.994]);
         path.line([4.444444, 8.88888]);
         assert_eq!(path.to_string(), "L2.22 9.99L4.44 8.89");
+    }
+
+    #[test]
+    fn three_decimal_places() {
+        let mut path = PathDef::new();
+        path.precision(3);
+        path.line([2.2222, 9.994]);
+        path.line([4.444444, 8.88888]);
+        path.line([5.444444, 8.88888]);
+        assert_eq!(path.to_string(), "l2.222 9.994l2.222 -1.105h1.");
     }
 }
