@@ -78,7 +78,7 @@ impl PathDef {
 
     /// Write one point
     fn point(&mut self, x: f64, y: f64) {
-        write!(&mut self.d, "{x:.0$},{y:.0$}", self.precision).unwrap();
+        write!(&mut self.d, "{x:.0$} {y:.0$}", self.precision).unwrap();
     }
 
     /// Close the current subpath
@@ -285,14 +285,14 @@ mod test {
     fn mv() {
         let mut path = PathDef::new();
         path.move_to([1, 2]);
-        assert_eq!(path.to_string(), "m1,2");
+        assert_eq!(path.to_string(), "m1 2");
     }
 
     #[test]
     fn line() {
         let mut path = PathDef::new();
         path.line([2, 1]);
-        assert_eq!(path.to_string(), "l2,1");
+        assert_eq!(path.to_string(), "l2 1");
     }
 
     #[test]
@@ -313,35 +313,35 @@ mod test {
     fn cubic() {
         let mut path = PathDef::new();
         path.cubic(Some([1, 0]), [5, 5], [0, 10]);
-        assert_eq!(path.to_string(), "c1,0 5,5 0,10");
+        assert_eq!(path.to_string(), "c1 0 5 5 0 10");
     }
 
     #[test]
     fn cubic_smooth() {
         let mut path = PathDef::new();
         path.cubic(None, [5, 5], [0, 10]);
-        assert_eq!(path.to_string(), "s5,5 0,10");
+        assert_eq!(path.to_string(), "s5 5 0 10");
     }
 
     #[test]
     fn quad() {
         let mut path = PathDef::new();
         path.quad(Some([1, 0]), [0, 10]);
-        assert_eq!(path.to_string(), "q1,0 0,10");
+        assert_eq!(path.to_string(), "q1 0 0 10");
     }
 
     #[test]
     fn quad_smooth() {
         let mut path = PathDef::new();
         path.quad(None, [0, 10]);
-        assert_eq!(path.to_string(), "t0,10");
+        assert_eq!(path.to_string(), "t0 10");
     }
 
     #[test]
     fn arc() {
         let mut path = PathDef::new();
         path.arc(20, 25, 90, true, false, [50, 10]);
-        assert_eq!(path.to_string(), "a20 25 90 1 0 50,10");
+        assert_eq!(path.to_string(), "a20 25 90 1 0 50 10");
     }
 
     #[test]
@@ -349,7 +349,7 @@ mod test {
         let mut path = PathDef::new();
         path.line([2, 4]);
         path.line([4, 2]);
-        assert_eq!(path.to_string(), "l2,4l2,-2");
+        assert_eq!(path.to_string(), "l2 4l2 -2");
     }
 
     #[test]
@@ -359,6 +359,6 @@ mod test {
         path.precision(2);
         path.line([2.2222, 9.994]);
         path.line([4.444444, 8.88888]);
-        assert_eq!(path.to_string(), "L2.22,9.99L4.44,8.89");
+        assert_eq!(path.to_string(), "L2.22 9.99L4.44 8.89");
     }
 }

@@ -402,7 +402,7 @@ mod test {
         html.svg().path().d(String::from(path));
         assert_eq!(
             html.to_string(),
-            "<svg><path d=\"M0,0H100L50,50z\" /></svg>"
+            "<svg><path d=\"M0 0H100L50 50z\" /></svg>"
         );
     }
 }
