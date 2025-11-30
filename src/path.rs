@@ -340,7 +340,7 @@ mod test {
     #[test]
     fn quad_smooth() {
         let mut path = PathDef::new();
-        path.quad(None, [0, 10]);
+        path.quad(None, [0.4, 9.6]);
         assert_eq!(path.to_string(), "t0 10");
     }
 
