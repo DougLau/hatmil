@@ -78,6 +78,9 @@ impl PathDef {
             while self.d.ends_with('0') {
                 self.d.pop();
             }
+            if self.d.ends_with('.') {
+                self.d.pop();
+            }
         }
     }
 
@@ -376,6 +379,6 @@ mod test {
         path.line([2.2222, 9.994]);
         path.line([4.444444, 8.88888]);
         path.line([5.444444, 8.88888]);
-        assert_eq!(path.to_string(), "l2.222 9.994l2.222 -1.105h1.");
+        assert_eq!(path.to_string(), "l2.222 9.994l2.222 -1.105h1");
     }
 }
