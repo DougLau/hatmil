@@ -6,7 +6,9 @@ use crate::svg::Svg;
 use crate::value::Value;
 use std::fmt;
 
-/// Simple HTML builder
+/// User-friendly HTML builder
+///
+/// All common HTML elements are available as methods returning an [Elem].
 #[derive(Default)]
 pub struct Html {
     /// XML compatibility (self-closing tags include `/`)
@@ -66,11 +68,24 @@ impl From<Html> for String {
 
 impl Html {
     /// Create an HTML builder
+    ///
+    /// ```rust
+    /// use hatmil::Html;
+    ///
+    /// let mut html = Html::new();
+    /// html.a().href("https://www.example.com/").text("Example link");
+    /// assert_eq!(
+    ///     html.to_string(),
+    ///     "<a href=\"https://www.example.com/\">Example link</a>",
+    /// );
+    /// ```
     pub fn new() -> Self {
         Self::default()
     }
 
     /// Create an XML-compatible HTML builder
+    ///
+    /// This causes `/` to be included in self-closing tags.
     pub fn new_xml_compatible() -> Self {
         Html {
             xml_compatible: true,
@@ -79,6 +94,17 @@ impl Html {
     }
 
     /// Create an HTML builder with a `doctype` preamble
+    ///
+    /// ```rust
+    /// use hatmil::Html;
+    ///
+    /// let mut html = Html::with_doctype();
+    /// html.html().body().text("Page text");
+    /// assert_eq!(
+    ///     html.to_string(),
+    ///     "<!doctype html><html><body>Page text</body></html>",
+    /// );
+    /// ```
     pub fn with_doctype() -> Self {
         let mut html = Html::default();
         html.raw("<!doctype html>");

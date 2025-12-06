@@ -1,4 +1,4 @@
-Simple HTML builder
+Hatmil is a user-friendly HTML builder.
 
 With an [Html] builder, elements can be created using methods with a matching
 name, such as [a], [body], [div], or [table].  These methods return an [Elem],
