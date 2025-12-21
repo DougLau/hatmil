@@ -375,33 +375,33 @@ mod test {
 
     #[test]
     fn svg() {
-        let mut page = Page::new();
-        page.svg();
-        assert_eq!(page.to_string(), "<svg />");
+        let mut frag = Page::frag();
+        frag.svg();
+        assert_eq!(frag.to_string(), "<svg />");
     }
 
     #[test]
     fn circle() {
-        let mut page = Page::new();
-        page.svg().circle().cx("50").cy("25").r("5");
+        let mut frag = Page::frag();
+        frag.svg().circle().cx("50").cy("25").r("5");
         assert_eq!(
-            page.to_string(),
+            frag.to_string(),
             "<svg><circle cx=\"50\" cy=\"25\" r=\"5\" /></svg>"
         );
     }
 
     #[test]
     fn path() {
-        let mut page = Page::new();
+        let mut frag = Page::frag();
         let mut path = crate::PathDef::new();
         path.absolute(true)
             .move_to((0, 0))
             .line((100, 0))
             .line((50, 50))
             .close();
-        page.svg().path().d(String::from(path));
+        frag.svg().path().d(String::from(path));
         assert_eq!(
-            page.to_string(),
+            frag.to_string(),
             "<svg><path d=\"M0 0H100L50 50z\" /></svg>"
         );
     }

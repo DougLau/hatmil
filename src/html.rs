@@ -69,46 +69,49 @@ impl From<Page> for String {
 impl Page {
     /// Create an HTML page builder
     ///
+    /// - `doctype`: Include HTML `doctype` preamble
+    ///
     /// ```rust
     /// use hatmil::Page;
     ///
-    /// let mut page = Page::new();
+    /// let mut page = Page::new(true);
+    /// page.html().body().text("Page text");
     /// page.a().href("https://www.example.com/").text("Example link");
     /// assert_eq!(
     ///     page.to_string(),
-    ///     "<a href=\"https://www.example.com/\">Example link</a>",
+    ///     "<!doctype html><html><body>Page text<a href=\"https://www.example.com/\">Example link</a></body></html>",
     /// );
     /// ```
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    /// Create an XML-compatible page builder
-    ///
-    /// This causes `/` to be included in self-closing tags.
-    pub fn new_xml_compatible() -> Self {
-        Page {
-            xml_compatible: true,
-            ..Default::default()
+    pub fn new(doctype: bool) -> Self {
+        let mut page = Page::default();
+        if doctype {
+            page.raw("<!doctype html>");
         }
+        page
     }
 
-    /// Create a page builder with a `doctype` preamble
+    /// Create a page fragment builder
     ///
     /// ```rust
     /// use hatmil::Page;
     ///
-    /// let mut page = Page::with_doctype();
-    /// page.html().body().text("Page text");
+    /// let mut frag = Page::frag();
+    /// frag.a().href("https://www.example.com/").text("Example link");
     /// assert_eq!(
-    ///     page.to_string(),
-    ///     "<!doctype html><html><body>Page text</body></html>",
+    ///     frag.to_string(),
+    ///     "<a href=\"https://www.example.com/\">Example link</a>",
     /// );
     /// ```
-    pub fn with_doctype() -> Self {
-        let mut page = Page::default();
-        page.raw("<!doctype html>");
-        page
+    pub fn frag() -> Self {
+        Self::default()
+    }
+
+    /// Make the page XML-compatible
+    ///
+    /// This causes `/` to be included in self-closing tags.
+    pub fn xml_compatible(mut self) -> Self {
+        self.xml_compatible = true;
+        self
     }
 
     /// Add an element
@@ -629,84 +632,84 @@ mod test {
 
     #[test]
     fn div() {
-        let mut page = Page::new();
-        page.div();
-        assert_eq!(page.to_string(), "<div></div>");
+        let mut frag = Page::frag();
+        frag.div();
+        assert_eq!(frag.to_string(), "<div></div>");
     }
 
     #[test]
     fn boolean() {
-        let mut page = Page::new();
-        page.div().id("test").attr_bool("spellcheck");
-        assert_eq!(page.to_string(), "<div id=\"test\" spellcheck></div>");
+        let mut frag = Page::frag();
+        frag.div().id("test").attr_bool("spellcheck");
+        assert_eq!(frag.to_string(), "<div id=\"test\" spellcheck></div>");
     }
 
     #[test]
     fn paragraph() {
-        let mut page = Page::new();
-        page.p().text("This is a paragraph");
-        assert_eq!(page.to_string(), "<p>This is a paragraph</p>");
+        let mut frag = Page::frag();
+        frag.p().text("This is a paragraph");
+        assert_eq!(frag.to_string(), "<p>This is a paragraph</p>");
     }
 
     #[test]
     fn escaping() {
-        let mut page = Page::new();
-        page.em().text("You & I");
-        assert_eq!(page.to_string(), "<em>You &amp; I</em>");
+        let mut frag = Page::frag();
+        frag.em().text("You & I");
+        assert_eq!(frag.to_string(), "<em>You &amp; I</em>");
     }
 
     #[test]
     fn raw_burger() {
-        let mut page = Page::new();
-        page.span().text("Raw").raw(" <em>Burger</em>!");
-        assert_eq!(page.to_string(), "<span>Raw <em>Burger</em>!</span>");
+        let mut frag = Page::frag();
+        frag.span().text("Raw").raw(" <em>Burger</em>!");
+        assert_eq!(frag.to_string(), "<span>Raw <em>Burger</em>!</span>");
     }
 
     #[test]
     fn void() {
-        let mut page = Page::new();
-        page.div().input().r#type("text");
-        assert_eq!(page.to_string(), "<div><input type=\"text\"></div>");
+        let mut frag = Page::frag();
+        frag.div().input().r#type("text");
+        assert_eq!(frag.to_string(), "<div><input type=\"text\"></div>");
     }
 
     #[test]
     fn html() {
-        let mut page = Page::new();
-        page.ol();
-        page.li().class("cat").text("nori").end();
-        page.li().class("cat").text("chashu");
+        let mut frag = Page::frag();
+        frag.ol();
+        frag.li().class("cat").text("nori").end();
+        frag.li().class("cat").text("chashu");
         assert_eq!(
-            page.to_string(),
+            frag.to_string(),
             "<ol><li class=\"cat\">nori</li><li class=\"cat\">chashu</li></ol>"
         );
     }
 
     #[test]
     fn build_html() {
-        let mut page = Page::new();
-        page.div().p().text("Paragraph Text").end();
-        page.pre().text("Preformatted Text");
+        let mut frag = Page::frag();
+        frag.div().p().text("Paragraph Text").end();
+        frag.pre().text("Preformatted Text");
         assert_eq!(
-            page.to_string(),
+            frag.to_string(),
             "<div><p>Paragraph Text</p><pre>Preformatted Text</pre></div>"
         );
     }
 
     #[test]
     fn html_builder() {
-        let mut page = Page::new();
-        page.html().lang("en");
-        page.head().title().text("Title!").end().end();
-        page.body().h1().text("Header!");
+        let mut frag = Page::frag();
+        frag.html().lang("en");
+        frag.head().title().text("Title!").end().end();
+        frag.body().h1().text("Header!");
         assert_eq!(
-            page.to_string(),
+            frag.to_string(),
             "<html lang=\"en\"><head><title>Title!</title></head><body><h1>Header!</h1></body></html>"
         );
     }
 
     #[test]
     fn string_from() {
-        let mut page = Page::new();
+        let mut page = Page::new(false);
         page.html();
         page.head().title().text("Head").end().end();
         page.body().text("Body");
@@ -718,36 +721,36 @@ mod test {
 
     #[test]
     fn comment() {
-        let mut page = Page::new();
-        page.comment("comment");
-        assert_eq!(page.to_string(), "<!--comment-->");
+        let mut frag = Page::frag();
+        frag.comment("comment");
+        assert_eq!(frag.to_string(), "<!--comment-->");
     }
 
     #[test]
     fn comment_escape() {
-        let mut page = Page::new();
-        page.comment("<-->");
-        assert_eq!(page.to_string(), "<!--&lt;&hyphen;&hyphen;&gt;-->");
+        let mut frag = Page::frag();
+        frag.comment("<-->");
+        assert_eq!(frag.to_string(), "<!--&lt;&hyphen;&hyphen;&gt;-->");
     }
 
     #[test]
     fn xml() {
-        let mut page = Page::new_xml_compatible();
-        page.link().rel("stylesheet").end();
-        assert_eq!(page.to_string(), "<link rel=\"stylesheet\" />");
+        let mut frag = Page::frag().xml_compatible();
+        frag.link().rel("stylesheet").end();
+        assert_eq!(frag.to_string(), "<link rel=\"stylesheet\" />");
     }
 
     #[test]
     fn end() {
-        let mut page = Page::new();
-        page.span().name("a span").end();
-        assert_eq!(page.to_string(), "<span name=\"a span\"></span>");
+        let mut frag = Page::frag();
+        frag.span().name("a span").end();
+        assert_eq!(frag.to_string(), "<span name=\"a span\"></span>");
     }
 
     #[test]
     fn image() {
-        let mut page = Page::new();
-        page.img().width(100).height(50).end();
-        assert_eq!(page.to_string(), "<img width=\"100\" height=\"50\">");
+        let mut frag = Page::frag();
+        frag.img().width(100).height(50).end();
+        assert_eq!(frag.to_string(), "<img width=\"100\" height=\"50\">");
     }
 }

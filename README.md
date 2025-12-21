@@ -15,11 +15,11 @@ get the HTML.  All open tags will be closed automatically.
 ```rust
 use hatmil::Page;
 
-let mut page = Page::new();
-page.div().id("a_div").text("Hello").end();
-page.button().class("rounded").text("Press Me!");
+let mut frag = Page::frag();
+frag.div().id("a_div").text("Hello").end();
+frag.button().class("rounded").text("Press Me!");
 assert_eq!(
-    page.to_string(),
+    frag.to_string(),
     "<div id=\"a_div\">Hello</div><button class=\"rounded\">Press Me!</button>"
 );
 ```
