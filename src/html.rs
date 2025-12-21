@@ -10,36 +10,36 @@ use std::fmt;
 ///
 /// All common HTML elements are available as methods returning an [Elem].
 #[derive(Default)]
-pub struct Html {
+pub struct Page {
     /// XML compatibility (self-closing tags include `/`)
     xml_compatible: bool,
     /// HTML document text
-    html: String,
+    doc: String,
     /// Tag stack
     stack: Vec<&'static str>,
     /// Current tag empty + XML compatible
     empty: bool,
 }
 
-/// Element borrowed from an [Html]
+/// Element borrowed from a [Page]
 pub struct Elem<'h> {
-    html: &'h mut Html,
+    page: &'h mut Page,
 }
 
-/// [Void] element borrowed from an [Html]
+/// [Void] element borrowed from a [Page]
 ///
 /// [Void]: https://developer.mozilla.org/en-US/docs/Glossary/Void_element
 pub struct VoidElem<'h> {
-    html: &'h mut Html,
+    page: &'h mut Page,
 }
 
-impl fmt::Display for Html {
+impl fmt::Display for Page {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut empty = self.empty;
-        if empty && let Some(html) = self.html.strip_suffix('>') {
-            write!(f, "{}", html)?;
+        if empty && let Some(page) = self.doc.strip_suffix('>') {
+            write!(f, "{}", page)?;
         } else {
-            write!(f, "{}", self.html)?;
+            write!(f, "{}", self.doc)?;
             empty = false;
         }
         for elem in self.stack.iter().rev() {
@@ -54,28 +54,28 @@ impl fmt::Display for Html {
     }
 }
 
-impl From<Html> for String {
-    fn from(mut html: Html) -> Self {
+impl From<Page> for String {
+    fn from(mut page: Page) -> Self {
         // zero-copy alternative to fmt::Display
-        while let Some(elem) = html.stack.pop() {
-            html.html.push_str("</");
-            html.html.push_str(elem);
-            html.html.push('>');
+        while let Some(elem) = page.stack.pop() {
+            page.doc.push_str("</");
+            page.doc.push_str(elem);
+            page.doc.push('>');
         }
-        html.html
+        page.doc
     }
 }
 
-impl Html {
-    /// Create an HTML builder
+impl Page {
+    /// Create an HTML page builder
     ///
     /// ```rust
-    /// use hatmil::Html;
+    /// use hatmil::Page;
     ///
-    /// let mut html = Html::new();
-    /// html.a().href("https://www.example.com/").text("Example link");
+    /// let mut page = Page::new();
+    /// page.a().href("https://www.example.com/").text("Example link");
     /// assert_eq!(
-    ///     html.to_string(),
+    ///     page.to_string(),
     ///     "<a href=\"https://www.example.com/\">Example link</a>",
     /// );
     /// ```
@@ -83,58 +83,58 @@ impl Html {
         Self::default()
     }
 
-    /// Create an XML-compatible HTML builder
+    /// Create an XML-compatible page builder
     ///
     /// This causes `/` to be included in self-closing tags.
     pub fn new_xml_compatible() -> Self {
-        Html {
+        Page {
             xml_compatible: true,
             ..Default::default()
         }
     }
 
-    /// Create an HTML builder with a `doctype` preamble
+    /// Create a page builder with a `doctype` preamble
     ///
     /// ```rust
-    /// use hatmil::Html;
+    /// use hatmil::Page;
     ///
-    /// let mut html = Html::with_doctype();
-    /// html.html().body().text("Page text");
+    /// let mut page = Page::with_doctype();
+    /// page.html().body().text("Page text");
     /// assert_eq!(
-    ///     html.to_string(),
+    ///     page.to_string(),
     ///     "<!doctype html><html><body>Page text</body></html>",
     /// );
     /// ```
     pub fn with_doctype() -> Self {
-        let mut html = Html::default();
-        html.raw("<!doctype html>");
-        html
+        let mut page = Page::default();
+        page.raw("<!doctype html>");
+        page
     }
 
     /// Add an element
     pub(crate) fn elem(&mut self, elem: &'static str) -> Elem<'_> {
-        self.html.push('<');
-        self.html.push_str(elem);
-        self.html.push('>');
+        self.doc.push('<');
+        self.doc.push_str(elem);
+        self.doc.push('>');
         self.stack.push(elem);
         self.empty = self.xml_compatible;
-        Elem { html: self }
+        Elem { page: self }
     }
 
     /// Add a Void element
     pub(crate) fn void_elem(&mut self, elem: &'static str) -> VoidElem<'_> {
-        self.html.push('<');
-        self.html.push_str(elem);
-        self.html.push('>');
+        self.doc.push('<');
+        self.doc.push_str(elem);
+        self.doc.push('>');
         self.empty = false;
-        VoidElem { html: self }
+        VoidElem { page: self }
     }
 
     /// Add an SVG element
     pub(crate) fn svg_elem(&mut self, elem: &'static str) -> Svg<'_> {
-        self.html.push('<');
-        self.html.push_str(elem);
-        self.html.push('>');
+        self.doc.push('<');
+        self.doc.push_str(elem);
+        self.doc.push('>');
         self.stack.push(elem);
         self.empty = true;
         Svg::new(self)
@@ -150,32 +150,32 @@ impl Html {
     where
         V: Into<Value<'a>>,
     {
-        match self.html.pop() {
+        match self.doc.pop() {
             Some(gt) => assert_eq!(gt, '>'),
             None => unreachable!(),
         }
-        self.html.push(' ');
-        self.html.push_str(attr);
-        self.html.push_str("=\"");
+        self.doc.push(' ');
+        self.doc.push_str(attr);
+        self.doc.push_str("=\"");
         for c in val.into().chars() {
             match c {
-                '&' => self.html.push_str("&amp;"),
-                '"' => self.html.push_str("&quot;"),
-                _ => self.html.push(c),
+                '&' => self.doc.push_str("&amp;"),
+                '"' => self.doc.push_str("&quot;"),
+                _ => self.doc.push(c),
             }
         }
-        self.html.push_str("\">");
+        self.doc.push_str("\">");
     }
 
     /// Add a Boolean attribute
     pub(crate) fn attr_bool(&mut self, attr: &'static str) {
-        match self.html.pop() {
+        match self.doc.pop() {
             Some(gt) => assert_eq!(gt, '>'),
             None => unreachable!(),
         }
-        self.html.push(' ');
-        self.html.push_str(attr);
-        self.html.push('>');
+        self.doc.push(' ');
+        self.doc.push_str(attr);
+        self.doc.push('>');
     }
 
     /// Add a comment
@@ -186,16 +186,16 @@ impl Html {
     where
         V: Into<Value<'a>>,
     {
-        self.html.push_str("<!--");
+        self.doc.push_str("<!--");
         for c in com.into().chars() {
             match c {
-                '-' => self.html.push_str("&hyphen;"),
-                '<' => self.html.push_str("&lt;"),
-                '>' => self.html.push_str("&gt;"),
-                _ => self.html.push(c),
+                '-' => self.doc.push_str("&hyphen;"),
+                '<' => self.doc.push_str("&lt;"),
+                '>' => self.doc.push_str("&gt;"),
+                _ => self.doc.push(c),
             }
         }
-        self.html.push_str("-->");
+        self.doc.push_str("-->");
         self.empty = false;
         self
     }
@@ -221,10 +221,10 @@ impl Html {
     {
         for c in text.into().chars().take(len) {
             match c {
-                '&' => self.html.push_str("&amp;"),
-                '<' => self.html.push_str("&lt;"),
-                '>' => self.html.push_str("&gt;"),
-                _ => self.html.push(c),
+                '&' => self.doc.push_str("&amp;"),
+                '<' => self.doc.push_str("&lt;"),
+                '>' => self.doc.push_str("&gt;"),
+                _ => self.doc.push(c),
             }
         }
         self.empty = false;
@@ -236,7 +236,7 @@ impl Html {
     /// **WARNING**: `text` is used verbatim, with no escaping; do not call
     /// with untrusted content.
     pub fn raw(&mut self, text: impl AsRef<str>) -> &mut Self {
-        self.html.push_str(text.as_ref());
+        self.doc.push_str(text.as_ref());
         self.empty = false;
         self
     }
@@ -246,13 +246,13 @@ impl Html {
     /// Add a closing tag (e.g. `</span>`).
     pub fn end(&mut self) -> &mut Self {
         if let Some(elem) = self.stack.pop() {
-            if self.empty && self.html.ends_with('>') {
-                self.html.pop();
-                self.html.push_str(" />");
+            if self.empty && self.doc.ends_with('>') {
+                self.doc.pop();
+                self.doc.push_str(" />");
             } else {
-                self.html.push_str("</");
-                self.html.push_str(elem);
-                self.html.push('>');
+                self.doc.push_str("</");
+                self.doc.push_str(elem);
+                self.doc.push('>');
             }
         }
         self.empty = false;
@@ -274,7 +274,7 @@ impl<'h> Elem<'h> {
     where
         V: Into<Value<'a>>,
     {
-        self.html.attr(attr, val);
+        self.page.attr(attr, val);
         self
     }
 
@@ -282,7 +282,7 @@ impl<'h> Elem<'h> {
     ///
     /// [Boolean]: https://developer.mozilla.org/en-US/docs/Glossary/Boolean/HTML
     pub fn attr_bool(self, attr: &'static str) -> Self {
-        self.html.attr_bool(attr);
+        self.page.attr_bool(attr);
         self
     }
 
@@ -293,7 +293,7 @@ impl<'h> Elem<'h> {
     where
         V: Into<Value<'a>>,
     {
-        self.html.attr("type", val);
+        self.page.attr("type", val);
         self
     }
 
@@ -304,7 +304,7 @@ impl<'h> Elem<'h> {
     where
         V: Into<Value<'a>>,
     {
-        self.html.attr("for", val);
+        self.page.attr("for", val);
         self
     }
 
@@ -312,29 +312,29 @@ impl<'h> Elem<'h> {
     ///
     /// The characters `&`, `<` and `>` in `text` will automatically be
     /// escaped.
-    pub fn text<'a, V>(self, text: V) -> &'h mut Html
+    pub fn text<'a, V>(self, text: V) -> &'h mut Page
     where
         V: Into<Value<'a>>,
     {
-        self.html.text_len(text, usize::MAX)
+        self.page.text_len(text, usize::MAX)
     }
 
     /// Add text content with a maximum character limit
     ///
     /// The characters `&`, `<` and `>` in `text` will automatically be
     /// escaped.
-    pub fn text_len<'a, V>(self, text: V, len: usize) -> &'h mut Html
+    pub fn text_len<'a, V>(self, text: V, len: usize) -> &'h mut Page
     where
         V: Into<Value<'a>>,
     {
-        self.html.text_len(text, len)
+        self.page.text_len(text, len)
     }
 
     /// End the element
     ///
     /// Adds the closing tag (e.g. `</span>`).
-    pub fn end(self) -> &'h mut Html {
-        self.html.end()
+    pub fn end(self) -> &'h mut Page {
+        self.page.end()
     }
 }
 
@@ -346,7 +346,7 @@ impl<'h> VoidElem<'h> {
     where
         V: Into<Value<'a>>,
     {
-        self.html.attr(attr, val);
+        self.page.attr(attr, val);
         self
     }
 
@@ -354,7 +354,7 @@ impl<'h> VoidElem<'h> {
     ///
     /// [Boolean]: https://developer.mozilla.org/en-US/docs/Glossary/Boolean/HTML
     pub fn attr_bool(self, attr: &'static str) -> Self {
-        self.html.attr_bool(attr);
+        self.page.attr_bool(attr);
         self
     }
 
@@ -365,24 +365,24 @@ impl<'h> VoidElem<'h> {
     where
         V: Into<Value<'a>>,
     {
-        self.html.attr("type", val);
+        self.page.attr("type", val);
         self
     }
 
     /// End the element
     ///
     /// Since Void elements have no closing tags, this simply returns the
-    /// [Html] to allow chaining method calls.
-    pub fn end(self) -> &'h mut Html {
-        let html = self.html;
-        if html.xml_compatible {
-            match html.html.pop() {
+    /// [Page] to allow chaining method calls.
+    pub fn end(self) -> &'h mut Page {
+        let page = self.page;
+        if page.xml_compatible {
+            match page.doc.pop() {
                 Some(gt) => assert_eq!(gt, '>'),
                 None => unreachable!(),
             }
-            html.html.push_str(" />");
+            page.doc.push_str(" />");
         }
-        html
+        page
     }
 }
 
@@ -398,7 +398,7 @@ macro_rules! global_attributes {
                 pub fn $attr<'a, V>(self, val: V) -> Self
                     where V: Into<Value<'a>>
                 {
-                    self.html.attr(stringify!($attr), val);
+                    self.page.attr(stringify!($attr), val);
                     self
                 }
             )*
@@ -412,7 +412,7 @@ macro_rules! global_attributes {
                 pub fn $attr<'a, V>(self, val: V) -> Self
                     where V: Into<Value<'a>>
                 {
-                    self.html.attr(stringify!($attr), val);
+                    self.page.attr(stringify!($attr), val);
                     self
                 }
             )*
@@ -462,7 +462,7 @@ macro_rules! attributes {
                 pub fn $attr<'a, V>(self, val: V) -> Self
                     where V: Into<Value<'a>>
                 {
-                    self.html.attr(stringify!($attr), val);
+                    self.page.attr(stringify!($attr), val);
                     self
                 }
             )*
@@ -476,7 +476,7 @@ macro_rules! attributes {
                 pub fn $attr<'a, V>(self, val: V) -> Self
                     where V: Into<Value<'a>>
                 {
-                    self.html.attr(stringify!($attr), val);
+                    self.page.attr(stringify!($attr), val);
                     self
                 }
             )*
@@ -529,7 +529,7 @@ macro_rules! boolean_attributes {
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
                 #[doc = ")"]
                 pub fn $attr(self) -> Self {
-                    self.html.attr_bool(stringify!($attr));
+                    self.page.attr_bool(stringify!($attr));
                     self
                 }
             )*
@@ -541,7 +541,7 @@ macro_rules! boolean_attributes {
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/", stringify!($attr))]
                 #[doc = ")"]
                 pub fn $attr(self) -> Self {
-                    self.html.attr_bool(stringify!($attr));
+                    self.page.attr_bool(stringify!($attr));
                     self
                 }
             )*
@@ -558,7 +558,7 @@ boolean_attributes![
 /// HTML element helper
 macro_rules! elements {
     ( $( $elem:ident ),* ) => {
-        impl Html {
+        impl Page {
             $(
                 #[doc = concat!("Add [", stringify!($elem), "](")]
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
@@ -574,7 +574,7 @@ macro_rules! elements {
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
                 #[doc = ") child element"]
                 pub fn $elem(self) -> Self {
-                    self.html.elem(stringify!($elem))
+                    self.page.elem(stringify!($elem))
                 }
             )*
         }
@@ -584,7 +584,7 @@ macro_rules! elements {
 /// HTML Void element helper
 macro_rules! void_elements {
     ( $( $elem:ident ),* ) => {
-        impl Html {
+        impl Page {
             $(
                 #[doc = concat!("Add [", stringify!($elem), "](")]
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
@@ -600,7 +600,7 @@ macro_rules! void_elements {
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
                 #[doc = ") child Void element"]
                 pub fn $elem(self) -> VoidElem<'h> {
-                    self.html.void_elem(stringify!($elem))
+                    self.page.void_elem(stringify!($elem))
                 }
             )*
         }
@@ -629,125 +629,125 @@ mod test {
 
     #[test]
     fn div() {
-        let mut html = Html::new();
-        html.div();
-        assert_eq!(html.to_string(), "<div></div>");
+        let mut page = Page::new();
+        page.div();
+        assert_eq!(page.to_string(), "<div></div>");
     }
 
     #[test]
     fn boolean() {
-        let mut html = Html::new();
-        html.div().id("test").attr_bool("spellcheck");
-        assert_eq!(html.to_string(), "<div id=\"test\" spellcheck></div>");
+        let mut page = Page::new();
+        page.div().id("test").attr_bool("spellcheck");
+        assert_eq!(page.to_string(), "<div id=\"test\" spellcheck></div>");
     }
 
     #[test]
     fn paragraph() {
-        let mut html = Html::new();
-        html.p().text("This is a paragraph");
-        assert_eq!(html.to_string(), "<p>This is a paragraph</p>");
+        let mut page = Page::new();
+        page.p().text("This is a paragraph");
+        assert_eq!(page.to_string(), "<p>This is a paragraph</p>");
     }
 
     #[test]
     fn escaping() {
-        let mut html = Html::new();
-        html.em().text("You & I");
-        assert_eq!(html.to_string(), "<em>You &amp; I</em>");
+        let mut page = Page::new();
+        page.em().text("You & I");
+        assert_eq!(page.to_string(), "<em>You &amp; I</em>");
     }
 
     #[test]
     fn raw_burger() {
-        let mut html = Html::new();
-        html.span().text("Raw").raw(" <em>Burger</em>!");
-        assert_eq!(html.to_string(), "<span>Raw <em>Burger</em>!</span>");
+        let mut page = Page::new();
+        page.span().text("Raw").raw(" <em>Burger</em>!");
+        assert_eq!(page.to_string(), "<span>Raw <em>Burger</em>!</span>");
     }
 
     #[test]
     fn void() {
-        let mut html = Html::new();
-        html.div().input().r#type("text");
-        assert_eq!(html.to_string(), "<div><input type=\"text\"></div>");
+        let mut page = Page::new();
+        page.div().input().r#type("text");
+        assert_eq!(page.to_string(), "<div><input type=\"text\"></div>");
     }
 
     #[test]
     fn html() {
-        let mut html = Html::new();
-        html.ol();
-        html.li().class("cat").text("nori").end();
-        html.li().class("cat").text("chashu");
+        let mut page = Page::new();
+        page.ol();
+        page.li().class("cat").text("nori").end();
+        page.li().class("cat").text("chashu");
         assert_eq!(
-            html.to_string(),
+            page.to_string(),
             "<ol><li class=\"cat\">nori</li><li class=\"cat\">chashu</li></ol>"
         );
     }
 
     #[test]
     fn build_html() {
-        let mut html = Html::new();
-        html.div().p().text("Paragraph Text").end();
-        html.pre().text("Preformatted Text");
+        let mut page = Page::new();
+        page.div().p().text("Paragraph Text").end();
+        page.pre().text("Preformatted Text");
         assert_eq!(
-            html.to_string(),
+            page.to_string(),
             "<div><p>Paragraph Text</p><pre>Preformatted Text</pre></div>"
         );
     }
 
     #[test]
     fn html_builder() {
-        let mut html = Html::new();
-        html.html().lang("en");
-        html.head().title().text("Title!").end().end();
-        html.body().h1().text("Header!");
+        let mut page = Page::new();
+        page.html().lang("en");
+        page.head().title().text("Title!").end().end();
+        page.body().h1().text("Header!");
         assert_eq!(
-            html.to_string(),
+            page.to_string(),
             "<html lang=\"en\"><head><title>Title!</title></head><body><h1>Header!</h1></body></html>"
         );
     }
 
     #[test]
     fn string_from() {
-        let mut html = Html::new();
-        html.html();
-        html.head().title().text("Head").end().end();
-        html.body().text("Body");
+        let mut page = Page::new();
+        page.html();
+        page.head().title().text("Head").end().end();
+        page.body().text("Body");
         assert_eq!(
-            String::from(html),
+            String::from(page),
             "<html><head><title>Head</title></head><body>Body</body></html>"
         );
     }
 
     #[test]
     fn comment() {
-        let mut html = Html::new();
-        html.comment("comment");
-        assert_eq!(html.to_string(), "<!--comment-->");
+        let mut page = Page::new();
+        page.comment("comment");
+        assert_eq!(page.to_string(), "<!--comment-->");
     }
 
     #[test]
     fn comment_escape() {
-        let mut html = Html::new();
-        html.comment("<-->");
-        assert_eq!(html.to_string(), "<!--&lt;&hyphen;&hyphen;&gt;-->");
+        let mut page = Page::new();
+        page.comment("<-->");
+        assert_eq!(page.to_string(), "<!--&lt;&hyphen;&hyphen;&gt;-->");
     }
 
     #[test]
     fn xml() {
-        let mut html = Html::new_xml_compatible();
-        html.link().rel("stylesheet").end();
-        assert_eq!(html.to_string(), "<link rel=\"stylesheet\" />");
+        let mut page = Page::new_xml_compatible();
+        page.link().rel("stylesheet").end();
+        assert_eq!(page.to_string(), "<link rel=\"stylesheet\" />");
     }
 
     #[test]
     fn end() {
-        let mut html = Html::new();
-        html.span().name("a span").end();
-        assert_eq!(html.to_string(), "<span name=\"a span\"></span>");
+        let mut page = Page::new();
+        page.span().name("a span").end();
+        assert_eq!(page.to_string(), "<span name=\"a span\"></span>");
     }
 
     #[test]
     fn image() {
-        let mut html = Html::new();
-        html.img().width(100).height(50).end();
-        assert_eq!(html.to_string(), "<img width=\"100\" height=\"50\">");
+        let mut page = Page::new();
+        page.img().width(100).height(50).end();
+        assert_eq!(page.to_string(), "<img width=\"100\" height=\"50\">");
     }
 }

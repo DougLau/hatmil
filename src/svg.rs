@@ -1,20 +1,20 @@
 // svg.rs
 // Copyright (C) 2025  Douglas P Lau
 //
-use crate::html::{Elem, Html, VoidElem};
+use crate::html::{Elem, Page, VoidElem};
 use crate::value::Value;
 
-/// SVG element borrowed from [Html svg] method
+/// SVG element borrowed from [Page svg] method
 ///
-/// [Html svg]: struct.Html.html#method.svg
+/// [Page svg]: struct.Page.html#method.svg
 pub struct Svg<'h> {
-    html: &'h mut Html,
+    page: &'h mut Page,
 }
 
 impl<'h> Svg<'h> {
     /// Create a new SVG element
-    pub fn new(html: &'h mut Html) -> Self {
-        Svg { html }
+    pub fn new(page: &'h mut Page) -> Self {
+        Svg { page }
     }
 
     /// Add an attribute with value
@@ -24,7 +24,7 @@ impl<'h> Svg<'h> {
     where
         V: Into<Value<'a>>,
     {
-        self.html.attr(attr, val);
+        self.page.attr(attr, val);
         self
     }
 
@@ -32,14 +32,14 @@ impl<'h> Svg<'h> {
     ///
     /// Adds the closing tag (e.g. `</svg>`)
     pub fn end(&mut self) {
-        self.html.end();
+        self.page.end();
     }
 
     /// Add [foreignObject] child element
     ///
     /// [foreignObject]: https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/foreignObject
     pub fn foreign_object(self) -> Elem<'h> {
-        self.html.elem("foreignObject")
+        self.page.elem("foreignObject")
     }
 
     /// Add [link] child element (e.g. [CSS])
@@ -47,7 +47,7 @@ impl<'h> Svg<'h> {
     /// [CSS]: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorials/SVG_from_scratch/SVG_and_CSS
     /// [link]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link
     pub fn link(self) -> VoidElem<'h> {
-        self.html.void_elem("link")
+        self.page.void_elem("link")
     }
 
     /// Add [use] child element
@@ -56,7 +56,7 @@ impl<'h> Svg<'h> {
     ///
     /// [use]: https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/use
     pub fn r#use(self) -> Self {
-        self.html.svg_elem("use")
+        self.page.svg_elem("use")
     }
 }
 
@@ -72,7 +72,7 @@ macro_rules! svg_elements {
                 )]
                 #[doc = ") child element"]
                 pub fn $snake(self) -> Self {
-                    self.html.svg_elem(stringify!($elem))
+                    self.page.svg_elem(stringify!($elem))
                 }
             )*
         }
@@ -156,7 +156,7 @@ macro_rules! svg_attributes {
                 pub fn $snake<'a, V>(self, val: V) -> Self
                     where V: Into<Value<'a>>
                 {
-                    self.html.attr($attr, val);
+                    self.page.attr($attr, val);
                     self
                 }
             )*
@@ -375,33 +375,33 @@ mod test {
 
     #[test]
     fn svg() {
-        let mut html = Html::new();
-        html.svg();
-        assert_eq!(html.to_string(), "<svg />");
+        let mut page = Page::new();
+        page.svg();
+        assert_eq!(page.to_string(), "<svg />");
     }
 
     #[test]
     fn circle() {
-        let mut html = Html::new();
-        html.svg().circle().cx("50").cy("25").r("5");
+        let mut page = Page::new();
+        page.svg().circle().cx("50").cy("25").r("5");
         assert_eq!(
-            html.to_string(),
+            page.to_string(),
             "<svg><circle cx=\"50\" cy=\"25\" r=\"5\" /></svg>"
         );
     }
 
     #[test]
     fn path() {
-        let mut html = Html::new();
+        let mut page = Page::new();
         let mut path = crate::PathDef::new();
         path.absolute(true)
             .move_to((0, 0))
             .line((100, 0))
             .line((50, 50))
             .close();
-        html.svg().path().d(String::from(path));
+        page.svg().path().d(String::from(path));
         assert_eq!(
-            html.to_string(),
+            page.to_string(),
             "<svg><path d=\"M0 0H100L50 50z\" /></svg>"
         );
     }
