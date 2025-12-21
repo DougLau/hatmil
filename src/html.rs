@@ -22,15 +22,15 @@ pub struct Page {
 }
 
 /// Element borrowed from a [Page]
-pub struct Elem<'h> {
-    page: &'h mut Page,
+pub struct Elem<'p> {
+    page: &'p mut Page,
 }
 
 /// [Void] element borrowed from a [Page]
 ///
 /// [Void]: https://developer.mozilla.org/en-US/docs/Glossary/Void_element
-pub struct VoidElem<'h> {
-    page: &'h mut Page,
+pub struct VoidElem<'p> {
+    page: &'p mut Page,
 }
 
 impl fmt::Display for Page {
@@ -263,7 +263,7 @@ impl Page {
     }
 }
 
-impl<'h> Elem<'h> {
+impl<'p> Elem<'p> {
     /// Add an attribute with value
     ///
     /// NOTE: dedicated methods such as [id] or [name] should be used when
@@ -315,7 +315,7 @@ impl<'h> Elem<'h> {
     ///
     /// The characters `&`, `<` and `>` in `text` will automatically be
     /// escaped.
-    pub fn text<'a, V>(self, text: V) -> &'h mut Page
+    pub fn text<'a, V>(self, text: V) -> &'p mut Page
     where
         V: Into<Value<'a>>,
     {
@@ -326,7 +326,7 @@ impl<'h> Elem<'h> {
     ///
     /// The characters `&`, `<` and `>` in `text` will automatically be
     /// escaped.
-    pub fn text_len<'a, V>(self, text: V, len: usize) -> &'h mut Page
+    pub fn text_len<'a, V>(self, text: V, len: usize) -> &'p mut Page
     where
         V: Into<Value<'a>>,
     {
@@ -336,12 +336,12 @@ impl<'h> Elem<'h> {
     /// End the element
     ///
     /// Adds the closing tag (e.g. `</span>`).
-    pub fn end(self) -> &'h mut Page {
+    pub fn end(self) -> &'p mut Page {
         self.page.end()
     }
 }
 
-impl<'h> VoidElem<'h> {
+impl<'p> VoidElem<'p> {
     /// Add an attribute with value
     ///
     /// The characters `&` and `"` in `val` will automatically be escaped.
@@ -376,7 +376,7 @@ impl<'h> VoidElem<'h> {
     ///
     /// Since Void elements have no closing tags, this simply returns the
     /// [Page] to allow chaining method calls.
-    pub fn end(self) -> &'h mut Page {
+    pub fn end(self) -> &'p mut Page {
         let page = self.page;
         if page.xml_compatible {
             match page.doc.pop() {
@@ -392,7 +392,7 @@ impl<'h> VoidElem<'h> {
 /// HTML global attribute helper
 macro_rules! global_attributes {
     ( $( $attr:ident ),* ) => {
-        impl<'h> Elem<'h> {
+        impl<'p> Elem<'p> {
             $(
                 #[doc = concat!("Add `", stringify!($attr), "` ")]
                 #[doc = "global [attribute]("]
@@ -406,7 +406,7 @@ macro_rules! global_attributes {
                 }
             )*
         }
-        impl<'h> VoidElem<'h> {
+        impl<'p> VoidElem<'p> {
             $(
                 #[doc = concat!("Add `", stringify!($attr), "` ")]
                 #[doc = "global [attribute]("]
@@ -456,7 +456,7 @@ global_attributes![
 /// HTML attribute helper
 macro_rules! attributes {
     ( $( $attr:ident ),* ) => {
-        impl<'h> Elem<'h> {
+        impl<'p> Elem<'p> {
             $(
                 #[doc = concat!("Add `", stringify!($attr), "` ")]
                 #[doc = "[attribute]("]
@@ -470,7 +470,7 @@ macro_rules! attributes {
                 }
             )*
         }
-        impl<'h> VoidElem<'h> {
+        impl<'p> VoidElem<'p> {
             $(
                 #[doc = concat!("Add `", stringify!($attr), "` ")]
                 #[doc = "[attribute]("]
@@ -525,7 +525,7 @@ attributes![
 /// HTML Boolean attribute helper
 macro_rules! boolean_attributes {
     ( $( $attr:ident ),* ) => {
-        impl<'h> Elem<'h> {
+        impl<'p> Elem<'p> {
             $(
                 #[doc = concat!("Add `", stringify!($attr), "` ")]
                 #[doc = "Boolean [attribute]("]
@@ -537,7 +537,7 @@ macro_rules! boolean_attributes {
                 }
             )*
         }
-        impl<'h> VoidElem<'h> {
+        impl<'p> VoidElem<'p> {
             $(
                 #[doc = concat!("Add `", stringify!($attr), "` ")]
                 #[doc = "Boolean [attribute]("]
@@ -571,7 +571,7 @@ macro_rules! elements {
                 }
             )*
         }
-        impl<'h> Elem<'h> {
+        impl<'p> Elem<'p> {
             $(
                 #[doc = concat!("Add [", stringify!($elem), "](")]
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
@@ -597,12 +597,12 @@ macro_rules! void_elements {
                 }
             )*
         }
-        impl<'h> Elem<'h> {
+        impl<'p> Elem<'p> {
             $(
                 #[doc = concat!("Add [", stringify!($elem), "](")]
                 #[doc = concat!("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/", stringify!($elem))]
                 #[doc = ") child Void element"]
-                pub fn $elem(self) -> VoidElem<'h> {
+                pub fn $elem(self) -> VoidElem<'p> {
                     self.page.void_elem(stringify!($elem))
                 }
             )*

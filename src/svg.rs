@@ -7,13 +7,13 @@ use crate::value::Value;
 /// SVG element borrowed from [Page svg] method
 ///
 /// [Page svg]: struct.Page.html#method.svg
-pub struct Svg<'h> {
-    page: &'h mut Page,
+pub struct Svg<'p> {
+    page: &'p mut Page,
 }
 
-impl<'h> Svg<'h> {
+impl<'p> Svg<'p> {
     /// Create a new SVG element
-    pub fn new(page: &'h mut Page) -> Self {
+    pub fn new(page: &'p mut Page) -> Self {
         Svg { page }
     }
 
@@ -38,7 +38,7 @@ impl<'h> Svg<'h> {
     /// Add [foreignObject] child element
     ///
     /// [foreignObject]: https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/foreignObject
-    pub fn foreign_object(self) -> Elem<'h> {
+    pub fn foreign_object(self) -> Elem<'p> {
         self.page.elem("foreignObject")
     }
 
@@ -46,7 +46,7 @@ impl<'h> Svg<'h> {
     ///
     /// [CSS]: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorials/SVG_from_scratch/SVG_and_CSS
     /// [link]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link
-    pub fn link(self) -> VoidElem<'h> {
+    pub fn link(self) -> VoidElem<'p> {
         self.page.void_elem("link")
     }
 
@@ -63,7 +63,7 @@ impl<'h> Svg<'h> {
 /// SVG element helper
 macro_rules! svg_elements {
     ( $( $elem:ident $snake:ident ),* $(,)? ) => {
-        impl<'h> Svg<'h> {
+        impl<'p> Svg<'p> {
             $(
                 #[doc = concat!("Add [", stringify!($elem), "](")]
                 #[doc = concat!(
@@ -145,7 +145,7 @@ svg_elements![
 /// SVG attribute helper
 macro_rules! svg_attributes {
     ( $( $attr:literal $snake:ident ),* $(,)? ) => {
-        impl<'h> Svg<'h> {
+        impl<'p> Svg<'p> {
             $(
                 #[doc = concat!("Add [", $attr, "](")]
                 #[doc = concat!(
