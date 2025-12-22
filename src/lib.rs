@@ -4,6 +4,7 @@
 #![doc = include_str!("../README.md")]
 #![forbid(unsafe_code)]
 
+pub mod elem;
 mod html;
 mod path;
 mod svg;
