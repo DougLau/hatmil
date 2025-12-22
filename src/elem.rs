@@ -1025,7 +1025,6 @@ macro_rules! script_content {
         attribute!($el, fetchpriority);
         attribute!($el, integrity);
         attribute!($el, nomodule, true);
-        attribute!($el, nonce);
         attribute!($el, referrerpolicy);
         attribute!($el, src);
         attribute!($el, r#type, "type");
@@ -1119,8 +1118,6 @@ macro_rules! style_content {
     ( $el:literal ) => {
         attribute!($el, blocking);
         attribute!($el, media);
-        attribute!($el, nonce);
-        attribute!($el, title);
     };
 }
 element!("style", Style, "Style Information", style_content());
