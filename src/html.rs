@@ -72,9 +72,10 @@ impl Page {
     /// );
     /// ```
     pub fn new(doctype: bool) -> Self {
-        let mut page = Page::default();
-        page.doctype = doctype;
-        page
+        Page {
+            doctype,
+            ..Default::default()
+        }
     }
 
     /// Convert page into a fragment
@@ -108,7 +109,7 @@ impl Page {
     }
 
     /// Add `<html>` root element
-    pub fn html(self: &mut Self) -> Html<'_> {
+    pub fn html(&mut self) -> Html<'_> {
         self.doc.clear();
         if self.doctype {
             self.raw("<!doctype html>");
@@ -189,11 +190,13 @@ impl Page {
 
     /// Add a comment
     ///
-    ///  - `com`: Comment text; these characters will be replaced with
-    ///           entities:
-    ///  <br> `-` &xrarr; `&hyphen;`
-    ///  <br> `<` &xrarr; `&gt;`
-    ///  <br> `>` &xrarr; `&lt;`
+    /// These characters will be replaced with entities:
+    ///
+    /// | Char | Entity     |
+    /// |------|------------|
+    /// | `-`  | `&hyphen;` |
+    /// | `<`  | `&gt;`     |
+    /// | `>`  | `&lt;`     |
     pub fn comment<'a, V>(&mut self, com: V) -> &mut Self
     where
         V: Into<Value<'a>>,

@@ -63,19 +63,20 @@ macro_rules! element {
 }
 
 /// Make an HTML "value" attribute method
+#[rustfmt::skip]
 macro_rules! val_attr {
     ( $path:expr, $attr:ident, $raw_attr:expr ) => {
         #[doc = concat!(
-                    "Add [",
-                    $raw_attr,
-                    "](",
-                    "https://developer.mozilla.org/en-US/docs/",
-                    "Web/HTML/Reference/",
-                    $path,
-                    "#",
-                    $raw_attr,
-                    ") attribute",
-                )]
+            "Add [",
+            $raw_attr,
+            "](",
+            "https://developer.mozilla.org/en-US/docs/",
+            "Web/HTML/Reference/",
+            $path,
+            "#",
+            $raw_attr,
+            ") attribute",
+        )]
         pub fn $attr<'a, V>(self, val: V) -> Self
         where
             V: Into<Value<'a>>,
@@ -87,19 +88,20 @@ macro_rules! val_attr {
 }
 
 /// Make an HTML Boolean attribute method
+#[rustfmt::skip]
 macro_rules! bool_attr {
     ( $path:expr, $attr:ident, $raw_attr:expr ) => {
         #[doc = concat!(
-                    "Add [",
-                    $raw_attr,
-                    "](",
-                    "https://developer.mozilla.org/en-US/docs/",
-                    "Web/HTML/Reference/",
-                    $path,
-                    "#",
-                    $raw_attr,
-                    ") Boolean attribute",
-                )]
+            "Add [",
+            $raw_attr,
+            "](",
+            "https://developer.mozilla.org/en-US/docs/",
+            "Web/HTML/Reference/",
+            $path,
+            "#",
+            $raw_attr,
+            ") Boolean attribute",
+        )]
         pub fn $attr(self) -> Self {
             self.page.attr_bool($raw_attr);
             self
@@ -111,22 +113,22 @@ macro_rules! bool_attr {
 macro_rules! attribute {
     // Make a non-global "value" attribute
     ( $el:expr, $attr:ident ) => {
-        val_attr!( concat!("Elements/", $el), $attr, stringify!($attr) );
+        val_attr!(concat!("Elements/", $el), $attr, stringify!($attr));
     };
 
     // Make a non-global Boolean attribute
     ( $el:expr, $attr:ident, true ) => {
-        bool_attr!( concat!("Elements/", $el), $attr, stringify!($attr) );
+        bool_attr!(concat!("Elements/", $el), $attr, stringify!($attr));
     };
 
     // Make a non-global "value" attribute with raw-string name (e.g. r#type)
     ( $el:expr, $attr:ident, $raw_attr:literal ) => {
-        val_attr!( concat!("Elements/", $el), $attr, $raw_attr );
+        val_attr!(concat!("Elements/", $el), $attr, $raw_attr);
     };
 
     // Make a non-global Boolean attribute with raw-string name (e.g. r#loop)
     ( $el:expr, $attr:ident, $raw_attr:literal, true ) => {
-        bool_attr!( concat!("Elements/", $el), $attr, $raw_attr );
+        bool_attr!(concat!("Elements/", $el), $attr, $raw_attr);
     };
 }
 
@@ -134,12 +136,12 @@ macro_rules! attribute {
 macro_rules! global_attribute {
     // Make a global "value" attribute
     ( $attr:ident ) => {
-        val_attr!( concat!("Global_attributes/", ""), $attr, stringify!($attr) );
+        val_attr!(concat!("Global_attributes/", ""), $attr, stringify!($attr));
     };
 
     // Make a global Boolean attribute
     ( $attr:ident, true ) => {
-        bool_attr!( concat!("Global_attributes/", ""), $attr, stringify!($attr) );
+        bool_attr!(concat!("Global_attributes/", ""), $attr, stringify!($attr));
     };
 }
 
@@ -190,7 +192,7 @@ macro_rules! a_items {
         attribute!($el, rel);
         attribute!($el, target);
         attribute!($el, r#type, "type");
-        // FIXME: content
+        // FIXME: only transparent content (not interactive, or "a")
     };
 }
 element!("a", A, "Anchor", a_items());
@@ -198,7 +200,7 @@ element!("a", A, "Anchor", a_items());
 // Abbr element
 macro_rules! abbr_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("abbr", Abbr, "Abbreviation", abbr_items());
@@ -206,7 +208,7 @@ element!("abbr", Abbr, "Abbreviation", abbr_items());
 // Address element
 macro_rules! address_items {
     ( $el:literal ) => {
-        // FIXME: content
+        address_content!();
     };
 }
 element!("address", Address, "Contact Address", address_items());
@@ -214,7 +216,7 @@ element!("address", Address, "Contact Address", address_items());
 // Article element
 macro_rules! article_items {
     ( $el:literal ) => {
-        // FIXME: content
+        flow_content!();
     };
 }
 element!("article", Article, "Article Contents", article_items());
@@ -232,7 +234,7 @@ macro_rules! area_items {
         attribute!($el, rel);
         attribute!($el, shape);
         attribute!($el, target);
-        // FIXME: content
+        // no content (void)
     };
 }
 element!("area", Area, "Image Map Area", area_items());
@@ -240,7 +242,7 @@ element!("area", Area, "Image Map Area", area_items());
 // Aside element
 macro_rules! aside_items {
     ( $el:literal ) => {
-        // FIXME: content
+        flow_content!();
     };
 }
 element!("aside", Aside, "Aside", aside_items());
@@ -256,7 +258,11 @@ macro_rules! audio_items {
         attribute!($el, r#loop, "loop", true);
         attribute!($el, preload);
         attribute!($el, src);
-        // FIXME: content
+        // special content rules:
+        elem_method!(source, Source);
+        elem_method!(track, Track);
+        // FIXME: transparent content also allowed
+        comment_raw_methods!();
     };
 }
 element!("audio", Audio, "Embed Audio", audio_items());
@@ -264,7 +270,7 @@ element!("audio", Audio, "Embed Audio", audio_items());
 // B element
 macro_rules! b_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("b", B, "Bring Attention To (Bold)", b_items());
@@ -272,7 +278,7 @@ element!("b", B, "Bring Attention To (Bold)", b_items());
 // Bdi element
 macro_rules! bdi_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("bdi", Bdi, "Bidirectional Isolate", bdi_items());
@@ -280,7 +286,7 @@ element!("bdi", Bdi, "Bidirectional Isolate", bdi_items());
 // Bdo element
 macro_rules! bdo_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("bdo", Bdo, "Bidirectional Override", bdo_items());
@@ -289,7 +295,7 @@ element!("bdo", Bdo, "Bidirectional Override", bdo_items());
 macro_rules! blockquote_items {
     ( $el:literal ) => {
         attribute!($el, cite);
-        // FIXME: content
+        flow_content!();
     };
 }
 element!(
@@ -299,7 +305,7 @@ element!(
     blockquote_items()
 );
 
-// Base element
+// Base element (void)
 macro_rules! base_items {
     ( $el:literal ) => {
         attribute!($el, href);
@@ -321,7 +327,7 @@ element!("body", Body, "Document Body", body_items());
 // Line break element (void)
 macro_rules! br_items {
     ( $el:literal ) => {
-        // FIXME: content
+        // no content (void)
     };
 }
 element!("br", Br, "Line Break", br_items());
@@ -344,7 +350,7 @@ macro_rules! button_items {
         attribute!($el, popovertargetaction);
         attribute!($el, r#type, "type");
         attribute!($el, value);
-        // FIXME: content
+        non_interactive_phrasing_content!();
     };
 }
 element!("button", Button, "Button", button_items());
@@ -354,7 +360,7 @@ macro_rules! canvas_items {
     ( $el:literal ) => {
         attribute!($el, height);
         attribute!($el, width);
-        // FIXME: content
+        // FIXME: weird content rules
     };
 }
 element!("canvas", Canvas, "Graphics Canvas", canvas_items());
@@ -362,7 +368,7 @@ element!("canvas", Canvas, "Graphics Canvas", canvas_items());
 // Caption element
 macro_rules! caption_items {
     ( $el:literal ) => {
-        // FIXME: content
+        flow_content!();
     };
 }
 element!("caption", Caption, "Table Caption", caption_items());
@@ -370,7 +376,7 @@ element!("caption", Caption, "Table Caption", caption_items());
 // Cite element
 macro_rules! cite_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("cite", Cite, "Citation", cite_items());
@@ -378,7 +384,7 @@ element!("cite", Cite, "Citation", cite_items());
 // Code element
 macro_rules! code_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("code", Code, "Inline Code", code_items());
@@ -387,7 +393,7 @@ element!("code", Code, "Inline Code", code_items());
 macro_rules! col_items {
     ( $el:literal ) => {
         attribute!($el, span);
-        // FIXME: content
+        // no content (void)
     };
 }
 element!("col", Col, "Table Column", col_items());
@@ -404,7 +410,7 @@ element!("colgroup", ColGroup, "Table Column Group", colgroup_items());
 macro_rules! data_items {
     ( $el:literal ) => {
         attribute!($el, value);
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("data", Data, "Data", data_items());
@@ -412,7 +418,10 @@ element!("data", Data, "Data", data_items());
 // DataList element
 macro_rules! datalist_items {
     ( $el:literal ) => {
-        // FIXME: content
+        // NOTE: supposedly, phrasing content is allowed instead of options,
+        //       but why?  (just use raw if you really need this)
+        elem_method!(option, Option);
+        comment_raw_methods!();
     };
 }
 element!("datalist", DataList, "Data List", datalist_items());
@@ -420,7 +429,7 @@ element!("datalist", DataList, "Data List", datalist_items());
 // Dd element
 macro_rules! dd_items {
     ( $el:literal ) => {
-        // FIXME: content
+        flow_content!();
     };
 }
 element!("dd", Dd, "Description Details", dd_items());
@@ -430,7 +439,7 @@ macro_rules! del_items {
     ( $el:literal ) => {
         attribute!($el, cite);
         attribute!($el, datetime);
-        // FIXME: content
+        // FIXME: transparent content
     };
 }
 element!("del", Del, "Deleted Text", del_items());
@@ -440,7 +449,9 @@ macro_rules! details_items {
     ( $el:literal ) => {
         attribute!($el, open, true);
         attribute!($el, name);
-        // FIXME: content
+        // NOTE: summary must be first child
+        elem_method!(summary, Summary);
+        flow_content!();
     };
 }
 element!("details", Details, "Details Disclosure", details_items());
@@ -448,7 +459,8 @@ element!("details", Details, "Details Disclosure", details_items());
 // Dfn element
 macro_rules! dfn_items {
     ( $el:literal ) => {
-        // FIXME: content
+        // NOTE: no dfn descendants allowed!
+        phrasing_content!();
     };
 }
 element!("dfn", Dfn, "Definition", dfn_items());
@@ -458,7 +470,7 @@ macro_rules! dialog_items {
     ( $el:literal ) => {
         attribute!($el, closedby);
         attribute!($el, open, true);
-        // FIXME: content
+        flow_content!();
     };
 }
 element!("dialog", Dialog, "Dialog", dialog_items());
@@ -474,7 +486,11 @@ element!("div", Div, "Content Division", div_items());
 // Dl element
 macro_rules! dl_items {
     ( $el:literal ) => {
-        // FIXME: content
+        // NOTE: dt/dd elements must be in pairs
+        elem_method!(dt, Dt);
+        elem_method!(dd, Dd);
+        elem_method!(script, Script);
+        elem_method!(template, Template);
     };
 }
 element!("dl", Dl, "Description List", dl_items());
@@ -482,7 +498,8 @@ element!("dl", Dl, "Description List", dl_items());
 // Dt element
 macro_rules! dt_items {
     ( $el:literal ) => {
-        // FIXME: content
+        // FIXME: no header, footer, sectioning or heading descendants
+        flow_content!();
     };
 }
 element!("dt", Dt, "Description Term", dt_items());
@@ -502,7 +519,7 @@ macro_rules! embed_items {
         attribute!($el, src);
         attribute!($el, r#type, "type");
         attribute!($el, width);
-        // FIXME: content
+        // no content (void)
     };
 }
 element!("embed", Embed, "Embed External Content", embed_items());
@@ -513,7 +530,9 @@ macro_rules! fieldset_items {
         attribute!($el, disabled, true);
         attribute!($el, form);
         attribute!($el, name);
-        // FIXME: content
+        // NOTE: legend optional, but must be first child
+        elem_method!(legend, Legend);
+        flow_content!();
     };
 }
 element!("fieldset", FieldSet, "Field Set", fieldset_items());
@@ -521,7 +540,7 @@ element!("fieldset", FieldSet, "Field Set", fieldset_items());
 // FigCaption element
 macro_rules! figcaption_items {
     ( $el:literal ) => {
-        // FIXME: content
+        flow_content!();
     };
 }
 element!(
@@ -534,7 +553,8 @@ element!(
 // Figure element
 macro_rules! figure_items {
     ( $el:literal ) => {
-        // FIXME: content
+        elem_method!(figcaption, FigCaption);
+        flow_content!();
     };
 }
 element!("figure", Figure, "Figure", figure_items());
@@ -542,7 +562,8 @@ element!("figure", Figure, "Figure", figure_items());
 // Footer element
 macro_rules! footer_items {
     ( $el:literal ) => {
-        // FIXME: content
+        // NOTE: descendant header/footer elements not allowed
+        flow_content!();
     };
 }
 element!("footer", Footer, "Footer", footer_items());
@@ -559,7 +580,8 @@ macro_rules! form_items {
         attribute!($el, method);
         attribute!($el, novalidate, true);
         attribute!($el, target);
-        // FIXME: content
+        // FIXME: descendant form elements not allowed
+        flow_content!();
     };
 }
 element!("form", Form, "Form", form_items());
@@ -589,7 +611,8 @@ element!("head", Head, "Header / Document Metadata", head_items());
 // Header element
 macro_rules! header_items {
     ( $el:literal ) => {
-        // FIXME: content
+        // NOTE: descendant header/footer elements not allowed
+        flow_content!();
     };
 }
 element!("header", Header, "Header", header_items());
@@ -597,15 +620,22 @@ element!("header", Header, "Header", header_items());
 // HGroup element
 macro_rules! hgroup_items {
     ( $el:literal ) => {
-        // FIXME: content
+        // NOTE: there are special ordering rules for these
+        elem_method!(h1, H1);
+        elem_method!(h2, H2);
+        elem_method!(h3, H3);
+        elem_method!(h4, H4);
+        elem_method!(h5, H5);
+        elem_method!(h6, H6);
+        elem_method!(p, P);
     };
 }
 element!("hgroup", HGroup, "Heading Group", hgroup_items());
 
-// Hr element
+// Hr element (void)
 macro_rules! hr_items {
     ( $el:literal ) => {
-        // FIXME: content
+        // no content (void)
     };
 }
 element!("hr", Hr, "Horizontal Rule", hr_items());
@@ -623,7 +653,7 @@ element!("html", Html, "HTML Document Root", html_items());
 // I element
 macro_rules! i_items {
     ( $el:literal ) => {
-        comment_raw_methods!();
+        phrasing_content!();
     };
 }
 element!("i", I, "Idiomatic Text (Italic)", i_items());
@@ -642,12 +672,12 @@ macro_rules! iframe_items {
         attribute!($el, src);
         attribute!($el, srcdoc);
         attribute!($el, width);
-        // FIXME: content
+        // no content allowed (nested browsing context)
     };
 }
 element!("iframe", IFrame, "Inline Frame", iframe_items());
 
-// Img element
+// Img element (void)
 macro_rules! img_items {
     ( $el:literal ) => {
         attribute!($el, alt);
@@ -664,12 +694,12 @@ macro_rules! img_items {
         attribute!($el, srcset);
         attribute!($el, width);
         attribute!($el, usemap);
-        // FIXME: content
+        // no content (void)
     };
 }
 element!("img", Img, "Embedded Image", img_items());
 
-// Input element
+// Input element (void)
 macro_rules! input_items {
     ( $el:literal ) => {
         attribute!($el, accept);
@@ -707,7 +737,7 @@ macro_rules! input_items {
         attribute!($el, r#type, "type");
         attribute!($el, value);
         attribute!($el, width);
-        // FIXME: content
+        // no content (void)
     };
 }
 element!("input", Input, "Input", input_items());
@@ -717,7 +747,7 @@ macro_rules! ins_items {
     ( $el:literal ) => {
         attribute!($el, cite);
         attribute!($el, datetime);
-        // FIXME: content
+        // FIXME: transparent content
     };
 }
 element!("ins", Ins, "Inserted Text", ins_items());
@@ -725,7 +755,7 @@ element!("ins", Ins, "Inserted Text", ins_items());
 // Kbd element
 macro_rules! kbd_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("kbd", Kbd, "Keyboard Input", kbd_items());
@@ -734,7 +764,8 @@ element!("kbd", Kbd, "Keyboard Input", kbd_items());
 macro_rules! label_items {
     ( $el:literal ) => {
         attribute!($el, r#for, "for");
-        // FIXME: content
+        // NOTE: no descendant label, etc.
+        phrasing_content!();
     };
 }
 element!("label", Label, "Label", label_items());
@@ -742,7 +773,13 @@ element!("label", Label, "Label", label_items());
 // Legend element
 macro_rules! legend_items {
     ( $el:literal ) => {
-        // FIXME: content
+        elem_method!(h1, H1);
+        elem_method!(h2, H2);
+        elem_method!(h3, H3);
+        elem_method!(h4, H4);
+        elem_method!(h5, H5);
+        elem_method!(h6, H6);
+        phrasing_content!();
     };
 }
 element!("legend", Legend, "Field Set Legend", legend_items());
@@ -756,7 +793,7 @@ macro_rules! li_items {
 }
 element!("li", Li, "List Item", li_items());
 
-// Link element
+// Link element (void)
 macro_rules! link_items {
     ( $el:literal ) => {
         attribute!($el, r#as, "as");
@@ -782,7 +819,7 @@ element!("link", Link, "External Resource Link", link_items());
 // Main element
 macro_rules! main_items {
     ( $el:literal ) => {
-        // FIXME: content
+        flow_content!();
     };
 }
 element!("main", Main, "Main", main_items());
@@ -790,7 +827,7 @@ element!("main", Main, "Main", main_items());
 // Mark element
 macro_rules! mark_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("mark", Mark, "Mark Text", mark_items());
@@ -799,7 +836,7 @@ element!("mark", Mark, "Mark Text", mark_items());
 macro_rules! map_items {
     ( $el:literal ) => {
         attribute!($el, name);
-        // FIXME: content
+        // FIXME: transparent content
     };
 }
 element!("map", Map, "Image Map", map_items());
@@ -807,26 +844,15 @@ element!("map", Map, "Image Map", map_items());
 // Menu element
 macro_rules! menu_items {
     ( $el:literal ) => {
-        // FIXME: content
+        elem_method!(li, Li);
+        elem_method!(script, Script);
+        elem_method!(template, Template);
+        comment_raw_methods!();
     };
 }
 element!("menu", Menu, "Menu", menu_items());
 
-// Meter element
-macro_rules! meter_items {
-    ( $el:literal ) => {
-        attribute!($el, value);
-        attribute!($el, min);
-        attribute!($el, max);
-        attribute!($el, low);
-        attribute!($el, high);
-        attribute!($el, optimum);
-        // FIXME: content
-    };
-}
-element!("meter", Meter, "Meter", meter_items());
-
-// Meta element
+// Meta element (void)
 macro_rules! meta_items {
     ( $el:literal ) => {
         attribute!($el, charset);
@@ -839,10 +865,25 @@ macro_rules! meta_items {
 }
 element!("meta", Meta, "Metadata", meta_items());
 
+// Meter element
+macro_rules! meter_items {
+    ( $el:literal ) => {
+        attribute!($el, value);
+        attribute!($el, min);
+        attribute!($el, max);
+        attribute!($el, low);
+        attribute!($el, high);
+        attribute!($el, optimum);
+        // NOTE: no meter descendants allowed!
+        phrasing_content!();
+    };
+}
+element!("meter", Meter, "Meter", meter_items());
+
 // Nav element
 macro_rules! nav_items {
     ( $el:literal ) => {
-        // FIXME: content
+        flow_content!();
     };
 }
 element!("nav", Nav, "Navigation Section", nav_items());
@@ -850,7 +891,10 @@ element!("nav", Nav, "Navigation Section", nav_items());
 // NoScript element
 macro_rules! noscript_items {
     ( $el:literal ) => {
-        // FIXME: content (complex rules)
+        // FIXME: complex content rules (sometimes transparent)
+        elem_method!(link, Link);
+        elem_method!(style_elem, Style, "style"); // global attr
+        elem_method!(meta, Meta);
     };
 }
 element!("noscript", NoScript, "NoScript", noscript_items());
@@ -864,7 +908,7 @@ macro_rules! object_items {
         attribute!($el, name);
         attribute!($el, r#type, "type");
         attribute!($el, width);
-        // FIXME: content
+        // FIXME: transparent content
     };
 }
 element!("object", Object, "External Object", object_items());
@@ -888,7 +932,10 @@ macro_rules! optgroup_items {
     ( $el:literal ) => {
         attribute!($el, disabled, true);
         attribute!($el, label);
-        // FIXME: content
+        // NOTE: legend permitted in customizable select elements
+        elem_method!(option, Option);
+        elem_method!(legend, Legend);
+        comment_raw_methods!();
     };
 }
 element!("optgroup", OptGroup, "Option Group", optgroup_items());
@@ -900,7 +947,9 @@ macro_rules! option_items {
         attribute!($el, label);
         attribute!($el, selected, true);
         attribute!($el, value);
-        // FIXME: content
+        // NOTE: more permitted in customizable select elements
+        text_methods!();
+        comment_raw_methods!();
     };
 }
 element!("option", Option, "Option", option_items());
@@ -1067,7 +1116,7 @@ macro_rules! small_items {
 }
 element!("small", Small, "Side Comment (Small)", small_items());
 
-// Source element
+// Source element (void)
 macro_rules! source_items {
     ( $el:literal ) => {
         attribute!($el, r#type, "type");
@@ -1077,6 +1126,7 @@ macro_rules! source_items {
         attribute!($el, media);
         attribute!($el, height);
         attribute!($el, width);
+        // no content (void)
     };
 }
 element!("source", Source, "Media or Image Source", source_items());
@@ -1245,7 +1295,7 @@ macro_rules! tr_items {
 }
 element!("tr", Tr, "Table Row", tr_items());
 
-// Track element
+// Track element (void)
 macro_rules! track_items {
     ( $el:literal ) => {
         attribute!($el, default);
@@ -1253,7 +1303,7 @@ macro_rules! track_items {
         attribute!($el, label);
         attribute!($el, src);
         attribute!($el, srclang);
-        // FIXME: content
+        // no content (void)
     };
 }
 element!("track", Track, "Embed Text Track", track_items());
@@ -1304,10 +1354,10 @@ macro_rules! video_items {
 }
 element!("video", Video, "Embed Video", video_items());
 
-// Wbr element
+// Wbr element (void)
 macro_rules! wbr_items {
     ( $el:literal ) => {
-        // FIXME: content
+        // no content (void)
     };
 }
 element!("wbr", Wbr, "Line Break Opportunity", wbr_items());
