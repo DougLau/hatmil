@@ -193,6 +193,7 @@ macro_rules! a_items {
         attribute!($el, target);
         attribute!($el, r#type, "type");
         // FIXME: only transparent content (not interactive, or "a")
+        text_content!();
     };
 }
 element!("a", A, "Anchor", a_items());
@@ -258,7 +259,7 @@ macro_rules! audio_items {
         attribute!($el, r#loop, "loop", true);
         attribute!($el, preload);
         attribute!($el, src);
-        // special content rules:
+        // NOTE: special content rules
         elem_method!(source, Source);
         elem_method!(track, Track);
         // FIXME: transparent content also allowed
@@ -440,6 +441,7 @@ macro_rules! del_items {
         attribute!($el, cite);
         attribute!($el, datetime);
         // FIXME: transparent content
+        text_content!();
     };
 }
 element!("del", Del, "Deleted Text", del_items());
@@ -491,6 +493,7 @@ macro_rules! dl_items {
         elem_method!(dd, Dd);
         elem_method!(script, Script);
         elem_method!(template, Template);
+        comment_raw_methods!();
     };
 }
 element!("dl", Dl, "Description List", dl_items());
@@ -748,6 +751,7 @@ macro_rules! ins_items {
         attribute!($el, cite);
         attribute!($el, datetime);
         // FIXME: transparent content
+        text_content!();
     };
 }
 element!("ins", Ins, "Inserted Text", ins_items());
@@ -960,7 +964,7 @@ macro_rules! output_items {
         attribute!($el, r#for, "for");
         attribute!($el, form);
         attribute!($el, name);
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("output", Output, "Output", output_items());
@@ -976,7 +980,9 @@ element!("p", P, "Paragraph", p_items());
 // Picture element
 macro_rules! picture_items {
     ( $el:literal ) => {
-        // FIXME: content
+        elem_method!(source, Source);
+        elem_method!(img, Img);
+        comment_raw_methods!();
     };
 }
 element!("picture", Picture, "Picture", picture_items());
@@ -994,7 +1000,8 @@ macro_rules! progress_items {
     ( $el:literal ) => {
         attribute!($el, max);
         attribute!($el, value);
-        // FIXME: content
+        // NOTE: no progress descendants allowed!
+        phrasing_content!();
     };
 }
 element!("progress", Progress, "Progress Indicator", progress_items());
@@ -1003,7 +1010,7 @@ element!("progress", Progress, "Progress Indicator", progress_items());
 macro_rules! q_items {
     ( $el:literal ) => {
         attribute!($el, cite);
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("q", Q, "Inline Quotation", q_items());
@@ -1011,7 +1018,7 @@ element!("q", Q, "Inline Quotation", q_items());
 // Rp element
 macro_rules! rp_items {
     ( $el:literal ) => {
-        // FIXME: content
+        text_content!();
     };
 }
 element!("rp", Rp, "Ruby Fallback Parenthesis", rp_items());
@@ -1019,7 +1026,7 @@ element!("rp", Rp, "Ruby Fallback Parenthesis", rp_items());
 // Rt element
 macro_rules! rt_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("rt", Rt, "Ruby Text", rt_items());
@@ -1027,7 +1034,10 @@ element!("rt", Rt, "Ruby Text", rt_items());
 // Ruby element
 macro_rules! ruby_items {
     ( $el:literal ) => {
-        // FIXME: content
+        // NOTE: content rules are complex
+        elem_method!(rp, Rp);
+        elem_method!(rt, Rt);
+        phrasing_content!();
     };
 }
 element!("ruby", Ruby, "Ruby Annotation", ruby_items());
@@ -1035,7 +1045,7 @@ element!("ruby", Ruby, "Ruby Annotation", ruby_items());
 // S element
 macro_rules! s_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("s", S, "Strikethrough", s_items());
@@ -1043,7 +1053,7 @@ element!("s", S, "Strikethrough", s_items());
 // Samp element
 macro_rules! samp_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("samp", Samp, "Sample Output", samp_items());
@@ -1061,7 +1071,7 @@ macro_rules! script_items {
         attribute!($el, referrerpolicy);
         attribute!($el, src);
         attribute!($el, r#type, "type");
-        // FIXME: content
+        text_methods!();
     };
 }
 element!("script", Script, "Script", script_items());
@@ -1069,7 +1079,7 @@ element!("script", Script, "Script", script_items());
 // Search element
 macro_rules! search_items {
     ( $el:literal ) => {
-        // FIXME: content
+        flow_content!();
     };
 }
 element!("search", Search, "Search", search_items());
@@ -1077,7 +1087,7 @@ element!("search", Search, "Search", search_items());
 // Section element
 macro_rules! section_items {
     ( $el:literal ) => {
-        // FIXME: content
+        flow_content!();
     };
 }
 element!("section", Section, "Section", section_items());
@@ -1092,6 +1102,11 @@ macro_rules! select_items {
         attribute!($el, name);
         attribute!($el, required, true);
         attribute!($el, size);
+        // NOTE: more permitted in customizable select elements
+        elem_method!(option, Option);
+        elem_method!(optgroup, OptGroup);
+        elem_method!(hr, Hr);
+        comment_raw_methods!();
     };
 }
 element!("select", Select, "Select", select_items());
@@ -1103,7 +1118,8 @@ element!("select", Select, "Select", select_items());
 macro_rules! slot_items {
     ( $el:literal ) => {
         attribute!($el, name);
-        // FIXME: content
+        // FIXME: transparent content
+        text_content!();
     };
 }
 element!("slot", Slot, "Web Component Slot", slot_items());
@@ -1111,7 +1127,7 @@ element!("slot", Slot, "Web Component Slot", slot_items());
 // Small element
 macro_rules! small_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("small", Small, "Side Comment (Small)", small_items());
@@ -1142,7 +1158,7 @@ element!("span", Span, "Content Span", span_items());
 // Strong element
 macro_rules! strong_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("strong", Strong, "Strong Importance", strong_items());
@@ -1152,7 +1168,8 @@ macro_rules! style_items {
     ( $el:literal ) => {
         attribute!($el, blocking);
         attribute!($el, media);
-        // FIXME: allow `text/css` content only
+        // NOTE: `text/css` content only
+        text_content!();
     };
 }
 element!("style", Style, "Style Information", style_items());
@@ -1160,7 +1177,7 @@ element!("style", Style, "Style Information", style_items());
 // Sub element
 macro_rules! sub_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("sub", Sub, "Subscript", sub_items());
@@ -1168,7 +1185,8 @@ element!("sub", Sub, "Subscript", sub_items());
 // Summary element
 macro_rules! summary_items {
     ( $el:literal ) => {
-        // FIXME: content
+        // FIXME: also heading content (h1-h6 / hgroup)
+        phrasing_content!();
     };
 }
 element!("summary", Summary, "Disclosure Summary", summary_items());
@@ -1176,7 +1194,7 @@ element!("summary", Summary, "Disclosure Summary", summary_items());
 // Sup element
 macro_rules! sup_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("sup", Sup, "Superscript", sup_items());
@@ -1184,7 +1202,8 @@ element!("sup", Sup, "Superscript", sup_items());
 // TBody element
 macro_rules! tbody_items {
     ( $el:literal ) => {
-        // FIXME: content
+        elem_method!(tr, Tr);
+        comment_raw_methods!();
     };
 }
 element!("tbody", TBody, "Table Body", tbody_items());
@@ -1192,7 +1211,8 @@ element!("tbody", TBody, "Table Body", tbody_items());
 // TFoot element
 macro_rules! tfoot_items {
     ( $el:literal ) => {
-        // FIXME: content
+        elem_method!(tr, Tr);
+        comment_raw_methods!();
     };
 }
 element!("tfoot", TFoot, "Table Foot", tfoot_items());
@@ -1200,7 +1220,8 @@ element!("tfoot", TFoot, "Table Foot", tfoot_items());
 // THead element
 macro_rules! thead_items {
     ( $el:literal ) => {
-        // FIXME: content
+        elem_method!(tr, Tr);
+        comment_raw_methods!();
     };
 }
 element!("thead", THead, "Table Head", thead_items());
@@ -1208,7 +1229,14 @@ element!("thead", THead, "Table Head", thead_items());
 // Table element
 macro_rules! table_items {
     ( $el:literal ) => {
-        // FIXME: content
+        // NOTE: additional ordering rules apply!
+        elem_method!(caption, Caption);
+        elem_method!(colgroup, ColGroup);
+        elem_method!(thead, THead);
+        elem_method!(tbody, TBody);
+        elem_method!(tr, Tr);
+        elem_method!(tfoot, TFoot);
+        comment_raw_methods!();
     };
 }
 element!("table", Table, "Table", table_items());
@@ -1219,7 +1247,7 @@ macro_rules! td_items {
         attribute!($el, colspan);
         attribute!($el, headers);
         attribute!($el, rowspan);
-        // FIXME: content
+        flow_content!();
     };
 }
 element!("td", Td, "Table Data Cell", td_items());
@@ -1231,7 +1259,8 @@ macro_rules! template_items {
         attribute!($el, shadowrootclonable);
         attribute!($el, shadowrootdelegatesfocus);
         attribute!($el, shadowrootserializable);
-        // FIXME: is any content allowed?
+        // NOTE: use raw to build template
+        comment_raw_methods!();
     };
 }
 element!("template", Template, "Content Template", template_items());
@@ -1252,7 +1281,7 @@ macro_rules! textarea_items {
         attribute!($el, required, true);
         attribute!($el, rows);
         attribute!($el, wrap);
-        // FIXME: content
+        text_content!();
     };
 }
 element!("textarea", TextArea, "Text Area", textarea_items());
@@ -1265,7 +1294,8 @@ macro_rules! th_items {
         attribute!($el, headers);
         attribute!($el, rowspan);
         attribute!($el, scope);
-        // FIXME: content
+        // NOTE: no header, footer, sectioning, or heading content
+        flow_content!();
     };
 }
 element!("th", Th, "Table Header", th_items());
@@ -1274,7 +1304,7 @@ element!("th", Th, "Table Header", th_items());
 macro_rules! time_items {
     ( $el:literal ) => {
         attribute!($el, datetime);
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("time", Time, "Time / Date", time_items());
@@ -1290,7 +1320,11 @@ element!("title", Title, "Document Title", title_content());
 // Tr element
 macro_rules! tr_items {
     ( $el:literal ) => {
-        // FIXME: content
+        elem_method!(td, Td);
+        elem_method!(th, Th);
+        elem_method!(script, Script);
+        elem_method!(template, Template);
+        comment_raw_methods!();
     };
 }
 element!("tr", Tr, "Table Row", tr_items());
@@ -1311,7 +1345,7 @@ element!("track", Track, "Embed Text Track", track_items());
 // U element
 macro_rules! u_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("u", U, "Unarticulated Annotation (Underline)", u_items());
@@ -1319,7 +1353,10 @@ element!("u", U, "Unarticulated Annotation (Underline)", u_items());
 // Ul element
 macro_rules! ul_items {
     ( $el:literal ) => {
-        // FIXME: content
+        elem_method!(li, Li);
+        elem_method!(script, Script);
+        elem_method!(template, Template);
+        comment_raw_methods!();
     };
 }
 element!("ul", Ul, "Unordered List", ul_items());
@@ -1327,7 +1364,7 @@ element!("ul", Ul, "Unordered List", ul_items());
 // Var element
 macro_rules! var_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("var", Var, "Variable", var_items());
@@ -1349,7 +1386,11 @@ macro_rules! video_items {
         attribute!($el, preload);
         attribute!($el, src);
         attribute!($el, width);
-        // FIXME: content
+        // NOTE: special content rules
+        elem_method!(source, Source);
+        elem_method!(track, Track);
+        // FIXME: transparent content also allowed
+        comment_raw_methods!();
     };
 }
 element!("video", Video, "Embed Video", video_items());

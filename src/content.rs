@@ -111,7 +111,7 @@ macro_rules! flow_content {
     () => {
         text_methods!();
         elem_method!(a, A);
-        elem_method!(abbr, Abbr);
+        elem_method!(abbr_elem, Abbr, "abbr"); // FIXME: th abbr
         elem_method!(address, Address);
         elem_method!(article, Article);
         elem_method!(aside, Aside);
@@ -212,7 +212,7 @@ macro_rules! phrasing_content {
         elem_method!(br, Br);
         elem_method!(button, Button);
         elem_method!(canvas, Canvas);
-        elem_method!(cite, Cite);
+        elem_method!(cite_elem, Cite, "cite"); // FIXME: q cite
         elem_method!(code, Code);
         elem_method!(data, Data);
         elem_method!(datalist, DataList);
