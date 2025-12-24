@@ -17,7 +17,7 @@ pub trait Element<'p> {
     /// End the element
     ///
     /// Adds the closing tag (e.g. `</span>`).
-    fn end(self) -> &'p mut Page;
+    fn end(&'p mut self) -> &'p mut Page;
 }
 
 /// Create an HTML element
@@ -54,9 +54,55 @@ macro_rules! element {
             fn new(page: &'p mut Page) -> Self {
                 $elem { page }
             }
-            fn end(self) -> &'p mut Page {
+            fn end(&'p mut self) -> &'p mut Page {
+                self.page.end();
                 self.page
             }
+        }
+    };
+}
+
+/// Make an HTML "value" attribute method
+macro_rules! val_attr {
+    ( $path:expr, $attr:ident, $raw_attr:expr ) => {
+        #[doc = concat!(
+                    "Add [",
+                    $raw_attr,
+                    "](",
+                    "https://developer.mozilla.org/en-US/docs/",
+                    "Web/HTML/Reference/",
+                    $path,
+                    "#",
+                    $raw_attr,
+                    ") attribute",
+                )]
+        pub fn $attr<'a, V>(self, val: V) -> Self
+        where
+            V: Into<Value<'a>>,
+        {
+            self.page.attr($raw_attr, val);
+            self
+        }
+    };
+}
+
+/// Make an HTML Boolean attribute method
+macro_rules! bool_attr {
+    ( $path:expr, $attr:ident, $raw_attr:expr ) => {
+        #[doc = concat!(
+                    "Add [",
+                    $raw_attr,
+                    "](",
+                    "https://developer.mozilla.org/en-US/docs/",
+                    "Web/HTML/Reference/",
+                    $path,
+                    "#",
+                    $raw_attr,
+                    ") Boolean attribute",
+                )]
+        pub fn $attr(self) -> Self {
+            self.page.attr_bool($raw_attr);
+            self
         }
     };
 }
@@ -64,108 +110,70 @@ macro_rules! element {
 /// Make an HTML attribute method
 macro_rules! attribute {
     // Make a non-global "value" attribute
-    ( $el:literal, $attr:ident ) => {
-        attribute!( concat!("Elements/", $el), $attr );
+    ( $el:expr, $attr:ident ) => {
+        val_attr!( concat!("Elements/", $el), $attr, stringify!($attr) );
     };
 
     // Make a non-global Boolean attribute
-    ( $el:literal, $attr:ident, true ) => {
-        attribute!( concat!("Elements/", $el), $attr, true );
+    ( $el:expr, $attr:ident, true ) => {
+        bool_attr!( concat!("Elements/", $el), $attr, stringify!($attr) );
     };
 
     // Make a non-global "value" attribute with raw-string name (e.g. r#type)
-    ( $el:literal, $attr:ident, $raw_attr:literal ) => {
-        attribute!( concat!("Elements/", $el), $attr ); // FIXME
+    ( $el:expr, $attr:ident, $raw_attr:literal ) => {
+        val_attr!( concat!("Elements/", $el), $attr, $raw_attr );
     };
 
     // Make a non-global Boolean attribute with raw-string name (e.g. r#loop)
-    ( $el:literal, $attr:ident, $raw_attr:literal, true ) => {
-        attribute!( concat!("Elements/", $el), $attr, true ); // FIXME
+    ( $el:expr, $attr:ident, $raw_attr:literal, true ) => {
+        bool_attr!( concat!("Elements/", $el), $attr, $raw_attr );
     };
+}
 
+/// Make a global HTML attribute method
+macro_rules! global_attribute {
     // Make a global "value" attribute
     ( $attr:ident ) => {
-        attribute!( concat!("Global_attributes/", ""), $attr );
+        val_attr!( concat!("Global_attributes/", ""), $attr, stringify!($attr) );
     };
 
     // Make a global Boolean attribute
     ( $attr:ident, true ) => {
-        attribute!( concat!("Global_attributes/", ""), $attr, true);
-    };
-
-    // Make a "value" attribute
-    ( $path:expr, $attr:ident ) => {
-        #[doc = concat!(
-                    "Add [",
-                    stringify!($attr),
-                    "](",
-                    "https://developer.mozilla.org/en-US/docs/Web/HTML/",
-                    "Reference/",
-                    $path,
-                    "#",
-                    stringify!($attr),
-                    ") attribute",
-                )]
-        pub fn $attr<'a, V>(self, val: V) -> Self
-        where
-            V: Into<Value<'a>>,
-        {
-            self.page.attr(stringify!($attr), val);
-            self
-        }
-    };
-
-    // Make a Boolean attribute
-    ( $path:expr, $attr:ident, true ) => {
-        #[doc = concat!(
-                    "Add [",
-                    stringify!($attr),
-                    "](",
-                    "https://developer.mozilla.org/en-US/docs/Web/HTML/",
-                    "Reference/",
-                    $path,
-                    "#",
-                    stringify!($attr),
-                    ") Boolean attribute",
-                )]
-        pub fn $attr(self) -> Self {
-            self.page.attr_bool(stringify!($attr));
-            self
-        }
+        bool_attr!( concat!("Global_attributes/", ""), $attr, stringify!($attr) );
     };
 }
 
 /// Global attributes
 macro_rules! global_attributes {
     () => {
-        attribute!(accesskey);
-        attribute!(autocapitalize);
-        attribute!(autocorrect);
-        attribute!(autofocus, true);
-        attribute!(class);
-        attribute!(contenteditable);
+        global_attribute!(accesskey);
+        global_attribute!(autocapitalize);
+        global_attribute!(autocorrect);
+        global_attribute!(autofocus, true);
+        global_attribute!(class);
+        global_attribute!(contenteditable);
         /* data-* */
-        attribute!(dir);
-        attribute!(draggable);
-        attribute!(enterkeyhint);
-        attribute!(exportparts);
-        attribute!(hidden);
-        attribute!(id);
-        attribute!(inert, true);
-        attribute!(is);
-        attribute!(inputmode);
+        global_attribute!(dir);
+        global_attribute!(draggable);
+        global_attribute!(enterkeyhint);
+        global_attribute!(exportparts);
+        global_attribute!(hidden);
+        global_attribute!(id);
+        global_attribute!(inert, true);
+        global_attribute!(is);
+        global_attribute!(inputmode);
         /* itemid, itemprop, itemref, itemscope, itemtype */
-        attribute!(lang);
-        attribute!(nonce);
-        attribute!(part);
-        attribute!(popover);
-        attribute!(role);
-        attribute!(slot);
-        attribute!(spellcheck);
-        attribute!(style);
-        attribute!(tabindex);
-        attribute!(title);
-        attribute!(translate);
+        global_attribute!(lang);
+        global_attribute!(nonce);
+        global_attribute!(part);
+        global_attribute!(popover);
+        global_attribute!(role);
+        global_attribute!(slot);
+        global_attribute!(spellcheck);
+        global_attribute!(style);
+        global_attribute!(tabindex);
+        global_attribute!(title);
+        global_attribute!(translate);
         /* virtualkeyboardpolicy, writingsuggestions */
     };
 }
@@ -458,7 +466,7 @@ element!("dialog", Dialog, "Dialog", dialog_items());
 // Div element
 macro_rules! div_items {
     ( $el:literal ) => {
-        // FIXME: content
+        flow_content!();
     };
 }
 element!("div", Div, "Content Division", div_items());
@@ -482,7 +490,7 @@ element!("dt", Dt, "Description Term", dt_items());
 // Em element
 macro_rules! em_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("em", Em, "Emphasis", em_items());
@@ -556,54 +564,19 @@ macro_rules! form_items {
 }
 element!("form", Form, "Form", form_items());
 
-// h1 element
-macro_rules! h1_items {
+// heading element
+macro_rules! heading_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 // FIXME: MDN links broken; "Heading_Elements"
-element!("h1", H1, "Section Heading 1", h1_items());
-
-// h2 element
-macro_rules! h2_items {
-    ( $el:literal ) => {
-        // FIXME: content
-    };
-}
-element!("h2", H2, "Section Heading 2", h2_items());
-
-// h3 element
-macro_rules! h3_items {
-    ( $el:literal ) => {
-        // FIXME: content
-    };
-}
-element!("h3", H3, "Section Heading 3", h3_items());
-
-// h4 element
-macro_rules! h4_items {
-    ( $el:literal ) => {
-        // FIXME: content
-    };
-}
-element!("h4", H4, "Section Heading 4", h4_items());
-
-// h5 element
-macro_rules! h5_items {
-    ( $el:literal ) => {
-        // FIXME: content
-    };
-}
-element!("h5", H5, "Section Heading 5", h5_items());
-
-// h6 element
-macro_rules! h6_items {
-    ( $el:literal ) => {
-        // FIXME: content
-    };
-}
-element!("h6", H6, "Section Heading 6", h6_items());
+element!("h1", H1, "Section Heading 1", heading_items());
+element!("h2", H2, "Section Heading 2", heading_items());
+element!("h3", H3, "Section Heading 3", heading_items());
+element!("h4", H4, "Section Heading 4", heading_items());
+element!("h5", H5, "Section Heading 5", heading_items());
+element!("h6", H6, "Section Heading 6", heading_items());
 
 // Head element
 macro_rules! head_items {
@@ -642,7 +615,7 @@ macro_rules! html_items {
     ( $el:literal ) => {
         elem_method!(head, Head);
         elem_method!(body, Body);
-        comment_method!();
+        comment_raw_methods!();
     };
 }
 element!("html", Html, "HTML Document Root", html_items());
@@ -650,7 +623,7 @@ element!("html", Html, "HTML Document Root", html_items());
 // I element
 macro_rules! i_items {
     ( $el:literal ) => {
-        comment_method!();
+        comment_raw_methods!();
     };
 }
 element!("i", I, "Idiomatic Text (Italic)", i_items());
@@ -778,7 +751,7 @@ element!("legend", Legend, "Field Set Legend", legend_items());
 macro_rules! li_items {
     ( $el:literal ) => {
         attribute!($el, value);
-        // FIXME: content
+        flow_content!();
     };
 }
 element!("li", Li, "List Item", li_items());
@@ -902,7 +875,10 @@ macro_rules! ol_items {
         attribute!($el, reversed, true);
         attribute!($el, start);
         attribute!($el, r#type, "type");
-        // FIXME: content
+        elem_method!(li, Li);
+        elem_method!(script, Script);
+        elem_method!(template, Template);
+        comment_raw_methods!();
     };
 }
 element!("ol", Ol, "Ordered List", ol_items());
@@ -943,7 +919,7 @@ element!("output", Output, "Output", output_items());
 // P element
 macro_rules! p_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("p", P, "Paragraph", p_items());
@@ -959,7 +935,7 @@ element!("picture", Picture, "Picture", picture_items());
 // Pre element
 macro_rules! pre_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("pre", Pre, "Preformatted Text", pre_items());
@@ -1108,7 +1084,7 @@ element!("source", Source, "Media or Image Source", source_items());
 // Span element
 macro_rules! span_items {
     ( $el:literal ) => {
-        // FIXME: content
+        phrasing_content!();
     };
 }
 element!("span", Span, "Content Span", span_items());
@@ -1254,12 +1230,12 @@ macro_rules! time_items {
 element!("time", Time, "Time / Date", time_items());
 
 // Title element
-macro_rules! title_items {
+macro_rules! title_content {
     ( $el:literal ) => {
-        // FIXME: only text content allowed
+        text_content!();
     };
 }
-element!("title", Title, "Document Title", title_items());
+element!("title", Title, "Document Title", title_content());
 
 // Tr element
 macro_rules! tr_items {

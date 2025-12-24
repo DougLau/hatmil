@@ -16,8 +16,8 @@ pub struct Page {
     xml_compatible: bool,
     /// HTML document text
     doc: String,
-    /// Tag stack
-    stack: Vec<&'static str>,
+    /// Stack of (element tag, void flags)
+    stack: Vec<(&'static str, bool)>,
     /// Current tag empty + XML compatible
     empty: bool,
 }
@@ -31,7 +31,7 @@ impl fmt::Display for Page {
             write!(f, "{}", self.doc)?;
             empty = false;
         }
-        for tag in self.stack.iter().rev() {
+        for (tag, _void) in self.stack.iter().rev() {
             if empty {
                 write!(f, " />")?;
             } else {
@@ -46,7 +46,7 @@ impl fmt::Display for Page {
 impl From<Page> for String {
     fn from(mut page: Page) -> Self {
         // zero-copy alternative to fmt::Display
-        while let Some(tag) = page.stack.pop() {
+        while let Some((tag, _void)) = page.stack.pop() {
             page.doc.push_str("</");
             page.doc.push_str(tag);
             page.doc.push('>');
@@ -127,7 +127,7 @@ impl Page {
         self.doc.push('<');
         self.doc.push_str(tag);
         self.doc.push('>');
-        self.stack.push(tag);
+        self.stack.push((tag, void));
         if void {
             self.empty = false;
         } else {
@@ -251,13 +251,13 @@ impl Page {
     ///
     /// Add a closing tag (e.g. `</span>`).
     pub fn end(&mut self) -> &mut Self {
-        if let Some(elem) = self.stack.pop() {
+        if let Some((tag, _void)) = self.stack.pop() {
             if self.empty && self.doc.ends_with('>') {
                 self.doc.pop();
                 self.doc.push_str(" />");
             } else {
                 self.doc.push_str("</");
-                self.doc.push_str(elem);
+                self.doc.push_str(tag);
                 self.doc.push('>');
             }
         }
@@ -346,8 +346,9 @@ mod test {
     #[test]
     fn build_html() {
         let mut page = Page::default();
-        page.frag::<Div>().p().text("Paragraph Text").end();
-        page.pre().text("Preformatted Text");
+        let mut div = page.frag::<Div>();
+        div.p().text("Paragraph Text").end();
+        div.pre().text("Preformatted Text");
         assert_eq!(
             page.to_string(),
             "<div><p>Paragraph Text</p><pre>Preformatted Text</pre></div>"

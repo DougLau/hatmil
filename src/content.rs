@@ -39,8 +39,8 @@ macro_rules! text_methods {
     };
 }
 
-/// Comment method
-macro_rules! comment_method {
+/// Comment and raw methods
+macro_rules! comment_raw_methods {
     () => {
         /// Add a comment
         ///
@@ -56,6 +56,15 @@ macro_rules! comment_method {
             self.page.comment(com);
             self
         }
+
+        /// Add raw content
+        ///
+        /// **WARNING**: `trusted` is used verbatim, with no escaping;
+        ///              do not call with untrusted content.
+        pub fn raw(&mut self, trusted: impl AsRef<str>) -> &mut Self {
+            self.page.raw(trusted);
+            self
+        }
     };
 }
 
@@ -64,6 +73,7 @@ macro_rules! elem_method {
     ( $meth:ident, $elem:ident ) => {
         #[doc = concat!("Add `<", stringify!($meth), ">` child element")]
         pub fn $meth(self: &mut Self) -> $elem<'_> {
+            self.page.elem(stringify!($meth), false);
             $elem { page: self.page }
         }
     };
@@ -71,6 +81,7 @@ macro_rules! elem_method {
     ( $meth:ident, $elem:ident, $el:literal ) => {
         #[doc = concat!("Add `<", $el, ">` child element")]
         pub fn $meth(self: &mut Self) -> $elem<'_> {
+            self.page.elem($el, false);
             $elem { page: self.page }
         }
     };
@@ -87,7 +98,7 @@ macro_rules! metadata_content {
         elem_method!(style_elem, Style, "style");
         elem_method!(template, Template);
         elem_method!(title_elem, Title, "title");
-        comment_method!();
+        comment_raw_methods!();
     };
 }
 
@@ -179,6 +190,78 @@ macro_rules! flow_content {
         elem_method!(var, Var);
         elem_method!(video, Video);
         elem_method!(wbr, Wbr);
-        comment_method!();
+        comment_raw_methods!();
+    };
+}
+
+/// Phrasing content
+macro_rules! phrasing_content {
+    () => {
+        text_methods!();
+        elem_method!(a, A); // FIXME: containing only phrasing content
+        elem_method!(abbr, Abbr);
+        elem_method!(area, Area); // FIXME: only descendants of <map>
+        elem_method!(audio, Audio);
+        elem_method!(b, B);
+        elem_method!(bdi, Bdi);
+        elem_method!(bdo, Bdo);
+        elem_method!(br, Br);
+        elem_method!(button, Button);
+        elem_method!(canvas, Canvas);
+        elem_method!(cite, Cite);
+        elem_method!(code, Code);
+        elem_method!(data, Data);
+        elem_method!(datalist, DataList);
+        elem_method!(del, Del); // FIXME: containing only phrasing content
+        elem_method!(dfn, Dfn);
+        elem_method!(em, Em);
+        elem_method!(embed, Embed);
+        elem_method!(i, I);
+        elem_method!(iframe, IFrame);
+        elem_method!(img, Img);
+        elem_method!(input, Input);
+        elem_method!(ins, Ins); // FIXME: containing only phrasing content
+        elem_method!(kbd, Kbd);
+        elem_method!(label, Label);
+        elem_method!(link, Link); // FIXME: must have itemprop attribute
+        elem_method!(map, Map); // FIXME: containing only phrasing content
+        elem_method!(mark, Mark);
+        // elem_method!(math, Math);
+        elem_method!(meta, Meta); // FIXME: must have itemprop attribute
+        elem_method!(meter, Meter);
+        elem_method!(noscript, NoScript);
+        elem_method!(object, Object);
+        elem_method!(output, Output);
+        elem_method!(picture, Picture);
+        elem_method!(progress, Progress);
+        elem_method!(q, Q);
+        elem_method!(ruby, Ruby);
+        elem_method!(s, S);
+        elem_method!(samp, Samp);
+        elem_method!(script, Script);
+        elem_method!(select, Select);
+        elem_method!(slot_elem, Slot, "slot");
+        elem_method!(small, Small);
+        elem_method!(span, Span);
+        elem_method!(strong, Strong);
+        elem_method!(sub, Sub);
+        elem_method!(sup, Sup);
+        // elem_method!(svg, Svg);
+        elem_method!(template, Template);
+        elem_method!(textarea, TextArea);
+        elem_method!(time, Time);
+        elem_method!(u, U);
+        elem_method!(var, Var);
+        elem_method!(video, Video);
+        elem_method!(wbr, Wbr);
+        comment_raw_methods!();
+    };
+}
+
+/// Text content
+macro_rules! text_content {
+    () => {
+        text_methods!();
+        comment_raw_methods!();
     };
 }
