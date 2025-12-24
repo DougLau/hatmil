@@ -64,8 +64,10 @@ impl Page {
     /// use hatmil::Page;
     ///
     /// let mut page = Page::new(true);
-    /// page.html().body().text("Page text");
-    /// page.a().href("https://www.example.com/").text("Example link");
+    /// let mut html = page.html();
+    /// let mut body = html.body();
+    /// body.text("Page text");
+    /// body.a().href("https://www.example.com/").text("Example link");
     /// assert_eq!(
     ///     page.to_string(),
     ///     "<!doctype html><html><body>Page text<a href=\"https://www.example.com/\">Example link</a></body></html>",
@@ -153,7 +155,12 @@ impl Page {
 
     /// Add an attribute with value
     ///
-    /// The characters `&` and `"` in `val` will automatically be escaped.
+    /// These characters will be replaced with entities:
+    ///
+    /// | Char | Entity   |
+    /// |------|----------|
+    /// | `&`  | `&amp;`  |
+    /// | `"`  | `&quot;` |
     pub(crate) fn attr<'a, V>(&mut self, attr: &'static str, val: V)
     where
         V: Into<Value<'a>>,
@@ -361,8 +368,13 @@ mod test {
     #[test]
     fn html_builder() {
         let mut page = Page::default();
-        let mut html = page.html().lang("en");
-        html.head().title_elem().text("Title!").end().end();
+        let mut html = page.html();
+        html.lang("en")
+            .head()
+            .title_elem()
+            .text("Title!")
+            .end()
+            .end();
         html.body().h1().text("Header!");
         assert_eq!(
             page.to_string(),

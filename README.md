@@ -1,6 +1,6 @@
-Hatmil is a user-friendly HTML builder.
+_Hatmil_ is a user-friendly HTML builder.
 
-## Elements
+#### Elements
 
 With a [Page] builder, elements can be created using methods with a matching
 name, such as [a], [body], [div], or [table].  These methods return a struct
@@ -8,34 +8,31 @@ which implements [Element], borrowing from the `Page`.  It can be closed with
 the [end] method.  [Void elements] such as [img] and [input], do not need to
 be closed.
 
-## Attributes
+#### Attributes
 
-Attributes are available as methods on each element type.
+Each element type has methods to add its available attributes.
 
-These characters in attribute values will be escaped:
- - `&` &xrarr; `&amp;`
- - `"` &xrarr; `&quot;`
-
-## Content
+#### Content
 
 Text content can be added using the [text] or [text_len] methods, which will
 automatically escape characters as needed.  For content which has already been
 escaped, use the [raw] method.
 
-## Display
+#### Display
 
 After creating the page, use [Display] ([format], `to_string()`, etc) to
 get the resulting HTML.  Any open tags will be closed automatically.
 
 ```rust
-use hatmil::{Page, elem::Div};
+use hatmil::{Page, elem::{Div, Element}};
 
 let mut page = Page::default();
-page.frag::<Div>().id("a_div").text("Hello").end();
-page.button().class("rounded").text("Press Me!");
+let mut div = page.frag::<Div>();
+div.id("a_div").text("Hello");
+div.button().class("rounded").text("Press Me!");
 assert_eq!(
     page.to_string(),
-    "<div id=\"a_div\">Hello</div><button class=\"rounded\">Press Me!</button>"
+    "<div id=\"a_div\">Hello<button class=\"rounded\">Press Me!</button></div>"
 );
 ```
 

@@ -77,7 +77,7 @@ macro_rules! val_attr {
             $raw_attr,
             ") attribute",
         )]
-        pub fn $attr<'a, V>(self, val: V) -> Self
+        pub fn $attr<'a, V>(&mut self, val: V) -> &mut Self
         where
             V: Into<Value<'a>>,
         {
@@ -102,7 +102,7 @@ macro_rules! bool_attr {
             $raw_attr,
             ") Boolean attribute",
         )]
-        pub fn $attr(self) -> Self {
+        pub fn $attr(&mut self) -> &mut Self {
             self.page.attr_bool($raw_attr);
             self
         }
