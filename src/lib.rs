@@ -7,11 +7,11 @@
 #[macro_use]
 mod macros;
 
-pub mod elem;
-mod html;
+pub mod html;
+mod page;
 mod path;
 mod value;
 
-pub use html::Page;
+pub use page::Page;
 pub use path::PathDef;
 pub use value::Value;
