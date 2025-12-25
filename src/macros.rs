@@ -54,9 +54,7 @@ macro_rules! val_attr {
             $raw_attr,
             "](",
             "https://developer.mozilla.org/en-US/docs/",
-            "Web/HTML/Reference/",
             $path,
-            "#",
             $raw_attr,
             ") attribute",
         )]
@@ -79,9 +77,7 @@ macro_rules! bool_attr {
             $raw_attr,
             "](",
             "https://developer.mozilla.org/en-US/docs/",
-            "Web/HTML/Reference/",
             $path,
-            "#",
             $raw_attr,
             ") Boolean attribute",
         )]
@@ -96,22 +92,38 @@ macro_rules! bool_attr {
 macro_rules! html_attr {
     // Make a non-global "value" attribute
     ( $el:expr, $attr:ident ) => {
-        val_attr!(concat!("Elements/", $el), $attr, stringify!($attr));
+        val_attr!(
+            concat!("Web/HTML/Reference/Elements/", $el, "#"),
+            $attr,
+            stringify!($attr)
+        );
     };
 
     // Make a non-global Boolean attribute
     ( $el:expr, $attr:ident, true ) => {
-        bool_attr!(concat!("Elements/", $el), $attr, stringify!($attr));
+        bool_attr!(
+            concat!("Web/HTML/Reference/Elements/", $el, "#"),
+            $attr,
+            stringify!($attr)
+        );
     };
 
     // Make a non-global "value" attribute with raw-string name (e.g. r#type)
     ( $el:expr, $attr:ident, $raw_attr:literal ) => {
-        val_attr!(concat!("Elements/", $el), $attr, $raw_attr);
+        val_attr!(
+            concat!("Web/HTML/Reference/Elements/", $el, "#"),
+            $attr,
+            $raw_attr
+        );
     };
 
     // Make a non-global Boolean attribute with raw-string name (e.g. r#loop)
     ( $el:expr, $attr:ident, $raw_attr:literal, true ) => {
-        bool_attr!(concat!("Elements/", $el), $attr, $raw_attr);
+        bool_attr!(
+            concat!("Web/HTML/Reference/Elements/", $el, "#"),
+            $attr,
+            $raw_attr
+        );
     };
 }
 
@@ -119,12 +131,20 @@ macro_rules! html_attr {
 macro_rules! global_attribute {
     // Make a global "value" attribute
     ( $attr:ident ) => {
-        val_attr!(concat!("Global_attributes/", ""), $attr, stringify!($attr));
+        val_attr!(
+            concat!("Web/HTML/Reference/", "Global_attributes/#"),
+            $attr,
+            stringify!($attr)
+        );
     };
 
     // Make a global Boolean attribute
     ( $attr:ident, true ) => {
-        bool_attr!(concat!("Global_attributes/", ""), $attr, stringify!($attr));
+        bool_attr!(
+            concat!("Web/HTML/Reference/", "Global_attributes/#"),
+            $attr,
+            stringify!($attr)
+        );
     };
 }
 
@@ -163,7 +183,7 @@ macro_rules! global_attributes {
     };
 }
 
-/// Create an element method
+/// Create an element method (HTML or SVG)
 macro_rules! elem_method {
     ( $meth:ident, $elem:ident ) => {
         #[doc = concat!("Add `<", stringify!($meth), ">` child element")]
@@ -617,4 +637,49 @@ macro_rules! svg_elem {
             }
         }
     }
+}
+
+/// Make an SVG attribute method
+macro_rules! svg_attr {
+    // Make an SVG attribute
+    ( $attr:ident ) => {
+        svg_attr!($attr, stringify!($attr));
+    };
+
+    // Make an SVG attribute with raw-string name (e.g. r#use)
+    ( $attr:ident, $raw_attr:expr ) => {
+        val_attr!("Web/SVG/Reference/Attribute/", $attr, $raw_attr);
+    };
+}
+
+/// Animation content
+macro_rules! svg_animation {
+    () => {
+        elem_method!(animate, Animate);
+        elem_method!(animate_motion, AnimateMotion, "animateMotion");
+        elem_method!(animate_transform, AnimateTransform, "animateTransform");
+        /*
+        elem_method!(m_path, MPath);
+        elem_method!(set, Set);*/
+    };
+}
+
+/// Descriptive content
+macro_rules! svg_descriptive {
+    () => {
+        // FIXME
+    };
+}
+
+/// Svg content
+macro_rules! svg_content {
+    () => {
+        svg_animation!();
+        svg_descriptive!();
+        // svg_shape();
+        // svg_structural();
+        // svg_gradient();
+        // FIXME: a, clipPath, filter, foreignObject, image, marker,
+        //        mask, pattern, script, style, switch, text, view
+    };
 }

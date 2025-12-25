@@ -5,13 +5,132 @@
 use crate::page::{Element, Page};
 use crate::value::Value;
 
-// a element
+// A element (in SVG context)
 macro_rules! a_items {
     ( $el:literal ) => {
-        // FIXME
+        html_attr!($el, download);
+        html_attr!($el, href);
+        html_attr!($el, hreflang);
+        /* interestfor */
+        html_attr!($el, ping);
+        html_attr!($el, referrerpolicy);
+        html_attr!($el, rel);
+        html_attr!($el, target);
+        html_attr!($el, r#type, "type");
+        svg_content!();
     };
 }
 svg_elem!("a", A, "Anchor", a_items());
+
+// Animate attributes
+macro_rules! animate_attr {
+    () => {
+        svg_attr!(href);
+        // animation timing
+        svg_attr!(dur);
+        svg_attr!(begin);
+        svg_attr!(end);
+        svg_attr!(min);
+        svg_attr!(max);
+        svg_attr!(repeat_count, "repeatCount");
+        svg_attr!(repeat_dur, "repeatDur");
+        svg_attr!(restart);
+        svg_attr!(fill);
+        // animation value
+        svg_attr!(values);
+        svg_attr!(from);
+        svg_attr!(to);
+        svg_attr!(calc_mode, "calcMode");
+        svg_attr!(key_points, "keyPoints");
+        svg_attr!(key_times, "keyTimes");
+        svg_attr!(key_splines, "keySplines");
+        svg_attr!(by);
+        // animation addition
+        svg_attr!(additive);
+        svg_attr!(accumulate);
+    };
+}
+
+// Animate element
+macro_rules! animate_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(attribute_name, "attributeName");
+        // NOTE: attributeType is deprecated
+        animate_attr!();
+        svg_descriptive!();
+    };
+}
+svg_elem!("animate", Animate, "Animate", animate_items());
+
+// AnimateMotion element
+macro_rules! animate_motion_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(path);
+        svg_attr!(rotate);
+        animate_attr!();
+        svg_descriptive!();
+        // FIXME: mpath element
+    };
+}
+svg_elem!(
+    "animateMotion",
+    AnimateMotion,
+    "Animate Motion",
+    animate_motion_items()
+);
+
+// AnimateTransform element
+macro_rules! animate_transform_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        animate_attr!();
+        svg_descriptive!();
+    };
+}
+svg_elem!(
+    "animateTransform",
+    AnimateTransform,
+    "Animate Transform",
+    animate_transform_items()
+);
+
+// Circle element
+macro_rules! circle_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(cx);
+        svg_attr!(cy);
+        svg_attr!(r);
+        svg_attr!(path_length, "pathLength");
+        svg_animation!();
+        svg_descriptive!();
+    };
+}
+svg_elem!("circle", Circle, "Circle", circle_items());
+
+// ClipPath element
+macro_rules! clip_path_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(clip_path_units, "clipPathUnits");
+        svg_animation!();
+        svg_descriptive!();
+        // svg_shape!();
+        // FIXME: text, use elements
+    };
+}
+svg_elem!("clipPath", ClipPath, "Clip Path", clip_path_items());
+
+// Defs element
+macro_rules! defs_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_content!();
+    };
+}
+svg_elem!("defs", Defs, "Definitions", defs_items());
 
 // ForeignObject element
 macro_rules! foreign_object_items {
@@ -34,6 +153,21 @@ macro_rules! link_items {
 }
 svg_elem!("link", Link, "Link", link_items());
 
+// Svg element
+macro_rules! svg_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(view_box, "viewBox");
+        svg_attr!(height);
+        svg_attr!(width);
+        svg_attr!(x);
+        svg_attr!(y);
+        svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
+        svg_content!();
+    };
+}
+svg_elem!("svg", Svg, "Svg", svg_items());
+
 // Use element
 macro_rules! use_items {
     ( $el:literal ) => {
@@ -44,12 +178,6 @@ svg_elem!("use", Use, "Use", use_items());
 
 /*
 svg_elements![
-    animate animate,
-    animateMotion animate_motion,
-    animateTransform animate_transform,
-    circle circle,
-    clipPath clip_path,
-    defs defs,
     desc desc,
     ellipse ellipse,
     feBlend fe_blend,
@@ -95,7 +223,6 @@ svg_elements![
     set set,
     stop stop,
     style style,
-    svg svg,
     switch switch,
     symbol symbol,
     text text,
@@ -104,30 +231,6 @@ svg_elements![
     tspan tspan,
     view view,
 ];
-*/
-
-/*
-/// SVG attribute helper
-macro_rules! svg_attributes {
-    ( $( $attr:literal $snake:ident ),* $(,)? ) => {
-        impl<'p> Svg<'p> {
-            $(
-                #[doc = concat!("Add [", $attr, "](")]
-                #[doc = concat!(
-                    "https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/",
-                    $attr
-                )]
-                #[doc = ") attribute"]
-                pub fn $snake<'a, V>(self, val: V) -> Self
-                    where V: Into<Value<'a>>
-                {
-                    self.page.attr($attr, val);
-                    self
-                }
-            )*
-        }
-    }
-}
 
 svg_attributes![
     "accumulate" accumulate,
@@ -135,7 +238,6 @@ svg_attributes![
     "alignment-baseline" alignment_baseline,
     "amplitude" amplitude,
     "attributeName" attribute_name,
-    "attributeType" attribute_type,
     "azimuth" azimuth,
     "baseFrequency" base_frequency,
     "baseline-shift" baseline_shift,
@@ -238,7 +340,7 @@ svg_attributes![
     "origin" origin,
     "overflow" overflow,
     "paint-order" paint_order,
-    /* "path" path, */
+    "path" path,
     "pathLength" path_length,
     "patternContentUnits" pattern_content_units,
     "patternTransform" pattern_transform,
@@ -289,7 +391,7 @@ svg_attributes![
     "stroke-miterlimit" stroke_miterlimit,
     "stroke-opacity" stroke_opacity,
     "stroke-width" stroke_width,
-    /* "style" style, */
+    "style" style,
     "surfaceScale" surface_scale,
     "systemLanguage" system_language,
     "tabindex" tabindex,
@@ -340,33 +442,35 @@ mod test {
 
     #[test]
     fn svg() {
-        let mut frag = Page::frag();
-        frag.svg();
-        assert_eq!(frag.to_string(), "<svg />");
+        let mut page = Page::default();
+        let _svg = page.frag::<Svg>();
+        assert_eq!(page.to_string(), "<svg />");
     }
 
     #[test]
     fn circle() {
-        let mut frag = Page::frag();
-        frag.svg().circle().cx("50").cy("25").r("5");
+        let mut page = Page::default();
+        let mut svg = page.frag::<Svg>();
+        svg.circle().cx("50").cy("25").r("5");
         assert_eq!(
-            frag.to_string(),
+            page.to_string(),
             "<svg><circle cx=\"50\" cy=\"25\" r=\"5\" /></svg>"
         );
     }
 
     #[test]
     fn path() {
-        let mut frag = Page::frag();
+        let mut page = Page::default();
+        let mut svg = page.frag::<Svg>();
         let mut path = crate::PathDef::new();
         path.absolute(true)
             .move_to((0, 0))
             .line((100, 0))
             .line((50, 50))
             .close();
-        frag.svg().path().d(String::from(path));
+        svg.path().d(String::from(path));
         assert_eq!(
-            frag.to_string(),
+            page.to_string(),
             "<svg><path d=\"M0 0H100L50 50z\" /></svg>"
         );
     }

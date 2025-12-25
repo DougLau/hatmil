@@ -278,7 +278,7 @@ impl Page {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::elem::*;
+    use crate::html::*;
 
     #[test]
     fn div() {
