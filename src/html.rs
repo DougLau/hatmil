@@ -2,7 +2,6 @@
 //
 // Copyright (C) 2025  Douglas P Lau
 //
-use crate::svg::Svg;
 use crate::elem::{Element, Html};
 use crate::value::Value;
 use std::fmt;
@@ -131,26 +130,7 @@ impl Page {
         self.doc.push_str(tag);
         self.doc.push('>');
         self.stack.push((tag, void));
-        if void {
-            self.empty = false;
-        } else {
-            self.empty = self.xml_compatible;
-        }
-    }
-
-    /// Add an SVG element
-    pub(crate) fn svg_elem(&mut self, elem: &'static str) -> Svg<'_> {
-        self.doc.push('<');
-        self.doc.push_str(elem);
-        self.doc.push('>');
-        self.stack.push(elem);
-        self.empty = true;
-        Svg::new(self)
-    }
-
-    /// Add an SVG element
-    pub fn svg(&mut self) -> Svg<'_> {
-        self.svg_elem("svg")
+        self.empty = self.xml_compatible && !void;
     }
 
     /// Add an attribute with value
@@ -272,21 +252,6 @@ impl Page {
             }
         }
         self.empty = false;
-        self
-    }
-
-    /// End the element
-    ///
-    /// Since Void elements have no closing tags, this simply returns the
-    /// [Page] to allow chaining method calls.
-    pub(crate) fn end_void(&mut self) -> &mut Self {
-        if self.xml_compatible {
-            match self.doc.pop() {
-                Some(gt) => assert_eq!(gt, '>'),
-                None => unreachable!(),
-            }
-            self.doc.push_str(" />");
-        }
         self
     }
 }

@@ -5,14 +5,13 @@
 #![forbid(unsafe_code)]
 
 #[macro_use]
-mod content;
+mod macros;
+
 pub mod elem;
 mod html;
 mod path;
-mod svg;
 mod value;
 
 pub use html::Page;
 pub use path::PathDef;
-pub use svg::Svg;
 pub use value::Value;

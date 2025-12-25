@@ -1,7 +1,186 @@
-// content.rs
+// macros.rs
 //
 // Copyright (C) 2025  Douglas P Lau
-//
+
+/// Create an HTML element
+macro_rules! element {
+    ( $el:literal, $elem:ident, $desc:literal, $items:ident() ) => {
+        #[doc = concat!(
+                    "`<",
+                    $el,
+                    ">`: [",
+                    $desc,
+                    "](",
+                    "https://developer.mozilla.org/en-US/docs/Web/HTML/",
+                    "Reference/Elements/",
+                    stringify!($elem),
+                    ") element",
+                )]
+        pub struct $elem<'p> {
+            /// Borrowed Page
+            page: &'p mut Page,
+        }
+
+        #[doc = concat!("`<", $el, ">` items")]
+        impl<'p> $elem<'p> {
+            $items!( $el );
+        }
+
+        #[doc = "Global attributes"]
+        impl<'p> $elem<'p> {
+            global_attributes!();
+        }
+
+        impl<'p> Element<'p> for $elem<'p> {
+            const TAG: &'static str = $el;
+            fn new(page: &'p mut Page) -> Self {
+                $elem { page }
+            }
+            fn end(&'p mut self) -> &'p mut Page {
+                self.page.end();
+                self.page
+            }
+        }
+    };
+}
+
+/// Make an HTML "value" attribute method
+#[rustfmt::skip]
+macro_rules! val_attr {
+    ( $path:expr, $attr:ident, $raw_attr:expr ) => {
+        #[doc = concat!(
+            "Add [",
+            $raw_attr,
+            "](",
+            "https://developer.mozilla.org/en-US/docs/",
+            "Web/HTML/Reference/",
+            $path,
+            "#",
+            $raw_attr,
+            ") attribute",
+        )]
+        pub fn $attr<'a, V>(&mut self, val: V) -> &mut Self
+        where
+            V: Into<Value<'a>>,
+        {
+            self.page.attr($raw_attr, val);
+            self
+        }
+    };
+}
+
+/// Make an HTML Boolean attribute method
+#[rustfmt::skip]
+macro_rules! bool_attr {
+    ( $path:expr, $attr:ident, $raw_attr:expr ) => {
+        #[doc = concat!(
+            "Add [",
+            $raw_attr,
+            "](",
+            "https://developer.mozilla.org/en-US/docs/",
+            "Web/HTML/Reference/",
+            $path,
+            "#",
+            $raw_attr,
+            ") Boolean attribute",
+        )]
+        pub fn $attr(&mut self) -> &mut Self {
+            self.page.attr_bool($raw_attr);
+            self
+        }
+    };
+}
+
+/// Make an HTML attribute method
+macro_rules! attribute {
+    // Make a non-global "value" attribute
+    ( $el:expr, $attr:ident ) => {
+        val_attr!(concat!("Elements/", $el), $attr, stringify!($attr));
+    };
+
+    // Make a non-global Boolean attribute
+    ( $el:expr, $attr:ident, true ) => {
+        bool_attr!(concat!("Elements/", $el), $attr, stringify!($attr));
+    };
+
+    // Make a non-global "value" attribute with raw-string name (e.g. r#type)
+    ( $el:expr, $attr:ident, $raw_attr:literal ) => {
+        val_attr!(concat!("Elements/", $el), $attr, $raw_attr);
+    };
+
+    // Make a non-global Boolean attribute with raw-string name (e.g. r#loop)
+    ( $el:expr, $attr:ident, $raw_attr:literal, true ) => {
+        bool_attr!(concat!("Elements/", $el), $attr, $raw_attr);
+    };
+}
+
+/// Make a global HTML attribute method
+macro_rules! global_attribute {
+    // Make a global "value" attribute
+    ( $attr:ident ) => {
+        val_attr!(concat!("Global_attributes/", ""), $attr, stringify!($attr));
+    };
+
+    // Make a global Boolean attribute
+    ( $attr:ident, true ) => {
+        bool_attr!(concat!("Global_attributes/", ""), $attr, stringify!($attr));
+    };
+}
+
+/// Global attributes
+macro_rules! global_attributes {
+    () => {
+        global_attribute!(accesskey);
+        global_attribute!(autocapitalize);
+        global_attribute!(autocorrect);
+        global_attribute!(autofocus, true);
+        global_attribute!(class);
+        global_attribute!(contenteditable);
+        /* data-* */
+        global_attribute!(dir);
+        global_attribute!(draggable);
+        global_attribute!(enterkeyhint);
+        global_attribute!(exportparts);
+        global_attribute!(hidden);
+        global_attribute!(id);
+        global_attribute!(inert, true);
+        global_attribute!(is);
+        global_attribute!(inputmode);
+        /* itemid, itemprop, itemref, itemscope, itemtype */
+        global_attribute!(lang);
+        global_attribute!(nonce);
+        global_attribute!(part);
+        global_attribute!(popover);
+        global_attribute!(role);
+        global_attribute!(slot);
+        global_attribute!(spellcheck);
+        global_attribute!(style);
+        global_attribute!(tabindex);
+        global_attribute!(title);
+        global_attribute!(translate);
+        /* virtualkeyboardpolicy, writingsuggestions */
+    };
+}
+
+/// Create an element method
+macro_rules! elem_method {
+    ( $meth:ident, $elem:ident ) => {
+        #[doc = concat!("Add `<", stringify!($meth), ">` child element")]
+        #[allow(clippy::self_named_constructors)]
+        pub fn $meth(self: &mut Self) -> $elem<'_> {
+            self.page.elem(stringify!($meth), false);
+            $elem { page: self.page }
+        }
+    };
+
+    ( $meth:ident, $elem:ident, $el:literal ) => {
+        #[doc = concat!("Add `<", $el, ">` child element")]
+        pub fn $meth(self: &mut Self) -> $elem<'_> {
+            self.page.elem($el, false);
+            $elem { page: self.page }
+        }
+    };
+}
 
 /// Text method
 macro_rules! text_methods {
@@ -67,26 +246,6 @@ macro_rules! comment_raw_methods {
         pub fn raw(&mut self, trusted: impl AsRef<str>) -> &mut Self {
             self.page.raw(trusted);
             self
-        }
-    };
-}
-
-/// Create an element method
-macro_rules! elem_method {
-    ( $meth:ident, $elem:ident ) => {
-        #[doc = concat!("Add `<", stringify!($meth), ">` child element")]
-        #[allow(clippy::self_named_constructors)]
-        pub fn $meth(self: &mut Self) -> $elem<'_> {
-            self.page.elem(stringify!($meth), false);
-            $elem { page: self.page }
-        }
-    };
-
-    ( $meth:ident, $elem:ident, $el:literal ) => {
-        #[doc = concat!("Add `<", $el, ">` child element")]
-        pub fn $meth(self: &mut Self) -> $elem<'_> {
-            self.page.elem($el, false);
-            $elem { page: self.page }
         }
     };
 }
