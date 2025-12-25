@@ -3,19 +3,20 @@
 // Copyright (C) 2025  Douglas P Lau
 
 /// Create an HTML element
-macro_rules! element {
+#[rustfmt::skip]
+macro_rules! html_elem {
     ( $el:literal, $elem:ident, $desc:literal, $items:ident() ) => {
         #[doc = concat!(
-                    "`<",
-                    $el,
-                    ">`: [",
-                    $desc,
-                    "](",
-                    "https://developer.mozilla.org/en-US/docs/Web/HTML/",
-                    "Reference/Elements/",
-                    stringify!($elem),
-                    ") element",
-                )]
+            "`<",
+            $el,
+            ">`: [",
+            $desc,
+            "](",
+            "https://developer.mozilla.org/en-US/docs/Web/HTML/",
+            "Reference/Elements/",
+            stringify!($elem),
+            ") element",
+        )]
         pub struct $elem<'p> {
             /// Borrowed Page
             page: &'p mut Page,
@@ -92,7 +93,7 @@ macro_rules! bool_attr {
 }
 
 /// Make an HTML attribute method
-macro_rules! attribute {
+macro_rules! html_attr {
     // Make a non-global "value" attribute
     ( $el:expr, $attr:ident ) => {
         val_attr!(concat!("Elements/", $el), $attr, stringify!($attr));
@@ -578,4 +579,42 @@ macro_rules! address_content {
         elem_method!(wbr, Wbr);
         comment_raw_methods!();
     };
+}
+
+/// Create an SVG element
+#[rustfmt::skip]
+macro_rules! svg_elem {
+    ( $el:literal, $elem:ident, $desc:literal, $items:ident() ) => {
+        #[doc = concat!(
+            "`<",
+            $el,
+            ">`: [",
+            $desc,
+            "](",
+            "https://developer.mozilla.org/en-US/docs/Web/SVG/",
+            "Reference/Element/",
+            stringify!($elem),
+            ") SVG element",
+        )]
+        pub struct $elem<'p> {
+            /// Borrowed Page
+            page: &'p mut Page,
+        }
+
+        #[doc = concat!("`<", $el, ">` items")]
+        impl<'p> $elem<'p> {
+            $items!( $el );
+        }
+
+        impl<'p> Element<'p> for $elem<'p> {
+            const TAG: &'static str = $el;
+            fn new(page: &'p mut Page) -> Self {
+                $elem { page }
+            }
+            fn end(&'p mut self) -> &'p mut Page {
+                self.page.end();
+                self.page
+            }
+        }
+    }
 }

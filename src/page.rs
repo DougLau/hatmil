@@ -2,7 +2,7 @@
 //
 // Copyright (C) 2025  Douglas P Lau
 //
-use crate::html::{Element, Html};
+use crate::html::Html;
 use crate::value::Value;
 use std::fmt;
 
@@ -19,6 +19,20 @@ pub struct Page {
     stack: Vec<(&'static str, bool)>,
     /// Current tag empty + XML compatible
     empty: bool,
+}
+
+/// Element borrowed from a [Page]
+pub trait Element<'p> {
+    /// Element tag
+    const TAG: &'static str;
+
+    /// Make a new element
+    fn new(page: &'p mut Page) -> Self;
+
+    /// End the element
+    ///
+    /// Adds the closing tag (e.g. `</span>`).
+    fn end(&'p mut self) -> &'p mut Page;
 }
 
 impl fmt::Display for Page {
@@ -81,8 +95,10 @@ impl Page {
 
     /// Convert page into a fragment
     ///
+    /// - `E`: Element type, from either the [html] or [svg] modules
+    ///
     /// ```rust
-    /// use hatmil::{Page, elem::A};
+    /// use hatmil::{Page, html::A};
     ///
     /// let mut page = Page::default();
     /// page.frag::<A>().href("https://www.example.com/").text("Example link");
@@ -91,6 +107,9 @@ impl Page {
     ///     "<a href=\"https://www.example.com/\">Example link</a>",
     /// );
     /// ```
+    ///
+    /// [html]: crate::html
+    /// [svg]: crate::svg
     pub fn frag<'p, E>(&'p mut self) -> E
     where
         E: Element<'p>,

@@ -1,86 +1,49 @@
 // svg.rs
 // Copyright (C) 2025  Douglas P Lau
 //
-use crate::html::{Elem, Page, VoidElem};
+//! SVG Elements
+use crate::page::{Element, Page};
 use crate::value::Value;
 
-/// SVG element borrowed from [Page svg] method
-///
-/// [Page svg]: struct.Page.html#method.svg
-pub struct Svg<'p> {
-    page: &'p mut Page,
+// a element
+macro_rules! a_items {
+    ( $el:literal ) => {
+        // FIXME
+    };
 }
+svg_elem!("a", A, "Anchor", a_items());
 
-impl<'p> Svg<'p> {
-    /// Create a new SVG element
-    pub fn new(page: &'p mut Page) -> Self {
-        Svg { page }
-    }
-
-    /// Add an attribute with value
-    ///
-    /// The characters `&` and `"` in `val` will automatically be escaped.
-    pub fn attr<'a, V>(self, attr: &'static str, val: V) -> Self
-    where
-        V: Into<Value<'a>>,
-    {
-        self.page.attr(attr, val);
-        self
-    }
-
-    /// End the element
-    ///
-    /// Adds the closing tag (e.g. `</svg>`)
-    pub fn end(&mut self) {
-        self.page.end();
-    }
-
-    /// Add [foreignObject] child element
-    ///
-    /// [foreignObject]: https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/foreignObject
-    pub fn foreign_object(self) -> Elem<'p> {
-        self.page.elem("foreignObject")
-    }
-
-    /// Add [link] child element (e.g. [CSS])
-    ///
-    /// [CSS]: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorials/SVG_from_scratch/SVG_and_CSS
-    /// [link]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link
-    pub fn link(self) -> VoidElem<'p> {
-        self.page.void_elem("link")
-    }
-
-    /// Add [use] child element
-    ///
-    /// NOTE: use `r#use()` to invoke
-    ///
-    /// [use]: https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/use
-    pub fn r#use(self) -> Self {
-        self.page.svg_elem("use")
-    }
+// ForeignObject element
+macro_rules! foreign_object_items {
+    ( $el:literal ) => {
+        // FIXME
+    };
 }
+svg_elem!(
+    "foreignObject",
+    ForeignObject,
+    "Foreign Object",
+    foreign_object_items()
+);
 
-/// SVG element helper
-macro_rules! svg_elements {
-    ( $( $elem:ident $snake:ident ),* $(,)? ) => {
-        impl<'p> Svg<'p> {
-            $(
-                #[doc = concat!("Add [", stringify!($elem), "](")]
-                #[doc = concat!(
-                    "https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/",
-                     stringify!($elem)
-                )]
-                #[doc = ") child element"]
-                pub fn $snake(self) -> Self {
-                    self.page.svg_elem(stringify!($elem))
-                }
-            )*
-        }
-    }
+// Link element
+macro_rules! link_items {
+    ( $el:literal ) => {
+        // FIXME
+    };
 }
+svg_elem!("link", Link, "Link", link_items());
 
+// Use element
+macro_rules! use_items {
+    ( $el:literal ) => {
+        // FIXME
+    };
+}
+svg_elem!("use", Use, "Use", use_items());
+
+/*
 svg_elements![
-    a a,
     animate animate,
     animateMotion animate_motion,
     animateTransform animate_transform,
@@ -141,7 +104,9 @@ svg_elements![
     tspan tspan,
     view view,
 ];
+*/
 
+/*
 /// SVG attribute helper
 macro_rules! svg_attributes {
     ( $( $attr:literal $snake:ident ),* $(,)? ) => {
@@ -367,7 +332,7 @@ svg_attributes![
     "yChannelSelector" y_channel_selector,
     "z" z,
     "zoomAndPan" zoom_and_pan,
-];
+];*/
 
 #[cfg(test)]
 mod test {

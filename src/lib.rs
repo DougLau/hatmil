@@ -10,6 +10,7 @@ mod macros;
 pub mod html;
 mod page;
 mod path;
+pub mod svg;
 mod value;
 
 pub use page::Page;
