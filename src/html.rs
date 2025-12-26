@@ -2,7 +2,7 @@
 //
 // Copyright (C) 2025  Douglas P Lau
 //
-//! HTML Elements
+//! HTML Elements -- _HyperText Markup Language_
 use crate::page::{Element, Page};
 use crate::value::Value;
 

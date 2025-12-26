@@ -1,7 +1,7 @@
 // svg.rs
 // Copyright (C) 2025  Douglas P Lau
 //
-//! SVG Elements
+//! SVG Elements -- _Scalable Vector Graphics_
 use crate::page::{Element, Page};
 use crate::value::Value;
 
@@ -132,6 +132,475 @@ macro_rules! defs_items {
 }
 svg_elem!("defs", Defs, "Definitions", defs_items());
 
+// Desc element
+macro_rules! desc_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        // FIXME: character data content
+    };
+}
+svg_elem!("desc", Desc, "Description", desc_items());
+
+// Ellipse element
+macro_rules! ellipse_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(cx);
+        svg_attr!(cy);
+        svg_attr!(rx);
+        svg_attr!(ry);
+        svg_attr!(path_length, "pathLength");
+        svg_animation!();
+        svg_descriptive!();
+    };
+}
+svg_elem!("ellipse", Ellipse, "Ellipse", ellipse_items());
+
+// Filter primitive attributes
+macro_rules! filter_attr {
+    () => {
+        svg_attr!(x);
+        svg_attr!(y);
+        svg_attr!(width);
+        svg_attr!(height);
+        svg_attr!(result);
+        svg_attr!(color_interpolation_filters, "color-interpolation-filters");
+    };
+}
+
+// FeBlend element
+macro_rules! fe_blend_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(r#in, "in");
+        svg_attr!(in2);
+        svg_attr!(mode);
+        filter_attr!();
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!("feBlend", FeBlend, "Filter Effect: Blend", fe_blend_items());
+
+// FeColorMatrix element
+macro_rules! fe_color_matrix_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(r#in, "in");
+        svg_attr!(r#type, "type");
+        svg_attr!(values);
+        filter_attr!();
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!(
+    "feColorMatrix",
+    FeColorMatrix,
+    "Filter Effect: Color Matrix",
+    fe_color_matrix_items()
+);
+
+// FeComponentTransfer element
+macro_rules! fe_component_transfer_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(r#in, "in");
+        filter_attr!();
+        // FIXME: feFuncA, feFuncR, feFuncG, feFuncB
+    };
+}
+svg_elem!(
+    "feComponentTransfer",
+    FeComponentTransfer,
+    "Filter Effect: Component Transfer",
+    fe_component_transfer_items()
+);
+
+// FeComposite element
+macro_rules! fe_composite_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(r#in, "in");
+        svg_attr!(in2);
+        svg_attr!(operator);
+        svg_attr!(k1);
+        svg_attr!(k2);
+        svg_attr!(k3);
+        svg_attr!(k4);
+        filter_attr!();
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!(
+    "feComposite",
+    FeComposite,
+    "Filter Effect: Composite",
+    fe_composite_items()
+);
+
+// FeConvolveMatrix element
+macro_rules! fe_convolve_matrix_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(r#in, "in");
+        svg_attr!(order);
+        svg_attr!(kernel_matrix, "kernelMatrix");
+        svg_attr!(divisor);
+        svg_attr!(bias);
+        svg_attr!(target_x, "targetX");
+        svg_attr!(target_y, "targetY");
+        svg_attr!(edge_mode, "edgeMode");
+        svg_attr!(kernel_unit_length, "kernelUnitLength");
+        svg_attr!(preserve_alpha, "preserveAlpha");
+        filter_attr!();
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!(
+    "feConvolveMatrix",
+    FeConvolveMatrix,
+    "Filter Effect: Convolve Matrix",
+    fe_convolve_matrix_items()
+);
+
+// FeDiffuseLighting element
+macro_rules! fe_diffuse_lighting_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(r#in, "in");
+        svg_attr!(surface_scale, "surfaceScale");
+        svg_attr!(diffuse_constant, "diffuseConstant");
+        svg_attr!(kernel_unit_length, "kernelUnitLength");
+        filter_attr!();
+        // FIXME: one light source!
+        svg_descriptive!();
+    };
+}
+svg_elem!(
+    "feDiffuseLighting",
+    FeDiffuseLighting,
+    "Filter Effect: Diffuse Lighting",
+    fe_diffuse_lighting_items()
+);
+
+// FeDisplacementMap element
+macro_rules! fe_displacement_map_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(r#in, "in");
+        svg_attr!(in2);
+        svg_attr!(scale);
+        svg_attr!(x_channel_selector, "xChannelSelector");
+        svg_attr!(y_channel_selector, "yChannelSelector");
+        filter_attr!();
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!(
+    "feDisplacementMap",
+    FeDisplacementMap,
+    "Filter Effect: Displacement Map",
+    fe_displacement_map_items()
+);
+
+// FeDistantLight element
+macro_rules! fe_distant_light_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(azimuth);
+        svg_attr!(elevation);
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!(
+    "feDistantLight",
+    FeDistantLight,
+    "Filter Effect: Distant Light",
+    fe_distant_light_items()
+);
+
+// FeDropShadow element
+macro_rules! fe_drop_shadow_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(r#in, "in");
+        svg_attr!(dx);
+        svg_attr!(dy);
+        svg_attr!(std_deviation, "stdDeviation");
+        svg_attr!(flood_color, "flood-color");
+        svg_attr!(flood_opacity, "flood-opacity");
+        // FIXME: animate, discard, script, set
+    };
+}
+svg_elem!(
+    "feDropShadow",
+    FeDropShadow,
+    "Filter Effect: Drop Shadow",
+    fe_drop_shadow_items()
+);
+
+// FeFlood element
+macro_rules! fe_flood_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(flood_color, "flood-color");
+        svg_attr!(flood_opacity, "flood-opacity");
+        filter_attr!();
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!("feFlood", FeFlood, "Filter Effect: Flood", fe_flood_items());
+
+// Transfer function attributes
+macro_rules! transfer_func_attr {
+    () => {
+        // transfer func: identity, table, discrete, linear, gamma
+        svg_attr!(r#type, "type");
+        // discrete/table func attributes
+        svg_attr!(table_values, "tableValues");
+        // linear func attributes
+        svg_attr!(slope);
+        svg_attr!(intercept);
+        // gamma func attributes
+        svg_attr!(amplitude);
+        svg_attr!(exponent);
+        svg_attr!(offset);
+    };
+}
+
+// FeFunc[RGBA] element
+macro_rules! fe_func_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        transfer_func_attr!();
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!(
+    "feFuncA",
+    FeFuncA,
+    "Filter Effect: Alpha Transfer",
+    fe_func_items()
+);
+svg_elem!(
+    "feFuncB",
+    FeFuncB,
+    "Filter Effect: Blue Transfer",
+    fe_func_items()
+);
+svg_elem!(
+    "feFuncG",
+    FeFuncG,
+    "Filter Effect: Green Transfer",
+    fe_func_items()
+);
+svg_elem!(
+    "feFuncR",
+    FeFuncR,
+    "Filter Effect: Red Transfer",
+    fe_func_items()
+);
+
+// FeGaussianBlur element
+macro_rules! fe_gaussian_blur_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(r#in, "in");
+        svg_attr!(std_deviation, "stdDeviation");
+        svg_attr!(edge_mode, "edgeMode");
+        filter_attr!();
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!(
+    "feGaussianBlur",
+    FeGaussianBlur,
+    "Filter Effect: Gaussian Blur",
+    fe_gaussian_blur_items()
+);
+
+// FeImage element
+macro_rules! fe_image_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(crossorigin);
+        // FIXME: fetchpriority
+        svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
+        svg_attr!(href);
+        filter_attr!();
+        // FIXME: animate, animateTransform, discard, set
+    };
+}
+svg_elem!("feImage", FeImage, "Filter Effect: Image", fe_image_items());
+
+// FeMerge element
+macro_rules! fe_merge_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        filter_attr!();
+        // FIXME: feMergeNode
+    };
+}
+svg_elem!("feMerge", FeMerge, "Filter Effect: Merge", fe_merge_items());
+
+// FeMergeNode element
+macro_rules! fe_merge_node_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(r#in, "in");
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!(
+    "feMergeNode",
+    FeMergeNode,
+    "Filter Effect: Merge Node",
+    fe_merge_node_items()
+);
+
+// FeMorphology element
+macro_rules! fe_morphology_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(r#in, "in");
+        svg_attr!(operator);
+        svg_attr!(radius);
+        filter_attr!();
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!(
+    "feMorphology",
+    FeMorphology,
+    "Filter Effect: Morphology",
+    fe_morphology_items()
+);
+
+// FeOffset element
+macro_rules! fe_offset_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(r#in, "in");
+        svg_attr!(dx);
+        svg_attr!(dy);
+        filter_attr!();
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!(
+    "feOffset",
+    FeOffset,
+    "Filter Effect: Offset",
+    fe_offset_items()
+);
+
+// FePointLight element
+macro_rules! fe_point_light_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(x);
+        svg_attr!(y);
+        svg_attr!(z);
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!(
+    "fePointLight",
+    FePointLight,
+    "Filter Effect: Point Light",
+    fe_point_light_items()
+);
+
+// FeSpecularLighting element
+macro_rules! fe_specular_lighting_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(r#in, "in");
+        svg_attr!(surface_scale, "surfaceScale");
+        svg_attr!(specular_constant, "specularConstant");
+        svg_attr!(specular_exponent, "specularExponent");
+        svg_attr!(kernel_unit_length, "kernelUnitLength");
+        filter_attr!();
+        // FIXME: feDistantLight, fePointLight, feSpotLight (only one)
+        svg_descriptive!();
+    };
+}
+svg_elem!(
+    "feSpecularLighting",
+    FeSpecularLighting,
+    "Filter Effect: Specular Lighting",
+    fe_specular_lighting_items()
+);
+
+// FeSpotLight element
+macro_rules! fe_spot_light_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(x);
+        svg_attr!(y);
+        svg_attr!(z);
+        svg_attr!(points_at_x, "pointsAtX");
+        svg_attr!(points_at_y, "pointsAtY");
+        svg_attr!(points_at_z, "pointsAtZ");
+        svg_attr!(specular_exponent, "specularExponent");
+        svg_attr!(limiting_cone_angle, "limitingConeAngle");
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!(
+    "feSpotLight",
+    FeSpotLight,
+    "Filter Effect: Spot Light",
+    fe_spot_light_items()
+);
+
+// FeTile element
+macro_rules! fe_tile_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(r#in, "in");
+        filter_attr!();
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!("feTile", FeTile, "Filter Effect: Tile", fe_tile_items());
+
+// FeTurbulence element
+macro_rules! fe_turbulence_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(base_frequency, "baseFrequency");
+        svg_attr!(num_octaves, "numOctaves");
+        svg_attr!(seed);
+        svg_attr!(stitch_tiles, "stitchTiles");
+        svg_attr!(r#type, "type");
+        filter_attr!();
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!(
+    "feTurbulence",
+    FeTurbulence,
+    "Filter Effect: Turbulence",
+    fe_turbulence_items()
+);
+
+// Filter element
+macro_rules! filter_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(filter_units, "filterUnits");
+        svg_attr!(primitive_units, "primitiveUnits");
+        svg_attr!(x);
+        svg_attr!(y);
+        svg_attr!(width);
+        svg_attr!(height);
+        svg_descriptive!();
+        // FIXME: filter primitive elements
+        // FIXME: animate, discard, set
+    };
+}
+svg_elem!("filter", Filter, "Filter", filter_items());
+
 // ForeignObject element
 macro_rules! foreign_object_items {
     ( $el:literal ) => {
@@ -178,33 +647,6 @@ svg_elem!("use", Use, "Use", use_items());
 
 /*
 svg_elements![
-    desc desc,
-    ellipse ellipse,
-    feBlend fe_blend,
-    feComponentTransfer fe_component_transfer,
-    feComposite fe_composite,
-    feConvolveMatrix fe_convolve_matrix,
-    feDiffuseLighting fe_diffuse_lighting,
-    feDisplacementMap fe_displacement_map,
-    feDistantLight fe_distant_light,
-    feDropShadow fe_drop_shadow,
-    feFlood fe_flood,
-    feFuncA fe_func_a,
-    feFuncB fe_func_b,
-    feFuncG fe_func_g,
-    feFuncR fe_func_r,
-    feGaussianBlur fe_gaussian_blur,
-    feImage fe_image,
-    feMerge fe_merge,
-    feMergeNode fe_merge_node,
-    feMorphology fe_morphology,
-    feOffset fe_offset,
-    fePointLight fe_point_light,
-    feSpecularLighting fe_specular_lighting,
-    feSpotLight fe_spot_light,
-    feTile fe_tile,
-    feTurbulence fe_turbulence,
-    filter filter,
     g g,
     image image,
     line line,
