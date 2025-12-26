@@ -641,6 +641,8 @@ macro_rules! link_items {
         html_attr!($el, rel);
         html_attr!($el, sizes);
         html_attr!($el, r#type, "type");
+        // NOTE: needed for standalone XML (SVG)
+        html_attr!($el, xmlns);
         // no content (void)
     };
 }

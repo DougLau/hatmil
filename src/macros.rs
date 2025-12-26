@@ -19,7 +19,7 @@ macro_rules! html_elem {
         )]
         pub struct $elem<'p> {
             /// Borrowed Page
-            page: &'p mut Page,
+            pub(crate) page: &'p mut Page,
         }
 
         #[doc = concat!("`<", $el, ">` items")]

@@ -2,6 +2,7 @@
 // Copyright (C) 2025  Douglas P Lau
 //
 //! SVG Elements -- _Scalable Vector Graphics_
+use crate::html::Link;
 use crate::page::{Element, Page};
 use crate::value::Value;
 
@@ -614,14 +615,6 @@ svg_elem!(
     foreign_object_items()
 );
 
-// Link element
-macro_rules! link_items {
-    ( $el:literal ) => {
-        // FIXME
-    };
-}
-svg_elem!("link", Link, "Link", link_items());
-
 // Svg element
 macro_rules! svg_items {
     ( $el:literal ) => {
@@ -632,7 +625,9 @@ macro_rules! svg_items {
         svg_attr!(x);
         svg_attr!(y);
         svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
+        svg_attr!(xmlns);
         svg_content!();
+        elem_method!(link, Link);
     };
 }
 svg_elem!("svg", Svg, "Svg", svg_items());
