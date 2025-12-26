@@ -658,9 +658,8 @@ macro_rules! svg_animation {
         elem_method!(animate, Animate);
         elem_method!(animate_motion, AnimateMotion, "animateMotion");
         elem_method!(animate_transform, AnimateTransform, "animateTransform");
-        /*
-        elem_method!(m_path, MPath);
-        elem_method!(set, Set);*/
+        elem_method!(mpath, MPath);
+        elem_method!(set, Set);
     };
 }
 

@@ -4,7 +4,7 @@
 use std::fmt;
 use std::fmt::Write;
 
-/// SVG Path definition
+/// SVG [Path] definition
 ///
 /// ```rust
 /// # use hatmil::PathDef;
@@ -16,6 +16,8 @@ use std::fmt::Write;
 /// path.close();
 /// println!("{path}");
 /// ```
+///
+/// [Path]: svg/struct.Path.html#method.d
 #[derive(Clone, Default)]
 pub struct PathDef {
     /// Absolute vs. relative output mode

@@ -1,4 +1,5 @@
-_Hatmil_ is a user-friendly HTML builder.
+_Hatmil_ is an HTML builder for Rust.  It can be used to build or modify web
+pages dynamically.
 
 #### Elements
 

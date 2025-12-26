@@ -6,7 +6,7 @@ use crate::html::Html;
 use crate::value::Value;
 use std::fmt;
 
-/// User-friendly HTML builder
+/// HTML page builder
 #[derive(Default)]
 pub struct Page {
     /// Include HTML `doctype` preamble

@@ -177,7 +177,7 @@ macro_rules! fe_blend_items {
         svg_attr!(in2);
         svg_attr!(mode);
         filter_attr!();
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!("feBlend", FeBlend, "Filter Effect: Blend", fe_blend_items());
@@ -190,7 +190,7 @@ macro_rules! fe_color_matrix_items {
         svg_attr!(r#type, "type");
         svg_attr!(values);
         filter_attr!();
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!(
@@ -228,7 +228,7 @@ macro_rules! fe_composite_items {
         svg_attr!(k3);
         svg_attr!(k4);
         filter_attr!();
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!(
@@ -253,7 +253,7 @@ macro_rules! fe_convolve_matrix_items {
         svg_attr!(kernel_unit_length, "kernelUnitLength");
         svg_attr!(preserve_alpha, "preserveAlpha");
         filter_attr!();
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!(
@@ -293,7 +293,7 @@ macro_rules! fe_displacement_map_items {
         svg_attr!(x_channel_selector, "xChannelSelector");
         svg_attr!(y_channel_selector, "yChannelSelector");
         filter_attr!();
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!(
@@ -309,7 +309,7 @@ macro_rules! fe_distant_light_items {
         // FIXME: global attributes: id
         svg_attr!(azimuth);
         svg_attr!(elevation);
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!(
@@ -329,7 +329,7 @@ macro_rules! fe_drop_shadow_items {
         svg_attr!(std_deviation, "stdDeviation");
         svg_attr!(flood_color, "flood-color");
         svg_attr!(flood_opacity, "flood-opacity");
-        // FIXME: animate, discard, script, set
+        // FIXME: animate, script, set
     };
 }
 svg_elem!(
@@ -346,7 +346,7 @@ macro_rules! fe_flood_items {
         svg_attr!(flood_color, "flood-color");
         svg_attr!(flood_opacity, "flood-opacity");
         filter_attr!();
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!("feFlood", FeFlood, "Filter Effect: Flood", fe_flood_items());
@@ -373,7 +373,7 @@ macro_rules! fe_func_items {
     ( $el:literal ) => {
         // FIXME: global attributes: id
         transfer_func_attr!();
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!(
@@ -409,7 +409,7 @@ macro_rules! fe_gaussian_blur_items {
         svg_attr!(std_deviation, "stdDeviation");
         svg_attr!(edge_mode, "edgeMode");
         filter_attr!();
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!(
@@ -423,12 +423,12 @@ svg_elem!(
 macro_rules! fe_image_items {
     ( $el:literal ) => {
         // FIXME: global attributes: id
+        svg_attr!(href);
+        svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
         svg_attr!(crossorigin);
         // FIXME: fetchpriority
-        svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
-        svg_attr!(href);
         filter_attr!();
-        // FIXME: animate, animateTransform, discard, set
+        // FIXME: animate, animateTransform, set
     };
 }
 svg_elem!("feImage", FeImage, "Filter Effect: Image", fe_image_items());
@@ -448,7 +448,7 @@ macro_rules! fe_merge_node_items {
     ( $el:literal ) => {
         // FIXME: global attributes: id
         svg_attr!(r#in, "in");
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!(
@@ -466,7 +466,7 @@ macro_rules! fe_morphology_items {
         svg_attr!(operator);
         svg_attr!(radius);
         filter_attr!();
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!(
@@ -484,7 +484,7 @@ macro_rules! fe_offset_items {
         svg_attr!(dx);
         svg_attr!(dy);
         filter_attr!();
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!(
@@ -501,7 +501,7 @@ macro_rules! fe_point_light_items {
         svg_attr!(x);
         svg_attr!(y);
         svg_attr!(z);
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!(
@@ -544,7 +544,7 @@ macro_rules! fe_spot_light_items {
         svg_attr!(points_at_z, "pointsAtZ");
         svg_attr!(specular_exponent, "specularExponent");
         svg_attr!(limiting_cone_angle, "limitingConeAngle");
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!(
@@ -560,7 +560,7 @@ macro_rules! fe_tile_items {
         // FIXME: global attributes: id
         svg_attr!(r#in, "in");
         filter_attr!();
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!("feTile", FeTile, "Filter Effect: Tile", fe_tile_items());
@@ -575,7 +575,7 @@ macro_rules! fe_turbulence_items {
         svg_attr!(stitch_tiles, "stitchTiles");
         svg_attr!(r#type, "type");
         filter_attr!();
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!(
@@ -597,7 +597,7 @@ macro_rules! filter_items {
         svg_attr!(height);
         svg_descriptive!();
         // FIXME: filter primitive elements
-        // FIXME: animate, discard, set
+        // FIXME: animate, set
     };
 }
 svg_elem!("filter", Filter, "Filter", filter_items());
@@ -605,7 +605,12 @@ svg_elem!("filter", Filter, "Filter", filter_items());
 // ForeignObject element
 macro_rules! foreign_object_items {
     ( $el:literal ) => {
-        // FIXME
+        // FIXME: global attributes: id
+        svg_attr!(x);
+        svg_attr!(y);
+        svg_attr!(width);
+        svg_attr!(height);
+        // FIXME: any elements or character data
     };
 }
 svg_elem!(
@@ -615,15 +620,287 @@ svg_elem!(
     foreign_object_items()
 );
 
+// G element
+macro_rules! g_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_content!();
+    };
+}
+svg_elem!("g", G, "Group", g_items());
+
+// Image element
+macro_rules! image_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(href);
+        svg_attr!(x);
+        svg_attr!(y);
+        svg_attr!(width);
+        svg_attr!(height);
+        svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
+        svg_attr!(crossorigin);
+        svg_attr!(decoding);
+        // FIXME: fetchpriority
+        svg_animation!();
+        svg_descriptive!();
+        // FIXME: script, style
+    };
+}
+svg_elem!("image", Image, "Image", image_items());
+
+// Line element
+macro_rules! line_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(x1);
+        svg_attr!(y1);
+        svg_attr!(x2);
+        svg_attr!(y2);
+        svg_attr!(path_length, "pathLength");
+        svg_animation!();
+        svg_descriptive!();
+    };
+}
+svg_elem!("line", Line, "Line", line_items());
+
+// LinearGradient element
+macro_rules! linear_gradient_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(x1);
+        svg_attr!(y1);
+        svg_attr!(x2);
+        svg_attr!(y2);
+        svg_attr!(gradient_units, "gradientUnits");
+        svg_attr!(gradient_transform, "gradientTransform");
+        svg_attr!(spread_method, "spreadMethod");
+        svg_attr!(href);
+        svg_descriptive!();
+        // FIXME: animate, animateTransform, script, set, stop, style
+    };
+}
+svg_elem!(
+    "linearGradient",
+    LinearGradient,
+    "Linear Gradient",
+    linear_gradient_items()
+);
+
+// Marker element
+macro_rules! marker_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(marker_width, "markerWidth");
+        svg_attr!(marker_height, "markerHeight");
+        svg_attr!(marker_units, "markerUnits");
+        svg_attr!(orient);
+        svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
+        svg_attr!(ref_x, "refX");
+        svg_attr!(ref_y, "refY");
+        svg_attr!(view_box, "viewBox");
+        svg_content!();
+    };
+}
+svg_elem!("marker", Marker, "Marker", marker_items());
+
+// Mask element
+macro_rules! mask_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(x);
+        svg_attr!(y);
+        svg_attr!(width);
+        svg_attr!(height);
+        svg_attr!(mask_type, "mask-type");
+        svg_attr!(mask_content_units, "maskContentUnits");
+        svg_attr!(mask_units, "maskUnits");
+        svg_content!();
+    };
+}
+svg_elem!("mask", Mask, "Mask", mask_items());
+
+// Metadata element
+macro_rules! metadata_items {
+    ( $el:literal ) => {
+        // FIXME: any elements or character data
+    };
+}
+svg_elem!("metadata", Metadata, "Metadata", metadata_items());
+
+// MPath element
+macro_rules! mpath_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(href);
+        svg_descriptive!();
+    };
+}
+svg_elem!("mpath", MPath, "Motion Path", mpath_items());
+
+// Path element
+macro_rules! path_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(d);
+        svg_attr!(path_length, "pathLength");
+        svg_animation!();
+        svg_descriptive!();
+    };
+}
+svg_elem!("path", Path, "Path", path_items());
+
+// Pattern element
+macro_rules! pattern_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(href);
+        svg_attr!(x);
+        svg_attr!(y);
+        svg_attr!(width);
+        svg_attr!(height);
+        svg_attr!(pattern_content_units, "patternContentUnits");
+        svg_attr!(pattern_units, "patternUnits");
+        svg_attr!(pattern_transform, "patternTransform");
+        svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
+        svg_attr!(view_box, "viewBox");
+        svg_content!();
+    };
+}
+svg_elem!("pattern", Pattern, "Pattern", pattern_items());
+
+// Polygon element
+macro_rules! polygon_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(points);
+        svg_attr!(path_length, "pathLength");
+        svg_animation!();
+        svg_descriptive!();
+    };
+}
+svg_elem!("polygon", Polygon, "Polygon", polygon_items());
+
+// PolyLine element
+macro_rules! polyline_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(points);
+        svg_attr!(path_length, "pathLength");
+        svg_animation!();
+        svg_descriptive!();
+    };
+}
+svg_elem!("polyline", Polyline, "Polyline", polyline_items());
+
+// RadialGradient element
+macro_rules! radial_gradient_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(cx);
+        svg_attr!(cy);
+        svg_attr!(fr);
+        svg_attr!(fx);
+        svg_attr!(fy);
+        svg_attr!(r);
+        svg_attr!(gradient_units, "gradientUnits");
+        svg_attr!(gradient_transform, "gradientTransform");
+        svg_attr!(spread_method, "spreadMethod");
+        svg_attr!(href);
+        svg_descriptive!();
+        // FIXME: animate, animateTransform, script, set, stop, style
+    };
+}
+svg_elem!(
+    "radialGradient",
+    RadialGradient,
+    "Radial Gradient",
+    radial_gradient_items()
+);
+
+// Rect element
+macro_rules! rect_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(x);
+        svg_attr!(y);
+        svg_attr!(width);
+        svg_attr!(height);
+        svg_attr!(rx);
+        svg_attr!(ry);
+        svg_attr!(path_length, "pathLength");
+        svg_animation!();
+        svg_descriptive!();
+    };
+}
+svg_elem!("rect", Rect, "Rectangle", rect_items());
+
+// Script element
+macro_rules! script_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(crossorigin);
+        // FIXME: fetchpriority
+        svg_attr!(href);
+        svg_attr!(r#type, "type");
+        // FIXME: any elements or character data
+    };
+}
+svg_elem!("script", Script, "Script", script_items());
+
+// Set element
+macro_rules! set_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(attribute_name, "attributeName");
+        svg_attr!(to);
+        svg_attr!(dur);
+        svg_attr!(begin);
+        svg_attr!(end);
+        svg_attr!(min);
+        svg_attr!(max);
+        svg_attr!(repeat_count, "repeatCount");
+        svg_attr!(repeat_dur, "repeatDur");
+        svg_attr!(restart);
+        svg_attr!(fill);
+        svg_descriptive!();
+    };
+}
+svg_elem!("set", Set, "Set Value", set_items());
+
+// Stop element
+macro_rules! stop_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(offset);
+        svg_attr!(stop_color, "stop-color");
+        svg_attr!(stop_opacity, "stop-opacity");
+        // FIXME: animate, script, set, style
+    };
+}
+svg_elem!("stop", Stop, "Gradient Stop", stop_items());
+
+// Style element
+macro_rules! style_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(r#type, "type");
+        svg_attr!(media);
+        svg_attr!(title);
+        // FIXME: any elements or character data
+    };
+}
+svg_elem!("style", Style, "Style Information", style_items());
+
 // Svg element
 macro_rules! svg_items {
     ( $el:literal ) => {
         // FIXME: global attributes: id
-        svg_attr!(view_box, "viewBox");
-        svg_attr!(height);
-        svg_attr!(width);
         svg_attr!(x);
         svg_attr!(y);
+        svg_attr!(width);
+        svg_attr!(height);
+        svg_attr!(view_box, "viewBox");
         svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
         svg_attr!(xmlns);
         svg_content!();
@@ -632,43 +909,122 @@ macro_rules! svg_items {
 }
 svg_elem!("svg", Svg, "Svg", svg_items());
 
+// Switch element
+macro_rules! switch_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(required_extensions, "requiredExtensions");
+        svg_attr!(system_language, "systemLanguage");
+        svg_content!();
+    };
+}
+svg_elem!("switch", Switch, "Switch", switch_items());
+
+// Symbol element
+macro_rules! symbol_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(x);
+        svg_attr!(y);
+        svg_attr!(width);
+        svg_attr!(height);
+        svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
+        svg_attr!(ref_x, "refX");
+        svg_attr!(ref_y, "refY");
+        svg_attr!(view_box, "viewBox");
+        svg_content!();
+    };
+}
+svg_elem!("symbol", Symbol, "Symbol", symbol_items());
+
+// Text element
+macro_rules! text_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(x);
+        svg_attr!(y);
+        svg_attr!(dx);
+        svg_attr!(dy);
+        svg_attr!(rotate);
+        svg_attr!(length_adjust, "lengthAdjust");
+        svg_attr!(text_length, "textLength");
+        svg_animation!();
+        svg_descriptive!();
+        // FIXME: text content + a (anchor)
+    };
+}
+svg_elem!("text", Text, "Text", text_items());
+
+// TextPath element
+macro_rules! text_path_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(href);
+        svg_attr!(method);
+        svg_attr!(length_adjust, "lengthAdjust");
+        svg_attr!(text_length, "textLength");
+        svg_attr!(spacing);
+        svg_attr!(start_offset, "startOffset");
+        // FIXME: path, side
+        svg_descriptive!();
+        // FIXME: text content, a, animate, set, tspan
+    };
+}
+svg_elem!("textPath", TextPath, "Text Path", text_path_items());
+
+// Title element
+macro_rules! title_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        // FIXME: any elements or character data
+    };
+}
+svg_elem!("title", Title, "Title", title_items());
+
+// TSpan element
+macro_rules! tspan_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(x);
+        svg_attr!(y);
+        svg_attr!(dx);
+        svg_attr!(dy);
+        svg_attr!(rotate);
+        svg_attr!(length_adjust, "lengthAdjust");
+        svg_attr!(text_length, "textLength");
+        svg_descriptive!();
+        // FIXME: text content + animate, set, tspan
+    };
+}
+svg_elem!("tspan", TSpan, "Text Span", tspan_items());
+
 // Use element
 macro_rules! use_items {
     ( $el:literal ) => {
-        // FIXME
+        // FIXME: global attributes: id
+        svg_attr!(href);
+        svg_attr!(x);
+        svg_attr!(y);
+        svg_attr!(width);
+        svg_attr!(height);
+        svg_animation!();
+        svg_descriptive!();
     };
 }
 svg_elem!("use", Use, "Use", use_items());
 
-/*
-svg_elements![
-    g g,
-    image image,
-    line line,
-    linearGradient linear_gradient,
-    marker marker,
-    mask mask,
-    metadata metadata,
-    mpath mpath,
-    path path,
-    pattern pattern,
-    polygon polygon,
-    polyline polyline,
-    radialGradient radial_gradient,
-    rect rect,
-    script script,
-    set set,
-    stop stop,
-    style style,
-    switch switch,
-    symbol symbol,
-    text text,
-    textPath text_path,
-    title title,
-    tspan tspan,
-    view view,
-];
+// View element
+macro_rules! view_items {
+    ( $el:literal ) => {
+        // FIXME: global attributes: id
+        svg_attr!(view_box, "viewBox");
+        svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
+        svg_descriptive!();
+    };
+}
+svg_elem!("view", View, "View", view_items());
 
+/*
 svg_attributes![
     "accumulate" accumulate,
     "additive" additive,
@@ -760,7 +1116,6 @@ svg_attributes![
     "markerHeight" marker_height,
     "markerUnits" marker_units,
     "markerWidth" marker_width,
-    /* "mask" mask, */
     "maskContentUnits" mask_content_units,
     "maskUnits" mask_units,
     "max" max,
