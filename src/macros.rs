@@ -151,19 +151,20 @@ macro_rules! global_attribute {
 /// Global attributes
 macro_rules! global_attributes {
     () => {
+        global_attribute!(id);
+        global_attribute!(class);
+        // less-common...
         global_attribute!(accesskey);
         global_attribute!(autocapitalize);
         global_attribute!(autocorrect);
         global_attribute!(autofocus, true);
-        global_attribute!(class);
         global_attribute!(contenteditable);
-        /* data-* */
+        /* FIXME: data-* */
         global_attribute!(dir);
         global_attribute!(draggable);
         global_attribute!(enterkeyhint);
         global_attribute!(exportparts);
         global_attribute!(hidden);
-        global_attribute!(id);
         global_attribute!(inert, true);
         global_attribute!(is);
         global_attribute!(inputmode);
@@ -626,6 +627,11 @@ macro_rules! svg_elem {
             $items!( $el );
         }
 
+        #[doc = "Global SVG attributes"]
+        impl<'p> $elem<'p> {
+            svg_global_attributes!();
+        }
+
         impl<'p> Element<'p> for $elem<'p> {
             const TAG: &'static str = $el;
             fn new(page: &'p mut Page) -> Self {
@@ -649,6 +655,34 @@ macro_rules! svg_attr {
     // Make an SVG attribute with raw-string name (e.g. r#use)
     ( $attr:ident, $raw_attr:expr ) => {
         val_attr!("Web/SVG/Reference/Attribute/", $attr, $raw_attr);
+    };
+
+    // Make an SVG Boolean attribute
+    ( $attr:ident, $raw_attr:expr, true ) => {
+        bool_attr!("Web/SVG/Reference/Attribute/", $attr, $raw_attr);
+    };
+}
+
+/// SVG global attributes
+macro_rules! svg_global_attributes {
+    () => {
+        svg_attr!(id);
+        // FIXME: only allowed on *most* SVG elements, for some reason
+        svg_attr!(class);
+        svg_attr!(style);
+        // less common...
+        svg_attr!(autofocus, "autofocus", true);
+        /* FIXME: data-* */
+        svg_attr!(lang);
+        svg_attr!(tabindex);
+    };
+}
+
+/// SVG support attributes
+macro_rules! svg_support_attr {
+    () => {
+        svg_attr!(required_extensions, "requiredExtensions");
+        svg_attr!(system_language, "systemLanguage");
     };
 }
 
