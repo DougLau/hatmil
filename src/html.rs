@@ -725,7 +725,7 @@ macro_rules! noscript_items {
     ( $el:literal ) => {
         // FIXME: complex content rules (sometimes transparent)
         elem_method!(link, Link);
-        elem_method!(style_elem, Style, "style"); // global attr
+        elem_method!(style_el, Style, "style"); // global attr
         elem_method!(meta, Meta);
     };
 }

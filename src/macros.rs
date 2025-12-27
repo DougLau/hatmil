@@ -280,9 +280,9 @@ macro_rules! metadata_content {
         elem_method!(meta, Meta);
         elem_method!(noscript, NoScript);
         elem_method!(script, Script);
-        elem_method!(style_elem, Style, "style");
+        elem_method!(style_el, Style, "style");
         elem_method!(template, Template);
-        elem_method!(title_elem, Title, "title");
+        elem_method!(title_el, Title, "title");
         comment_raw_methods!();
     };
 }
@@ -292,7 +292,7 @@ macro_rules! flow_content {
     () => {
         text_methods!();
         elem_method!(a, A);
-        elem_method!(abbr_elem, Abbr, "abbr"); // FIXME: th abbr
+        elem_method!(abbr_el, Abbr, "abbr"); // FIXME: th abbr
         elem_method!(address, Address);
         elem_method!(article, Article);
         elem_method!(aside, Aside);
@@ -304,7 +304,7 @@ macro_rules! flow_content {
         elem_method!(br, Br);
         elem_method!(button, Button);
         elem_method!(canvas, Canvas);
-        elem_method!(cite_elem, Cite, "cite"); // FIXME: blockquote cite
+        elem_method!(cite_el, Cite, "cite"); // FIXME: blockquote cite
         elem_method!(code, Code);
         elem_method!(data, Data);
         elem_method!(datalist, DataList);
@@ -319,7 +319,7 @@ macro_rules! flow_content {
         elem_method!(fieldset, FieldSet);
         elem_method!(figure, Figure);
         elem_method!(footer, Footer);
-        elem_method!(form_elem, Form, "form"); // FIXME: fieldset form
+        elem_method!(form_el, Form, "form"); // FIXME: fieldset form
         elem_method!(h1, H1);
         elem_method!(h2, H2);
         elem_method!(h3, H3);
@@ -359,7 +359,7 @@ macro_rules! flow_content {
         elem_method!(search, Search);
         elem_method!(section, Section);
         elem_method!(select, Select);
-        elem_method!(slot_elem, Slot, "slot");
+        elem_method!(slot_el, Slot, "slot");
         elem_method!(small, Small);
         elem_method!(span, Span);
         elem_method!(strong, Strong);
@@ -393,7 +393,7 @@ macro_rules! phrasing_content {
         elem_method!(br, Br);
         elem_method!(button, Button);
         elem_method!(canvas, Canvas);
-        elem_method!(cite_elem, Cite, "cite"); // FIXME: q cite
+        elem_method!(cite_el, Cite, "cite"); // FIXME: q cite
         elem_method!(code, Code);
         elem_method!(data, Data);
         elem_method!(datalist, DataList);
@@ -425,7 +425,7 @@ macro_rules! phrasing_content {
         elem_method!(samp, Samp);
         elem_method!(script, Script);
         elem_method!(select, Select);
-        elem_method!(slot_elem, Slot, "slot");
+        elem_method!(slot_el, Slot, "slot");
         elem_method!(small, Small);
         elem_method!(span, Span);
         elem_method!(strong, Strong);
@@ -489,7 +489,7 @@ macro_rules! non_interactive_phrasing_content {
         elem_method!(samp, Samp);
         elem_method!(script, Script);
         // select is interactive
-        elem_method!(slot_elem, Slot, "slot");
+        elem_method!(slot_el, Slot, "slot");
         elem_method!(small, Small);
         elem_method!(span, Span);
         elem_method!(strong, Strong);
@@ -582,7 +582,7 @@ macro_rules! address_content {
         elem_method!(search, Search);
         // section not allowed
         elem_method!(select, Select);
-        elem_method!(slot_elem, Slot, "slot");
+        elem_method!(slot_el, Slot, "slot");
         elem_method!(small, Small);
         elem_method!(span, Span);
         elem_method!(strong, Strong);
@@ -686,6 +686,66 @@ macro_rules! svg_support_attr {
     };
 }
 
+/// Shape content
+macro_rules! svg_shapes {
+    () => {
+        elem_method!(circle, Circle);
+        elem_method!(ellipse, Ellipse);
+        elem_method!(line, Line);
+        elem_method!(path, Path);
+        elem_method!(polygon, Polygon);
+        elem_method!(polyline, Polyline);
+        elem_method!(rect, Rect);
+    };
+}
+
+/// Container content
+macro_rules! svg_container {
+    () => {
+        elem_method!(a, A);
+        elem_method!(defs, Defs);
+        elem_method!(g, G);
+        elem_method!(marker, Marker);
+        elem_method!(mask, Mask);
+        elem_method!(pattern, Pattern);
+        elem_method!(svg, Svg);
+        elem_method!(switch, Switch);
+        elem_method!(symbol, Symbol);
+    };
+}
+
+/// Descriptive content
+macro_rules! svg_descriptive {
+    () => {
+        elem_method!(desc, Desc);
+        elem_method!(metadata, Metadata);
+        elem_method!(title, Title);
+    };
+}
+
+/// Gradient content
+macro_rules! svg_gradient {
+    () => {
+        elem_method!(linear_gradient, LinearGradient);
+        elem_method!(radial_gradient, RadialGradient);
+        elem_method!(stop, Stop);
+    };
+}
+
+/// Other content
+macro_rules! svg_other {
+    () => {
+        elem_method!(clip_path, ClipPath);
+        elem_method!(filter, Filter);
+        elem_method!(foreign_object, ForeignObject);
+        elem_method!(image, Image);
+        elem_method!(script, Script);
+        elem_method!(style_el, Style, "style");
+        elem_method!(text, Text);
+        elem_method!(view, View);
+    };
+}
+
 /// Animation content
 macro_rules! svg_animation {
     () => {
@@ -697,22 +757,14 @@ macro_rules! svg_animation {
     };
 }
 
-/// Descriptive content
-macro_rules! svg_descriptive {
-    () => {
-        // FIXME
-    };
-}
-
 /// Svg content
 macro_rules! svg_content {
     () => {
-        svg_animation!();
+        svg_shapes!();
+        svg_container!();
         svg_descriptive!();
-        // svg_shape();
-        // svg_structural();
-        // svg_gradient();
-        // FIXME: a, clipPath, filter, foreignObject, image, marker,
-        //        mask, pattern, script, style, switch, text, view
+        svg_gradient!();
+        svg_other!();
+        svg_animation!();
     };
 }
