@@ -4,11 +4,11 @@
 use std::fmt;
 use std::fmt::Write;
 
-/// SVG [Path] definition
+/// SVG [Path] definition builder
 ///
 /// ```rust
-/// # use hatmil::PathDef;
-/// let mut path = PathDef::new();
+/// # use hatmil::svg::Path;
+/// let mut path = Path::builder();
 /// path.precision(3);
 /// path.move_to([5, 5]);
 /// path.line((10.1, 20.2));
@@ -18,8 +18,8 @@ use std::fmt::Write;
 /// ```
 ///
 /// [Path]: svg/struct.Path.html#method.d
-#[derive(Clone, Default)]
-pub struct PathDef {
+#[derive(Clone)]
+pub struct PathDefBuilder {
     /// Absolute vs. relative output mode
     absolute: bool,
     /// Precision in decimal places
@@ -32,24 +32,30 @@ pub struct PathDef {
     d: String,
 }
 
-impl fmt::Display for PathDef {
+impl fmt::Display for PathDefBuilder {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.d)?;
         Ok(())
     }
 }
 
-impl From<PathDef> for String {
-    fn from(path: PathDef) -> Self {
+impl From<PathDefBuilder> for String {
+    fn from(path: PathDefBuilder) -> Self {
         // zero-copy alternative to fmt::Display
         path.d
     }
 }
 
-impl PathDef {
-    /// Create a new SVG path definition
-    pub fn new() -> Self {
-        PathDef::default()
+impl PathDefBuilder {
+    /// Create a new SVG path definition builder
+    pub(crate) fn new() -> Self {
+        PathDefBuilder {
+            absolute: false,
+            precision: 2,
+            x: 0.0,
+            y: 0.0,
+            d: String::new(),
+        }
     }
 
     /// Set absolute or relative output mode
@@ -289,76 +295,77 @@ mod test {
 
     #[test]
     fn empty() {
-        let path = PathDef::new();
+        let path = PathDefBuilder::new();
         assert_eq!(path.to_string(), "");
     }
 
     #[test]
     fn mv() {
-        let mut path = PathDef::new();
+        let mut path = PathDefBuilder::new();
         path.move_to([1, 2]);
         assert_eq!(path.to_string(), "m1 2");
     }
 
     #[test]
     fn line() {
-        let mut path = PathDef::new();
+        let mut path = PathDefBuilder::new();
         path.line([2, 1]);
         assert_eq!(path.to_string(), "l2 1");
     }
 
     #[test]
     fn horizontal() {
-        let mut path = PathDef::new();
+        let mut path = PathDefBuilder::new();
         path.line([2.0001, 0.003]);
         assert_eq!(path.to_string(), "h2");
     }
 
     #[test]
     fn vertical() {
-        let mut path = PathDef::new();
+        let mut path = PathDefBuilder::new();
         path.line([0, -6]);
         assert_eq!(path.to_string(), "v-6");
     }
 
     #[test]
     fn cubic() {
-        let mut path = PathDef::new();
+        let mut path = PathDefBuilder::new();
         path.cubic(Some([1, 0]), [5, 5], [0, 10]);
         assert_eq!(path.to_string(), "c1 0 5 5 0 10");
     }
 
     #[test]
     fn cubic_smooth() {
-        let mut path = PathDef::new();
+        let mut path = PathDefBuilder::new();
         path.cubic(None, [5, 5], [0, 10]);
         assert_eq!(path.to_string(), "s5 5 0 10");
     }
 
     #[test]
     fn quad() {
-        let mut path = PathDef::new();
+        let mut path = PathDefBuilder::new();
         path.quad(Some([1, 0]), [0, 10]);
         assert_eq!(path.to_string(), "q1 0 0 10");
     }
 
     #[test]
     fn quad_smooth() {
-        let mut path = PathDef::new();
+        let mut path = PathDefBuilder::new();
+        path.precision(0);
         path.quad(None, [0.4, 9.6]);
         assert_eq!(path.to_string(), "t0 10");
     }
 
     #[test]
     fn arc() {
-        let mut path = PathDef::new();
+        let mut path = PathDefBuilder::new();
         path.arc(20, 25, 90, true, false, [50, 10]);
         assert_eq!(path.to_string(), "a20 25 90 1 0 50 10");
     }
 
     #[test]
     fn relative() {
-        let mut path = PathDef::new();
+        let mut path = PathDefBuilder::new();
         path.line([2, 4]);
         path.line([4, 2]);
         assert_eq!(path.to_string(), "l2 4l2 -2");
@@ -366,9 +373,8 @@ mod test {
 
     #[test]
     fn two_decimal_places() {
-        let mut path = PathDef::new();
+        let mut path = PathDefBuilder::new();
         path.absolute(true);
-        path.precision(2);
         path.line([2.2222, 9.994]);
         path.line([4.444444, 8.88888]);
         assert_eq!(path.to_string(), "L2.22 9.99L4.44 8.89");
@@ -376,7 +382,7 @@ mod test {
 
     #[test]
     fn three_decimal_places() {
-        let mut path = PathDef::new();
+        let mut path = PathDefBuilder::new();
         path.precision(3);
         path.line([2.2222, 9.994]);
         path.line([4.444444, 8.88888]);

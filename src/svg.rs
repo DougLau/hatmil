@@ -2,6 +2,7 @@
 // Copyright (C) 2025  Douglas P Lau
 //
 //! SVG Elements -- _Scalable Vector Graphics_
+use crate::definition::PathDefBuilder;
 use crate::html::Link;
 use crate::page::{Element, Page};
 use crate::value::Value;
@@ -763,6 +764,13 @@ macro_rules! mpath_items {
 }
 svg_elem!("mpath", MPath, "Motion Path", mpath_items());
 
+impl Path<'_> {
+    /// Make a path definition builder
+    pub fn builder() -> PathDefBuilder {
+        PathDefBuilder::new()
+    }
+}
+
 // Path element
 macro_rules! path_items {
     ( $el:literal ) => {
@@ -1151,7 +1159,7 @@ mod test {
     fn path() {
         let mut page = Page::default();
         let mut svg = page.frag::<Svg>();
-        let mut path = crate::PathDef::new();
+        let mut path = Path::builder();
         path.absolute(true)
             .move_to((0, 0))
             .line((100, 0))

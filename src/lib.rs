@@ -7,12 +7,12 @@
 #[macro_use]
 mod macros;
 
+mod definition;
 pub mod html;
 mod page;
-mod path;
 pub mod svg;
 mod value;
 
+pub use definition::PathDefBuilder;
 pub use page::Page;
-pub use path::PathDef;
 pub use value::Value;
