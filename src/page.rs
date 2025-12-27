@@ -353,12 +353,7 @@ mod test {
     fn html_builder() {
         let mut page = Page::default();
         let mut html = page.html();
-        html.lang("en")
-            .head()
-            .title_elem()
-            .text("Title!")
-            .end()
-            .end();
+        html.lang("en").head().title_el().text("Title!").end().end();
         html.body().h1().text("Header!");
         assert_eq!(
             page.to_string(),
@@ -370,7 +365,7 @@ mod test {
     fn string_from() {
         let mut page = Page::new(false);
         let mut html = page.html();
-        html.head().title_elem().text("Head").end().end();
+        html.head().title_el().text("Head").end().end();
         html.body().text("Body");
         assert_eq!(
             String::from(page),

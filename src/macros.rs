@@ -719,7 +719,7 @@ macro_rules! svg_descriptive {
     () => {
         elem_method!(desc, Desc);
         elem_method!(metadata, Metadata);
-        elem_method!(title, Title);
+        elem_method!(title_el, Title, "title");
     };
 }
 
@@ -741,7 +741,7 @@ macro_rules! svg_other {
         elem_method!(image, Image);
         elem_method!(script, Script);
         elem_method!(style_el, Style, "style");
-        elem_method!(text, Text);
+        elem_method!(text_el, Text, "text");
         elem_method!(view, View);
     };
 }

@@ -15,9 +15,9 @@ Each element type has methods to add its available attributes.
 
 #### Content
 
-Text content can be added using the [text] or [text_len] methods, which will
-automatically escape characters as needed.  For content which has already been
-escaped, use the [raw] method.
+Text content (_character data_) can be added using the [text] or [text_len]
+methods, which will automatically escape characters as needed.  For content
+which has already been escaped, use the [raw] method.
 
 #### Display
 

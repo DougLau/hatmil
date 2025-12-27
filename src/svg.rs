@@ -140,7 +140,7 @@ svg_elem!("defs", Defs, "Definitions", defs_items());
 // Desc element
 macro_rules! desc_items {
     ( $el:literal ) => {
-        // FIXME: character data
+        text_content!();
     };
 }
 svg_elem!("desc", Desc, "Description", desc_items());
@@ -275,7 +275,10 @@ macro_rules! fe_diffuse_lighting_items {
         svg_attr!(diffuse_constant, "diffuseConstant");
         svg_attr!(kernel_unit_length, "kernelUnitLength");
         filter_attr!();
-        // FIXME: one light source!
+        // NOTE: only one light allowed!
+        elem_method!(fe_distant_light, FeDistantLight);
+        elem_method!(fe_point_light, FePointLight);
+        elem_method!(fe_spot_light, FeSpotLight);
         svg_descriptive!();
     };
 }
@@ -514,7 +517,10 @@ macro_rules! fe_specular_lighting_items {
         svg_attr!(specular_exponent, "specularExponent");
         svg_attr!(kernel_unit_length, "kernelUnitLength");
         filter_attr!();
-        // FIXME: feDistantLight, fePointLight, feSpotLight (only one)
+        // NOTE: only one light allowed!
+        elem_method!(fe_distant_light, FeDistantLight);
+        elem_method!(fe_point_light, FePointLight);
+        elem_method!(fe_spot_light, FeSpotLight);
         svg_descriptive!();
     };
 }
@@ -589,6 +595,28 @@ macro_rules! filter_items {
         svg_attr!(height);
         svg_descriptive!();
         // FIXME: filter primitive elements
+        elem_method!(fe_blend, FeBlend);
+        elem_method!(fe_color_matrix, FeColorMatrix);
+        elem_method!(fe_component_transfer, FeComponentTransfer);
+        elem_method!(fe_composite, FeComposite);
+        elem_method!(fe_convolve_matrix, FeConvolveMatrix);
+        elem_method!(fe_diffuse_lighting, FeDiffuseLighting);
+        elem_method!(fe_displacement_map, FeDisplacementMap);
+        elem_method!(fe_drop_shadow, FeDropShadow);
+        elem_method!(fe_flood, FeFlood);
+        elem_method!(fe_func_a, FeFuncA);
+        elem_method!(fe_func_r, FeFuncR);
+        elem_method!(fe_func_g, FeFuncG);
+        elem_method!(fe_func_b, FeFuncB);
+        elem_method!(fe_gaussian_blur, FeGaussianBlur);
+        elem_method!(fe_image, FeImage);
+        elem_method!(fe_merge, FeMerge);
+        elem_method!(fe_merge_node, FeMergeNode);
+        elem_method!(fe_morphology, FeMorphology);
+        elem_method!(fe_offset, FeOffset);
+        elem_method!(fe_specular_lighting, FeSpecularLighting);
+        elem_method!(fe_tile, FeTile);
+        elem_method!(fe_turbulence, FeTurbulence);
         elem_method!(animate, Animate);
         elem_method!(set, Set);
     };
@@ -603,7 +631,8 @@ macro_rules! foreign_object_items {
         svg_attr!(width);
         svg_attr!(height);
         svg_support_attr!();
-        // FIXME: any elements or character data
+        svg_content!();
+        text_content!();
     };
 }
 svg_elem!(
@@ -719,7 +748,8 @@ svg_elem!("mask", Mask, "Mask", mask_items());
 // Metadata element
 macro_rules! metadata_items {
     ( $el:literal ) => {
-        // FIXME: any elements or character data
+        svg_content!();
+        text_content!();
     };
 }
 svg_elem!("metadata", Metadata, "Metadata", metadata_items());
@@ -841,7 +871,8 @@ macro_rules! script_items {
         svg_attr!(r#type, "type");
         svg_attr!(crossorigin);
         // NOTE: fetchpriority (future)
-        // FIXME: any elements or character data
+        svg_content!();
+        text_content!();
     };
 }
 svg_elem!("script", Script, "Script", script_items());
@@ -889,7 +920,8 @@ macro_rules! style_items {
         svg_attr!(r#type, "type");
         svg_attr!(media);
         svg_attr!(title);
-        // FIXME: any elements or character data
+        svg_content!();
+        text_content!();
     };
 }
 svg_elem!("style", Style, "Style Information", style_items());
@@ -939,7 +971,7 @@ svg_elem!("symbol", Symbol, "Symbol", symbol_items());
 // Text element
 macro_rules! text_items {
     ( $el:literal ) => {
-        // FIXME: character data
+        text_content!();
         svg_attr!(x);
         svg_attr!(y);
         svg_attr!(dx);
@@ -960,6 +992,7 @@ svg_elem!("text", Text, "Text", text_items());
 // TextPath element
 macro_rules! text_path_items {
     ( $el:literal ) => {
+        text_content!();
         svg_attr!(href);
         svg_attr!(method);
         svg_attr!(length_adjust, "lengthAdjust");
@@ -974,7 +1007,6 @@ macro_rules! text_path_items {
         svg_descriptive!();
         elem_method!(animate, Animate);
         elem_method!(set, Set);
-        // FIXME: character data
     };
 }
 svg_elem!("textPath", TextPath, "Text Path", text_path_items());
@@ -982,7 +1014,8 @@ svg_elem!("textPath", TextPath, "Text Path", text_path_items());
 // Title element
 macro_rules! title_items {
     ( $el:literal ) => {
-        // FIXME: any elements or character data
+        svg_content!();
+        text_content!();
     };
 }
 svg_elem!("title", Title, "Title", title_items());
@@ -990,6 +1023,7 @@ svg_elem!("title", Title, "Title", title_items());
 // TSpan element
 macro_rules! tspan_items {
     ( $el:literal ) => {
+        text_content!();
         svg_attr!(x);
         svg_attr!(y);
         svg_attr!(dx);
@@ -1002,7 +1036,6 @@ macro_rules! tspan_items {
         svg_descriptive!();
         elem_method!(animate, Animate);
         elem_method!(set, Set);
-        // FIXME: character data
     };
 }
 svg_elem!("tspan", TSpan, "Text Span", tspan_items());
