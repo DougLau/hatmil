@@ -25,7 +25,7 @@ After creating the page, use [Display] ([format], `to_string()`, etc) to
 get the resulting HTML.  Any open tags will be closed automatically.
 
 ```rust
-use hatmil::{Page, elem::{Div, Element}};
+use hatmil::{Page, html::Div};
 
 let mut page = Page::default();
 let mut div = page.frag::<Div>();

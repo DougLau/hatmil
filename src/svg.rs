@@ -4,7 +4,7 @@
 //! SVG Elements -- _Scalable Vector Graphics_
 use crate::definition::PathDefBuilder;
 use crate::html::Link;
-use crate::page::{Element, Page};
+use crate::page::{ElemType, Element, Page};
 use crate::value::Value;
 
 // A element (in SVG context)
@@ -122,7 +122,7 @@ macro_rules! clip_path_items {
         svg_support_attr!();
         svg_shapes!();
         elem_method!(text, Text);
-        elem_method!(r#use, Use, "use");
+        elem_method!(r#use, Use);
         svg_descriptive!();
         svg_animation!();
     };
@@ -668,7 +668,7 @@ macro_rules! image_items {
         svg_descriptive!();
         svg_animation!();
         elem_method!(script, Script);
-        elem_method!(style_el, Style, "style");
+        elem_method!(style_el, Style);
     };
 }
 svg_elem!("image", Image, "Image", image_items());
@@ -705,7 +705,7 @@ macro_rules! linear_gradient_items {
         elem_method!(set, Set);
         elem_method!(stop, Stop);
         elem_method!(script, Script);
-        elem_method!(style_el, Style, "style");
+        elem_method!(style_el, Style);
     };
 }
 svg_elem!(
@@ -845,7 +845,7 @@ macro_rules! radial_gradient_items {
         elem_method!(set, Set);
         elem_method!(stop, Stop);
         elem_method!(script, Script);
-        elem_method!(style_el, Style, "style");
+        elem_method!(style_el, Style);
     };
 }
 svg_elem!(
@@ -917,7 +917,7 @@ macro_rules! stop_items {
         elem_method!(animate, Animate);
         elem_method!(set, Set);
         elem_method!(script, Script);
-        elem_method!(style_el, Style, "style");
+        elem_method!(style_el, Style);
     };
 }
 svg_elem!("stop", Stop, "Gradient Stop", stop_items());

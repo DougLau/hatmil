@@ -6,6 +6,10 @@
 #[rustfmt::skip]
 macro_rules! html_elem {
     ( $el:literal, $elem:ident, $desc:literal, $items:ident() ) => {
+        html_elem!($el, $elem, $desc, $items(), ElemType::Html);
+    };
+
+    ( $el:literal, $elem:ident, $desc:literal, $items:ident(), $tp:expr ) => {
         #[doc = concat!(
             "`<",
             $el,
@@ -34,6 +38,7 @@ macro_rules! html_elem {
 
         impl<'p> Element<'p> for $elem<'p> {
             const TAG: &'static str = $el;
+            const TP: ElemType = $tp;
             fn new(page: &'p mut Page) -> Self {
                 $elem { page }
             }
@@ -187,18 +192,10 @@ macro_rules! global_attributes {
 /// Create an element method (HTML or SVG)
 macro_rules! elem_method {
     ( $meth:ident, $elem:ident ) => {
-        #[doc = concat!("Add `<", stringify!($meth), ">` child element")]
+        #[doc = concat!("Add `<", stringify!($elem::TAG), ">` child element")]
         #[allow(clippy::self_named_constructors)]
         pub fn $meth(self: &mut Self) -> $elem<'_> {
-            self.page.elem(stringify!($meth), false);
-            $elem { page: self.page }
-        }
-    };
-
-    ( $meth:ident, $elem:ident, $el:literal ) => {
-        #[doc = concat!("Add `<", $el, ">` child element")]
-        pub fn $meth(self: &mut Self) -> $elem<'_> {
-            self.page.elem($el, false);
+            self.page.elem($elem::TAG, $elem::TP);
             $elem { page: self.page }
         }
     };
@@ -280,9 +277,9 @@ macro_rules! metadata_content {
         elem_method!(meta, Meta);
         elem_method!(noscript, NoScript);
         elem_method!(script, Script);
-        elem_method!(style_el, Style, "style");
+        elem_method!(style_el, Style);
         elem_method!(template, Template);
-        elem_method!(title_el, Title, "title");
+        elem_method!(title_el, Title);
         comment_raw_methods!();
     };
 }
@@ -292,7 +289,7 @@ macro_rules! flow_content {
     () => {
         text_methods!();
         elem_method!(a, A);
-        elem_method!(abbr_el, Abbr, "abbr"); // FIXME: th abbr
+        elem_method!(abbr_el, Abbr); // FIXME: th abbr
         elem_method!(address, Address);
         elem_method!(article, Article);
         elem_method!(aside, Aside);
@@ -304,7 +301,7 @@ macro_rules! flow_content {
         elem_method!(br, Br);
         elem_method!(button, Button);
         elem_method!(canvas, Canvas);
-        elem_method!(cite_el, Cite, "cite"); // FIXME: blockquote cite
+        elem_method!(cite_el, Cite); // FIXME: blockquote cite
         elem_method!(code, Code);
         elem_method!(data, Data);
         elem_method!(datalist, DataList);
@@ -319,7 +316,7 @@ macro_rules! flow_content {
         elem_method!(fieldset, FieldSet);
         elem_method!(figure, Figure);
         elem_method!(footer, Footer);
-        elem_method!(form_el, Form, "form"); // FIXME: fieldset form
+        elem_method!(form_el, Form); // FIXME: fieldset form
         elem_method!(h1, H1);
         elem_method!(h2, H2);
         elem_method!(h3, H3);
@@ -359,7 +356,7 @@ macro_rules! flow_content {
         elem_method!(search, Search);
         elem_method!(section, Section);
         elem_method!(select, Select);
-        elem_method!(slot_el, Slot, "slot");
+        elem_method!(slot_el, Slot);
         elem_method!(small, Small);
         elem_method!(span, Span);
         elem_method!(strong, Strong);
@@ -393,7 +390,7 @@ macro_rules! phrasing_content {
         elem_method!(br, Br);
         elem_method!(button, Button);
         elem_method!(canvas, Canvas);
-        elem_method!(cite_el, Cite, "cite"); // FIXME: q cite
+        elem_method!(cite_el, Cite); // FIXME: q cite
         elem_method!(code, Code);
         elem_method!(data, Data);
         elem_method!(datalist, DataList);
@@ -425,7 +422,7 @@ macro_rules! phrasing_content {
         elem_method!(samp, Samp);
         elem_method!(script, Script);
         elem_method!(select, Select);
-        elem_method!(slot_el, Slot, "slot");
+        elem_method!(slot_el, Slot);
         elem_method!(small, Small);
         elem_method!(span, Span);
         elem_method!(strong, Strong);
@@ -489,7 +486,7 @@ macro_rules! non_interactive_phrasing_content {
         elem_method!(samp, Samp);
         elem_method!(script, Script);
         // select is interactive
-        elem_method!(slot_el, Slot, "slot");
+        elem_method!(slot_el, Slot);
         elem_method!(small, Small);
         elem_method!(span, Span);
         elem_method!(strong, Strong);
@@ -582,7 +579,7 @@ macro_rules! address_content {
         elem_method!(search, Search);
         // section not allowed
         elem_method!(select, Select);
-        elem_method!(slot_el, Slot, "slot");
+        elem_method!(slot_el, Slot);
         elem_method!(small, Small);
         elem_method!(span, Span);
         elem_method!(strong, Strong);
@@ -606,6 +603,10 @@ macro_rules! address_content {
 #[rustfmt::skip]
 macro_rules! svg_elem {
     ( $el:literal, $elem:ident, $desc:literal, $items:ident() ) => {
+        svg_elem!($el, $elem, $desc, $items(), ElemType::Xml);
+    };
+
+    ( $el:literal, $elem:ident, $desc:literal, $items:ident(), $tp:expr ) => {
         #[doc = concat!(
             "`<",
             $el,
@@ -634,6 +635,7 @@ macro_rules! svg_elem {
 
         impl<'p> Element<'p> for $elem<'p> {
             const TAG: &'static str = $el;
+            const TP: ElemType = $tp;
             fn new(page: &'p mut Page) -> Self {
                 $elem { page }
             }
@@ -719,7 +721,7 @@ macro_rules! svg_descriptive {
     () => {
         elem_method!(desc, Desc);
         elem_method!(metadata, Metadata);
-        elem_method!(title_el, Title, "title");
+        elem_method!(title_el, Title);
     };
 }
 
@@ -740,8 +742,8 @@ macro_rules! svg_other {
         elem_method!(foreign_object, ForeignObject);
         elem_method!(image, Image);
         elem_method!(script, Script);
-        elem_method!(style_el, Style, "style");
-        elem_method!(text_el, Text, "text");
+        elem_method!(style_el, Style);
+        elem_method!(text_el, Text);
         elem_method!(view, View);
     };
 }
@@ -750,8 +752,8 @@ macro_rules! svg_other {
 macro_rules! svg_animation {
     () => {
         elem_method!(animate, Animate);
-        elem_method!(animate_motion, AnimateMotion, "animateMotion");
-        elem_method!(animate_transform, AnimateTransform, "animateTransform");
+        elem_method!(animate_motion, AnimateMotion);
+        elem_method!(animate_transform, AnimateTransform);
         elem_method!(mpath, MPath);
         elem_method!(set, Set);
     };

@@ -3,7 +3,7 @@
 // Copyright (C) 2025  Douglas P Lau
 //
 //! HTML Elements -- _HyperText Markup Language_
-use crate::page::{Element, Page};
+use crate::page::{ElemType, Element, Page};
 use crate::value::Value;
 
 // A element
@@ -64,7 +64,13 @@ macro_rules! area_items {
         // no content (void)
     };
 }
-html_elem!("area", Area, "Image Map Area", area_items());
+html_elem!(
+    "area",
+    Area,
+    "Image Map Area",
+    area_items(),
+    ElemType::HtmlVoid
+);
 
 // Aside element
 macro_rules! aside_items {
@@ -140,7 +146,7 @@ macro_rules! base_items {
         // no content (void)
     };
 }
-html_elem!("base", Base, "Base URL", base_items());
+html_elem!("base", Base, "Base URL", base_items(), ElemType::HtmlVoid);
 
 // Body element
 macro_rules! body_items {
@@ -157,7 +163,7 @@ macro_rules! br_items {
         // no content (void)
     };
 }
-html_elem!("br", Br, "Line Break", br_items());
+html_elem!("br", Br, "Line Break", br_items(), ElemType::HtmlVoid);
 
 // Button element
 macro_rules! button_items {
@@ -223,7 +229,7 @@ macro_rules! col_items {
         // no content (void)
     };
 }
-html_elem!("col", Col, "Table Column", col_items());
+html_elem!("col", Col, "Table Column", col_items(), ElemType::HtmlVoid);
 
 // ColGroup element
 macro_rules! colgroup_items {
@@ -351,7 +357,13 @@ macro_rules! embed_items {
         // no content (void)
     };
 }
-html_elem!("embed", Embed, "Embed External Content", embed_items());
+html_elem!(
+    "embed",
+    Embed,
+    "Embed External Content",
+    embed_items(),
+    ElemType::HtmlVoid
+);
 
 // FeildSet element
 macro_rules! fieldset_items {
@@ -467,7 +479,7 @@ macro_rules! hr_items {
         // no content (void)
     };
 }
-html_elem!("hr", Hr, "Horizontal Rule", hr_items());
+html_elem!("hr", Hr, "Horizontal Rule", hr_items(), ElemType::HtmlVoid);
 
 // Html element
 macro_rules! html_items {
@@ -526,7 +538,13 @@ macro_rules! img_items {
         // no content (void)
     };
 }
-html_elem!("img", Img, "Embedded Image", img_items());
+html_elem!(
+    "img",
+    Img,
+    "Embedded Image",
+    img_items(),
+    ElemType::HtmlVoid
+);
 
 // Input element (void)
 macro_rules! input_items {
@@ -569,7 +587,7 @@ macro_rules! input_items {
         // no content (void)
     };
 }
-html_elem!("input", Input, "Input", input_items());
+html_elem!("input", Input, "Input", input_items(), ElemType::HtmlVoid);
 
 // Ins element
 macro_rules! ins_items {
@@ -646,7 +664,13 @@ macro_rules! link_items {
         // no content (void)
     };
 }
-html_elem!("link", Link, "External Resource Link", link_items());
+html_elem!(
+    "link",
+    Link,
+    "External Resource Link",
+    link_items(),
+    ElemType::Xml
+);
 
 // Main element
 macro_rules! main_items {
@@ -695,7 +719,7 @@ macro_rules! meta_items {
         // no content (void)
     };
 }
-html_elem!("meta", Meta, "Metadata", meta_items());
+html_elem!("meta", Meta, "Metadata", meta_items(), ElemType::HtmlVoid);
 
 // Meter element
 macro_rules! meter_items {
@@ -725,7 +749,7 @@ macro_rules! noscript_items {
     ( $el:literal ) => {
         // FIXME: complex content rules (sometimes transparent)
         elem_method!(link, Link);
-        elem_method!(style_el, Style, "style"); // global attr
+        elem_method!(style_el, Style); // global attr
         elem_method!(meta, Meta);
     };
 }
@@ -973,7 +997,13 @@ macro_rules! source_items {
         // no content (void)
     };
 }
-html_elem!("source", Source, "Media or Image Source", source_items());
+html_elem!(
+    "source",
+    Source,
+    "Media or Image Source",
+    source_items(),
+    ElemType::HtmlVoid
+);
 
 // Span element
 macro_rules! span_items {
@@ -1168,7 +1198,13 @@ macro_rules! track_items {
         // no content (void)
     };
 }
-html_elem!("track", Track, "Embed Text Track", track_items());
+html_elem!(
+    "track",
+    Track,
+    "Embed Text Track",
+    track_items(),
+    ElemType::HtmlVoid
+);
 
 // U element
 macro_rules! u_items {
@@ -1229,4 +1265,10 @@ macro_rules! wbr_items {
         // no content (void)
     };
 }
-html_elem!("wbr", Wbr, "Line Break Opportunity", wbr_items());
+html_elem!(
+    "wbr",
+    Wbr,
+    "Line Break Opportunity",
+    wbr_items(),
+    ElemType::HtmlVoid
+);

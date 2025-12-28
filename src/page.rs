@@ -6,18 +6,29 @@ use crate::html::Html;
 use crate::value::Value;
 use std::fmt;
 
+/// Element type
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum ElemType {
+    /// HTML element
+    Html,
+    /// HTML void element
+    HtmlVoid,
+    /// XML element (SVG)
+    Xml,
+}
+
 /// HTML page builder
 #[derive(Default)]
 pub struct Page {
     /// Include HTML `doctype` preamble
     doctype: bool,
-    /// XML compatibility (self-closing tags include `/`)
-    xml_compatible: bool,
     /// HTML document text
     doc: String,
-    /// Stack of (element tag, void flags)
-    stack: Vec<(&'static str, bool)>,
-    /// Current tag empty + XML compatible
+    /// Stack of element tags
+    stack: Vec<&'static str>,
+    /// Leaf node element type
+    tp: Option<ElemType>,
+    /// Current tag empty
     empty: bool,
 }
 
@@ -25,6 +36,9 @@ pub struct Page {
 pub trait Element<'p> {
     /// Element tag
     const TAG: &'static str;
+
+    /// Element type
+    const TP: ElemType;
 
     /// Make a new element
     fn new(page: &'p mut Page) -> Self;
@@ -37,20 +51,25 @@ pub trait Element<'p> {
 
 impl fmt::Display for Page {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut empty = self.empty;
-        if empty && let Some(page) = self.doc.strip_suffix('>') {
+        let mut void = self.tp == Some(ElemType::HtmlVoid);
+        let mut self_closing = match (self.empty, self.tp) {
+            (true, Some(ElemType::Xml)) => true,
+            _ => false,
+        };
+        if self_closing && let Some(page) = self.doc.strip_suffix('>') {
             write!(f, "{}", page)?;
         } else {
             write!(f, "{}", self.doc)?;
-            empty = false;
+            self_closing = false;
         }
-        for (tag, _void) in self.stack.iter().rev() {
-            if empty {
+        for tag in self.stack.iter().rev() {
+            if self_closing {
                 write!(f, " />")?;
-            } else {
+            } else if !void {
                 write!(f, "</{tag}>")?;
             }
-            empty = false;
+            self_closing = false;
+            void = false;
         }
         Ok(())
     }
@@ -59,10 +78,8 @@ impl fmt::Display for Page {
 impl From<Page> for String {
     fn from(mut page: Page) -> Self {
         // zero-copy alternative to fmt::Display
-        while let Some((tag, _void)) = page.stack.pop() {
-            page.doc.push_str("</");
-            page.doc.push_str(tag);
-            page.doc.push('>');
+        while !page.stack.is_empty() {
+            page.end();
         }
         page.doc
     }
@@ -115,17 +132,8 @@ impl Page {
         E: Element<'p>,
     {
         self.doc.clear();
-        // FIXME: void or not?
-        self.elem(E::TAG, false);
+        self.elem(E::TAG, E::TP);
         E::new(self)
-    }
-
-    /// Make the page XML-compatible
-    ///
-    /// This causes `/` to be included in self-closing tags.
-    pub fn xml_compatible(mut self) -> Self {
-        self.xml_compatible = true;
-        self
     }
 
     /// Add `<html>` root element
@@ -134,22 +142,23 @@ impl Page {
         if self.doctype {
             self.raw("<!doctype html>");
         }
-        self.elem("html", false);
+        self.elem("html", ElemType::Html);
         Html::new(self)
     }
 
     /// Add an element
     ///
     /// - `tag`: Element tag
-    /// - `void`: [Void] element
+    /// - `tp`: Element type
     ///
     /// [Void]: https://developer.mozilla.org/en-US/docs/Glossary/Void_element
-    pub(crate) fn elem(&mut self, tag: &'static str, void: bool) {
+    pub(crate) fn elem(&mut self, tag: &'static str, tp: ElemType) {
         self.doc.push('<');
         self.doc.push_str(tag);
         self.doc.push('>');
-        self.stack.push((tag, void));
-        self.empty = self.xml_compatible && !void;
+        self.tp = Some(tp);
+        self.stack.push(tag);
+        self.empty = true;
     }
 
     /// Add an attribute with value
@@ -260,11 +269,17 @@ impl Page {
     ///
     /// Add a closing tag (e.g. `</span>`).
     pub fn end(&mut self) -> &mut Self {
-        if let Some((tag, _void)) = self.stack.pop() {
-            if self.empty && self.doc.ends_with('>') {
+        let tp = self.tp.take();
+        if let Some(tag) = self.stack.pop() {
+            let void = tp == Some(ElemType::HtmlVoid);
+            let self_closing = match (self.empty, tp) {
+                (true, Some(ElemType::Xml)) => true,
+                _ => false,
+            };
+            if self_closing && self.doc.ends_with('>') {
                 self.doc.pop();
                 self.doc.push_str(" />");
-            } else {
+            } else if !void {
                 self.doc.push_str("</");
                 self.doc.push_str(tag);
                 self.doc.push('>');
@@ -317,14 +332,14 @@ mod test {
         page.frag::<Span>().text("Raw").raw(" <em>Burger</em>!");
         assert_eq!(page.to_string(), "<span>Raw <em>Burger</em>!</span>");
     }
-    /*
-        #[test]
-        fn void() {
-            let mut page = Page::default();
-            page.frag::<Div>().input().r#type("text");
-            assert_eq!(page.to_string(), "<div><input type=\"text\"></div>");
-        }
-    */
+
+    #[test]
+    fn void() {
+        let mut page = Page::default();
+        page.frag::<Div>().input().r#type("text");
+        assert_eq!(page.to_string(), "<div><input type=\"text\"></div>");
+    }
+
     #[test]
     fn html() {
         let mut page = Page::default();
@@ -389,7 +404,7 @@ mod test {
 
     #[test]
     fn xml() {
-        let mut page = Page::default().xml_compatible();
+        let mut page = Page::default();
         page.frag::<Link>().rel("stylesheet").end();
         assert_eq!(page.to_string(), "<link rel=\"stylesheet\" />");
     }
@@ -400,11 +415,11 @@ mod test {
         page.frag::<Span>().id("gle").end();
         assert_eq!(page.to_string(), "<span id=\"gle\"></span>");
     }
-    /*
+
     #[test]
     fn image() {
         let mut page = Page::default();
         page.frag::<Img>().width(100).height(50).end();
         assert_eq!(page.to_string(), "<img width=\"100\" height=\"50\">");
-    }*/
+    }
 }
