@@ -370,7 +370,7 @@ macro_rules! flow_content {
         elem_method!(strong, Strong);
         elem_method!(sub, Sub);
         elem_method!(sup, Sup);
-        // elem_method!(svg, Svg);
+        elem_method!(svg, Svg);
         elem_method!(table, Table);
         elem_method!(template, Template);
         elem_method!(textarea, TextArea);
@@ -436,7 +436,7 @@ macro_rules! phrasing_content {
         elem_method!(strong, Strong);
         elem_method!(sub, Sub);
         elem_method!(sup, Sup);
-        // elem_method!(svg, Svg);
+        elem_method!(svg, Svg);
         elem_method!(template, Template);
         elem_method!(textarea, TextArea);
         elem_method!(time, Time);
@@ -500,7 +500,7 @@ macro_rules! non_interactive_phrasing_content {
         elem_method!(strong, Strong);
         elem_method!(sub, Sub);
         elem_method!(sup, Sup);
-        // elem_method!(svg, Svg);
+        elem_method!(svg, Svg);
         elem_method!(template, Template);
         // textarea is interactive
         elem_method!(time, Time);
@@ -593,7 +593,7 @@ macro_rules! address_content {
         elem_method!(strong, Strong);
         elem_method!(sub, Sub);
         elem_method!(sup, Sup);
-        // elem_method!(svg, Svg);
+        elem_method!(svg, Svg);
         elem_method!(table, Table);
         elem_method!(template, Template);
         elem_method!(textarea, TextArea);
@@ -628,7 +628,7 @@ macro_rules! svg_elem {
         )]
         pub struct $elem<'p> {
             /// Borrowed Page
-            page: &'p mut Page,
+            pub(crate) page: &'p mut Page,
         }
 
         #[doc = concat!("`<", $el, ">` items")]

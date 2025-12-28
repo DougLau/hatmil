@@ -4,6 +4,7 @@
 //
 //! HTML Elements -- _HyperText Markup Language_
 use crate::page::{ElemType, Element, Page};
+use crate::svg::Svg;
 use crate::value::Value;
 
 // A element
