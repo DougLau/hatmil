@@ -804,7 +804,7 @@ macro_rules! option_items {
         html_attr!($el, selected, true);
         html_attr!($el, value);
         // NOTE: more permitted in customizable select elements
-        text_methods!();
+        cdata_methods!();
         comment_raw_methods!();
     };
 }
@@ -923,7 +923,7 @@ macro_rules! script_items {
         html_attr!($el, referrerpolicy);
         html_attr!($el, src);
         html_attr!($el, r#type, "type");
-        text_methods!();
+        cdata_methods!();
     };
 }
 html_elem!("script", Script, "Script", script_items());

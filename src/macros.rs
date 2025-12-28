@@ -209,10 +209,10 @@ macro_rules! elem_method {
     };
 }
 
-/// Text method
-macro_rules! text_methods {
+/// CData method
+macro_rules! cdata_methods {
     () => {
-        /// Add text content
+        /// Add character data content
         ///
         /// These characters will be replaced with entities:
         ///
@@ -221,26 +221,26 @@ macro_rules! text_methods {
         /// | `&`  | `&amp;` |
         /// | `<`  | `&lt;`  |
         /// | `>`  | `&gt;`  |
-        pub fn text<'a, V>(&mut self, text: V) -> &mut Self
+        pub fn cdata<'a, V>(&mut self, text: V) -> &mut Self
         where
             V: Into<Value<'a>>,
         {
-            self.page.text(text);
+            self.page.cdata(text);
             self
         }
 
-        /// Add text content with a maximum character limit
+        /// Add character data content with a maximum character limit
         ///
         /// | Char | Entity  |
         /// |------|---------|
         /// | `&`  | `&amp;` |
         /// | `<`  | `&lt;`  |
         /// | `>`  | `&gt;`  |
-        pub fn text_len<'a, V>(&mut self, text: V, len: usize) -> &mut Self
+        pub fn cdata_len<'a, V>(&mut self, text: V, len: usize) -> &mut Self
         where
             V: Into<Value<'a>>,
         {
-            self.page.text_len(text, len);
+            self.page.cdata_len(text, len);
             self
         }
     };
@@ -295,7 +295,7 @@ macro_rules! metadata_content {
 /// Flow content
 macro_rules! flow_content {
     () => {
-        text_methods!();
+        cdata_methods!();
         elem_method!(a, A);
         elem_method!(abbr_el, Abbr); // FIXME: th abbr
         elem_method!(address, Address);
@@ -387,7 +387,7 @@ macro_rules! flow_content {
 /// Phrasing content
 macro_rules! phrasing_content {
     () => {
-        text_methods!();
+        cdata_methods!();
         elem_method!(a, A); // FIXME: containing only phrasing content
         elem_method!(abbr, Abbr);
         elem_method!(area, Area); // FIXME: only descendants of <map>
@@ -451,7 +451,7 @@ macro_rules! phrasing_content {
 /// Non-interactive phrasing content
 macro_rules! non_interactive_phrasing_content {
     () => {
-        text_methods!();
+        cdata_methods!();
         // a with href attribute is interactive
         elem_method!(abbr, Abbr);
         elem_method!(area, Area); // FIXME: only descendants of <map>
@@ -515,7 +515,7 @@ macro_rules! non_interactive_phrasing_content {
 /// Text content
 macro_rules! text_content {
     () => {
-        text_methods!();
+        cdata_methods!();
         comment_raw_methods!();
     };
 }
@@ -523,7 +523,7 @@ macro_rules! text_content {
 /// Address content (flow, with some restrictions)
 macro_rules! address_content {
     () => {
-        text_methods!();
+        cdata_methods!();
         elem_method!(a, A);
         elem_method!(abbr, Abbr);
         // address not allowed
@@ -759,7 +759,7 @@ macro_rules! svg_other {
         elem_method!(image, Image);
         elem_method!(script, Script);
         elem_method!(style_el, Style);
-        elem_method!(text_el, Text);
+        elem_method!(text, Text);
         elem_method!(view, View);
     };
 }

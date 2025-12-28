@@ -91,8 +91,8 @@ impl Page {
     /// let mut page = Page::new(true);
     /// let mut html = page.html();
     /// let mut body = html.body();
-    /// body.text("Page text");
-    /// body.a().href("https://www.example.com/").text("Example link");
+    /// body.cdata("Page text");
+    /// body.a().href("https://www.example.com/").cdata("Example link");
     /// assert_eq!(
     ///     page.to_string(),
     ///     "<!doctype html><html><body>Page text<a href=\"https://www.example.com/\">Example link</a></body></html>",
@@ -113,7 +113,7 @@ impl Page {
     /// use hatmil::{Page, html::A};
     ///
     /// let mut page = Page::default();
-    /// page.frag::<A>().href("https://www.example.com/").text("Example link");
+    /// page.frag::<A>().href("https://www.example.com/").cdata("Example link");
     /// assert_eq!(
     ///     page.to_string(),
     ///     "<a href=\"https://www.example.com/\">Example link</a>",
@@ -225,16 +225,16 @@ impl Page {
         self
     }
 
-    /// Add text content
-    pub(crate) fn text<'a, V>(&mut self, text: V) -> &mut Self
+    /// Add character data content
+    pub(crate) fn cdata<'a, V>(&mut self, text: V) -> &mut Self
     where
         V: Into<Value<'a>>,
     {
-        self.text_len(text, usize::MAX)
+        self.cdata_len(text, usize::MAX)
     }
 
-    /// Add text content with a maximum character limit
-    pub(crate) fn text_len<'a, V>(&mut self, text: V, len: usize) -> &mut Self
+    /// Add character data content with a maximum character limit
+    pub(crate) fn cdata_len<'a, V>(&mut self, text: V, len: usize) -> &mut Self
     where
         V: Into<Value<'a>>,
     {
@@ -310,21 +310,21 @@ mod test {
     #[test]
     fn paragraph() {
         let mut page = Page::default();
-        page.frag::<P>().text("This is a paragraph");
+        page.frag::<P>().cdata("This is a paragraph");
         assert_eq!(page.to_string(), "<p>This is a paragraph</p>");
     }
 
     #[test]
     fn escaping() {
         let mut page = Page::default();
-        page.frag::<Em>().text("You & I");
+        page.frag::<Em>().cdata("You & I");
         assert_eq!(page.to_string(), "<em>You &amp; I</em>");
     }
 
     #[test]
     fn raw_burger() {
         let mut page = Page::default();
-        page.frag::<Span>().text("Raw").raw(" <em>Burger</em>!");
+        page.frag::<Span>().cdata("Raw").raw(" <em>Burger</em>!");
         assert_eq!(page.to_string(), "<span>Raw <em>Burger</em>!</span>");
     }
 
@@ -339,8 +339,8 @@ mod test {
     fn html() {
         let mut page = Page::default();
         let mut ol = page.frag::<Ol>();
-        ol.li().class("cat").text("nori").close();
-        ol.li().class("cat").text("chashu");
+        ol.li().class("cat").cdata("nori").close();
+        ol.li().class("cat").cdata("chashu");
         assert_eq!(
             page.to_string(),
             "<ol><li class=\"cat\">nori</li><li class=\"cat\">chashu</li></ol>"
@@ -351,8 +351,8 @@ mod test {
     fn build_html() {
         let mut page = Page::default();
         let mut div = page.frag::<Div>();
-        div.p().text("Paragraph Text").close();
-        div.pre().text("Preformatted Text");
+        div.p().cdata("Paragraph Text").close();
+        div.pre().cdata("Preformatted Text");
         assert_eq!(
             page.to_string(),
             "<div><p>Paragraph Text</p><pre>Preformatted Text</pre></div>"
@@ -366,10 +366,10 @@ mod test {
         html.lang("en")
             .head()
             .title_el()
-            .text("Title!")
+            .cdata("Title!")
             .close()
             .close();
-        html.body().h1().text("Header!");
+        html.body().h1().cdata("Header!");
         assert_eq!(
             page.to_string(),
             "<html lang=\"en\"><head><title>Title!</title></head><body><h1>Header!</h1></body></html>"
@@ -380,8 +380,8 @@ mod test {
     fn string_from() {
         let mut page = Page::new(false);
         let mut html = page.html();
-        html.head().title_el().text("Head").close().close();
-        html.body().text("Body");
+        html.head().title_el().cdata("Head").close().close();
+        html.body().cdata("Body");
         assert_eq!(
             String::from(page),
             "<html><head><title>Head</title></head><body>Body</body></html>"

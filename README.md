@@ -14,7 +14,7 @@ They also have methods for adding all valid child elements.
 use hatmil::Page;
 
 let mut page = Page::default();
-page.html().body().div().id("my_div").text("Content");
+page.html().body().div().id("my_div").cdata("Content");
 assert_eq!(
     page.to_string(),
     "<html><body><div id=\"my_div\">Content</div></body></html>"
@@ -23,7 +23,7 @@ assert_eq!(
 
 #### Content
 
-Text content (_character data_) can be added using the [text] or [text_len]
+Text content (_character data_) can be added using the [cdata] or [cdata_len]
 methods, which will automatically escape characters as needed.  For content
 which has already been escaped, use the [raw] method.
 
@@ -37,7 +37,7 @@ use hatmil::{Page, html::Div};
 
 let mut page = Page::default();
 let mut div = page.frag::<Div>();
-div.button().class("rounded").text("Press Me!").close();
+div.button().class("rounded").cdata("Press Me!").close();
 assert_eq!(
     page.to_string(),
     "<div><button class=\"rounded\">Press Me!</button></div>"
@@ -52,5 +52,5 @@ assert_eq!(
 [frag]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.frag
 [html]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.html
 [raw]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.raw
-[text]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.text
-[text_len]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.text_len
+[cdata]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.cdata
+[cdata_len]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.cdata_len
