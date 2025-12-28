@@ -8,7 +8,7 @@ use std::fmt::Write;
 ///
 /// ```rust
 /// # use hatmil::svg::Path;
-/// let mut path = Path::builder();
+/// let mut path = Path::def_builder();
 /// path.precision(3);
 /// path.move_to([5, 5]);
 /// path.line((10.1, 20.2));

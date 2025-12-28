@@ -766,7 +766,7 @@ svg_elem!("mpath", MPath, "Motion Path", mpath_items());
 
 impl Path<'_> {
     /// Make a path definition builder
-    pub fn builder() -> PathDefBuilder {
+    pub fn def_builder() -> PathDefBuilder {
         PathDefBuilder::new()
     }
 }
@@ -1159,7 +1159,7 @@ mod test {
     fn path() {
         let mut page = Page::default();
         let mut svg = page.frag::<Svg>();
-        let mut path = Path::builder();
+        let mut path = Path::def_builder();
         path.absolute(true)
             .move_to((0, 0))
             .line((100, 0))
