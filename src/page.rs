@@ -47,10 +47,7 @@ pub trait Element<'p> {
 impl fmt::Display for Page {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut void = self.tp == Some(ElemType::HtmlVoid);
-        let mut self_closing = match (self.empty, self.tp) {
-            (true, Some(ElemType::Xml)) => true,
-            _ => false,
-        };
+        let mut self_closing = self.empty && self.tp == Some(ElemType::Xml);
         if self_closing && let Some(page) = self.doc.strip_suffix('>') {
             write!(f, "{}", page)?;
         } else {
@@ -267,10 +264,7 @@ impl Page {
         let tp = self.tp.take();
         if let Some(tag) = self.stack.pop() {
             let void = tp == Some(ElemType::HtmlVoid);
-            let self_closing = match (self.empty, tp) {
-                (true, Some(ElemType::Xml)) => true,
-                _ => false,
-            };
+            let self_closing = self.empty && tp == Some(ElemType::Xml);
             if self_closing && self.doc.ends_with('>') {
                 self.doc.pop();
                 self.doc.push_str(" />");
