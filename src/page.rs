@@ -42,11 +42,6 @@ pub trait Element<'p> {
 
     /// Make a new element
     fn new(page: &'p mut Page) -> Self;
-
-    /// End the element
-    ///
-    /// Adds the closing tag (e.g. `</span>`).
-    fn end(&'p mut self) -> &'p mut Page;
 }
 
 impl fmt::Display for Page {
@@ -79,7 +74,7 @@ impl From<Page> for String {
     fn from(mut page: Page) -> Self {
         // zero-copy alternative to fmt::Display
         while !page.stack.is_empty() {
-            page.end();
+            page.close();
         }
         page.doc
     }
@@ -265,10 +260,10 @@ impl Page {
         self
     }
 
-    /// End the leaf element
+    /// Close the leaf tag
     ///
     /// Add a closing tag (e.g. `</span>`).
-    pub fn end(&mut self) -> &mut Self {
+    pub fn close(&mut self) -> &mut Self {
         let tp = self.tp.take();
         if let Some(tag) = self.stack.pop() {
             let void = tp == Some(ElemType::HtmlVoid);
@@ -344,7 +339,7 @@ mod test {
     fn html() {
         let mut page = Page::default();
         let mut ol = page.frag::<Ol>();
-        ol.li().class("cat").text("nori").end();
+        ol.li().class("cat").text("nori").close();
         ol.li().class("cat").text("chashu");
         assert_eq!(
             page.to_string(),
@@ -356,7 +351,7 @@ mod test {
     fn build_html() {
         let mut page = Page::default();
         let mut div = page.frag::<Div>();
-        div.p().text("Paragraph Text").end();
+        div.p().text("Paragraph Text").close();
         div.pre().text("Preformatted Text");
         assert_eq!(
             page.to_string(),
@@ -368,7 +363,12 @@ mod test {
     fn html_builder() {
         let mut page = Page::default();
         let mut html = page.html();
-        html.lang("en").head().title_el().text("Title!").end().end();
+        html.lang("en")
+            .head()
+            .title_el()
+            .text("Title!")
+            .close()
+            .close();
         html.body().h1().text("Header!");
         assert_eq!(
             page.to_string(),
@@ -380,7 +380,7 @@ mod test {
     fn string_from() {
         let mut page = Page::new(false);
         let mut html = page.html();
-        html.head().title_el().text("Head").end().end();
+        html.head().title_el().text("Head").close().close();
         html.body().text("Body");
         assert_eq!(
             String::from(page),
@@ -405,21 +405,21 @@ mod test {
     #[test]
     fn xml() {
         let mut page = Page::default();
-        page.frag::<Link>().rel("stylesheet").end();
+        page.frag::<Link>().rel("stylesheet").close();
         assert_eq!(page.to_string(), "<link rel=\"stylesheet\" />");
     }
 
     #[test]
-    fn end() {
+    fn close() {
         let mut page = Page::default();
-        page.frag::<Span>().id("gle").end();
+        page.frag::<Span>().id("gle").close();
         assert_eq!(page.to_string(), "<span id=\"gle\"></span>");
     }
 
     #[test]
     fn image() {
         let mut page = Page::default();
-        page.frag::<Img>().width(100).height(50).end();
+        page.frag::<Img>().width(100).height(50).close();
         assert_eq!(page.to_string(), "<img width=\"100\" height=\"50\">");
     }
 }

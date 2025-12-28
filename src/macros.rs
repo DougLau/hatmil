@@ -29,6 +29,18 @@ macro_rules! html_elem {
         #[doc = concat!("`<", $el, ">` items")]
         impl<'p> $elem<'p> {
             $items!( $el );
+
+            #[doc = "Close the element"]
+            #[doc = ""]
+            #[doc = concat!(
+                "Adds the closing tag if necessary (e.g. `</",
+                $el,
+                ">`)."
+            )]
+            pub fn close(&'p mut self) -> &'p mut Page {
+                self.page.close();
+                self.page
+            }
         }
 
         #[doc = "Global attributes"]
@@ -41,10 +53,6 @@ macro_rules! html_elem {
             const TP: ElemType = $tp;
             fn new(page: &'p mut Page) -> Self {
                 $elem { page }
-            }
-            fn end(&'p mut self) -> &'p mut Page {
-                self.page.end();
-                self.page
             }
         }
     };
@@ -192,7 +200,7 @@ macro_rules! global_attributes {
 /// Create an element method (HTML or SVG)
 macro_rules! elem_method {
     ( $meth:ident, $elem:ident ) => {
-        #[doc = concat!("Add `<", stringify!($elem::TAG), ">` child element")]
+        #[doc = concat!("Add `", stringify!($elem), "` child element")]
         #[allow(clippy::self_named_constructors)]
         pub fn $meth(self: &mut Self) -> $elem<'_> {
             self.page.elem($elem::TAG, $elem::TP);
@@ -626,6 +634,18 @@ macro_rules! svg_elem {
         #[doc = concat!("`<", $el, ">` items")]
         impl<'p> $elem<'p> {
             $items!( $el );
+
+            #[doc = "Close the element"]
+            #[doc = ""]
+            #[doc = concat!(
+                "Adds the closing tag if necessary (e.g. `</",
+                $el,
+                ">`)."
+            )]
+            pub fn close(&'p mut self) -> &'p mut Page {
+                self.page.close();
+                self.page
+            }
         }
 
         #[doc = "Global SVG attributes"]
@@ -638,10 +658,6 @@ macro_rules! svg_elem {
             const TP: ElemType = $tp;
             fn new(page: &'p mut Page) -> Self {
                 $elem { page }
-            }
-            fn end(&'p mut self) -> &'p mut Page {
-                self.page.end();
-                self.page
             }
         }
     }
