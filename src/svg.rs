@@ -987,6 +987,7 @@ macro_rules! text_items {
         svg_attr!(rotate);
         svg_attr!(length_adjust, "lengthAdjust");
         svg_attr!(text_length, "textLength");
+        svg_attr!(text_anchor, "text-anchor");
         svg_support_attr!();
         elem_method!(tspan, TSpan);
         elem_method!(text_path, TextPath);
@@ -1004,9 +1005,10 @@ macro_rules! text_path_items {
         svg_attr!(href);
         svg_attr!(method);
         svg_attr!(length_adjust, "lengthAdjust");
-        svg_attr!(text_length, "textLength");
         svg_attr!(spacing);
         svg_attr!(start_offset, "startOffset");
+        svg_attr!(text_length, "textLength");
+        svg_attr!(text_anchor, "text-anchor");
         svg_attr!(path); // NOTE: experimental
         svg_attr!(side); // NOTE: experimental
         svg_support_attr!();
@@ -1039,6 +1041,7 @@ macro_rules! tspan_items {
         svg_attr!(rotate);
         svg_attr!(length_adjust, "lengthAdjust");
         svg_attr!(text_length, "textLength");
+        svg_attr!(text_anchor, "text-anchor");
         svg_support_attr!();
         elem_method!(tspan, TSpan);
         svg_descriptive!();
@@ -1073,7 +1076,7 @@ macro_rules! view_items {
 }
 svg_elem!("view", View, "View", view_items());
 
-// Presentation attributes (Use CSS, or add?):
+// Extra Presentation attributes (Use CSS, or add?):
 // - "alignment-baseline" alignment_baseline
 // - "baseline-shift" baseline_shift
 // - "clip-path" clip_path
@@ -1120,11 +1123,9 @@ svg_elem!("view", View, "View", view_items());
 // - "stroke-miterlimit" stroke_miterlimit
 // - "stroke-opacity" stroke_opacity
 // - "stroke-width" stroke_width
-// - "text-anchor" text_anchor
 // - "text-decoration" text_decoration
 // - "text-overflow" text_overflow
 // - "text-rendering" text_rendering
-// - "transform" transform
 // - "transform-origin" transform_origin
 // - "unicode-bidi" unicode_bidi
 // - "vector-effect" vector_effect
