@@ -21,6 +21,28 @@ assert_eq!(
 );
 ```
 
+NOTE: in most cases, the method names match the HTML tag exactly.  Due to
+clashes between attribute and element names, some methods for creating child
+elements have an `_el` suffix:
+
+- `abbr_el`
+- `cite_el`
+- `form_el`
+- `slot_el`
+- `style_el`
+- `title_el`
+
+NOTE: some HTML attribute names clash with Rust keywords.  In these cases,
+[raw identifiers] must be used to call those methods:
+
+- `r#as`
+- `r#async`
+- `r#for`
+- `r#in`
+- `r#loop`
+- `r#type`
+- `r#use`
+
 #### Content
 
 Text content (_character data_) can be added using the [cdata] or [cdata_len]
@@ -53,5 +75,6 @@ assert_eq!(
 [frag]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.frag
 [html]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.html
 [raw]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.raw
+[raw identifiers]: https://doc.rust-lang.org/rust-by-example/compatibility/raw_identifiers.html
 [cdata]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.cdata
 [cdata_len]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.cdata_len
