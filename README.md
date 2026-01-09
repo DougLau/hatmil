@@ -1,14 +1,14 @@
 _Hatmil_ is an HTML builder for Rust.  It can be used to create or modify web
 pages dynamically.
 
-A [Page] can be used two ways:
-1. The [html] method builds a full HTML document
-2. The [frag] method builds an HTML fragment, starting from any element
+With a [Page], there are two building methods:
+- [html] for a full document
+- [frag] for a fragment, starting from an arbitrary [element]
 
-In either case, an element struct is returned which borrows from the `Page`.
+In either case, an [element] struct is returned which borrows from the `Page`.
 
-Each element struct has methods for setting valid attributes, such as `id`.
-They also have methods for adding valid child elements.
+Each element has methods for setting valid attributes, such as `id`.  There
+are also methods for adding permitted child elements.
 
 ```rust
 use hatmil::Page;
@@ -47,6 +47,7 @@ assert_eq!(
 
 [Display]: https://doc.rust-lang.org/std/fmt/trait.Display.html
 [close]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.close
+[element]: https://docs.rs/hatmil/latest/hatmil/html/
 [format]: https://doc.rust-lang.org/std/macro.format.html
 [page]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html
 [frag]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.frag
