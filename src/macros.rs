@@ -386,7 +386,7 @@ macro_rules! flow_content {
 
 /// Phrasing content
 macro_rules! phrasing_content {
-    () => {
+    ($cite:ident) => {
         cdata_methods!();
         elem_method!(a, A); // FIXME: containing only phrasing content
         elem_method!(abbr, Abbr);
@@ -398,7 +398,7 @@ macro_rules! phrasing_content {
         elem_method!(br, Br);
         elem_method!(button, Button);
         elem_method!(canvas, Canvas);
-        elem_method!(cite_el, Cite); // FIXME: q cite
+        elem_method!($cite, Cite);
         elem_method!(code, Code);
         elem_method!(data, Data);
         elem_method!(datalist, DataList);

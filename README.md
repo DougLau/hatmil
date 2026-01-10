@@ -23,8 +23,8 @@ assert_eq!(
 
 Text content (_character data_) can be added using the `cdata` or `cdata_len`
 methods on an [element].  Special HTML characters will automatically be
-replaced by [character reference]s, as needed.  For content which has already
-been escaped, use the [raw] method.
+replaced by [character reference]s, as needed (for content which has already
+been escaped, use the [raw] method).  Use [close] to close the final element.
 
 After creating the page, use [Display] ([format], `to_string()`, etc) to
 get the resulting HTML.  Any open tags will be closed automatically.
@@ -34,7 +34,7 @@ use hatmil::{Page, html::Div};
 
 let mut page = Page::default();
 let mut div = page.frag::<Div>();
-div.button().class("rounded").cdata("Press Me!").close();
+div.button().class("rounded").cdata("Press Me!");
 assert_eq!(
     page.to_string(),
     "<div><button class=\"rounded\">Press Me!</button></div>"
@@ -48,9 +48,9 @@ with attribute names, some methods for creating child elements have an `_el`
 suffix:
 
 - `abbr_el` on [Th], clash with `abbr` attribute
-- `cite_el` on [BlockQuote], clash with `cite` attribute
+- `cite_el` on [BlockQuote] and [Q], clash with `cite` attribute
 - `form_el` on [FieldSet], clash with `form` attribute
-- `slot_el` on all [element]s, clash with `slot` global attribute
+- `slot_el` on many [element]s, clash with `slot` global attribute
 - `style_el` on [Head], [NoScript] and [SVG] elements, clash with `style`
   global attribute
 - `title_el` on [Head] and [SVG Style], clash with `title` global attribute
@@ -86,6 +86,7 @@ must be used to call those methods:
 [NoScript]: https://docs.rs/hatmil/latest/hatmil/html/struct.NoScript.html
 [Output]: https://docs.rs/hatmil/latest/hatmil/html/struct.Output.html
 [page]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html
+[Q]: https://docs.rs/hatmil/latest/hatmil/html/struct.Q.html
 [raw]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.raw
 [raw identifiers]: https://doc.rust-lang.org/rust-by-example/compatibility/raw_identifiers.html
 [Script]: https://docs.rs/hatmil/latest/hatmil/html/struct.Script.html

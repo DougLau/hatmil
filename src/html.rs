@@ -1,6 +1,6 @@
-// elem.rs
+// html.rs
 //
-// Copyright (C) 2025  Douglas P Lau
+// Copyright (C) 2025-2026  Douglas P Lau
 //
 //! HTML Elements -- _HyperText Markup Language_
 use crate::page::{ElemType, Element, Page};
@@ -28,7 +28,7 @@ html_elem!("a", A, "Anchor", a_items());
 // Abbr element
 macro_rules! abbr_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("abbr", Abbr, "Abbreviation", abbr_items());
@@ -104,7 +104,7 @@ html_elem!("audio", Audio, "Embed Audio", audio_items());
 // B element
 macro_rules! b_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("b", B, "Bring Attention To (Bold)", b_items());
@@ -112,7 +112,7 @@ html_elem!("b", B, "Bring Attention To (Bold)", b_items());
 // Bdi element
 macro_rules! bdi_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("bdi", Bdi, "Bidirectional Isolate", bdi_items());
@@ -120,7 +120,7 @@ html_elem!("bdi", Bdi, "Bidirectional Isolate", bdi_items());
 // Bdo element
 macro_rules! bdo_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("bdo", Bdo, "Bidirectional Override", bdo_items());
@@ -210,7 +210,7 @@ html_elem!("caption", Caption, "Table Caption", caption_items());
 // Cite element
 macro_rules! cite_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("cite", Cite, "Citation", cite_items());
@@ -218,7 +218,7 @@ html_elem!("cite", Cite, "Citation", cite_items());
 // Code element
 macro_rules! code_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("code", Code, "Inline Code", code_items());
@@ -244,7 +244,7 @@ html_elem!("colgroup", ColGroup, "Table Column Group", colgroup_items());
 macro_rules! data_items {
     ( $el:literal ) => {
         html_attr!($el, value);
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("data", Data, "Data", data_items());
@@ -295,7 +295,7 @@ html_elem!("details", Details, "Details Disclosure", details_items());
 macro_rules! dfn_items {
     ( $el:literal ) => {
         // NOTE: no dfn descendants allowed!
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("dfn", Dfn, "Definition", dfn_items());
@@ -343,7 +343,7 @@ html_elem!("dt", Dt, "Description Term", dt_items());
 // Em element
 macro_rules! em_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("em", Em, "Emphasis", em_items());
@@ -431,7 +431,7 @@ html_elem!("form", Form, "Form", form_items());
 // heading element
 macro_rules! heading_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 // FIXME: MDN links broken; "Heading_Elements"
@@ -495,7 +495,7 @@ html_elem!("html", Html, "HTML Document Root", html_items());
 // I element
 macro_rules! i_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("i", I, "Idiomatic Text (Italic)", i_items());
@@ -604,7 +604,7 @@ html_elem!("ins", Ins, "Inserted Text", ins_items());
 // Kbd element
 macro_rules! kbd_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("kbd", Kbd, "Keyboard Input", kbd_items());
@@ -614,7 +614,7 @@ macro_rules! label_items {
     ( $el:literal ) => {
         html_attr!($el, r#for, "for");
         // NOTE: no descendant label, etc.
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("label", Label, "Label", label_items());
@@ -628,7 +628,7 @@ macro_rules! legend_items {
         elem_method!(h4, H4);
         elem_method!(h5, H5);
         elem_method!(h6, H6);
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("legend", Legend, "Field Set Legend", legend_items());
@@ -684,7 +684,7 @@ html_elem!("main", Main, "Main", main_items());
 // Mark element
 macro_rules! mark_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("mark", Mark, "Mark Text", mark_items());
@@ -732,7 +732,7 @@ macro_rules! meter_items {
         html_attr!($el, high);
         html_attr!($el, optimum);
         // NOTE: no meter descendants allowed!
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("meter", Meter, "Meter", meter_items());
@@ -817,7 +817,7 @@ macro_rules! output_items {
         html_attr!($el, r#for, "for");
         html_attr!($el, form);
         html_attr!($el, name);
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("output", Output, "Output", output_items());
@@ -825,7 +825,7 @@ html_elem!("output", Output, "Output", output_items());
 // P element
 macro_rules! p_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("p", P, "Paragraph", p_items());
@@ -843,7 +843,7 @@ html_elem!("picture", Picture, "Picture", picture_items());
 // Pre element
 macro_rules! pre_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("pre", Pre, "Preformatted Text", pre_items());
@@ -854,7 +854,7 @@ macro_rules! progress_items {
         html_attr!($el, max);
         html_attr!($el, value);
         // NOTE: no progress descendants allowed!
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("progress", Progress, "Progress Indicator", progress_items());
@@ -863,7 +863,7 @@ html_elem!("progress", Progress, "Progress Indicator", progress_items());
 macro_rules! q_items {
     ( $el:literal ) => {
         html_attr!($el, cite);
-        phrasing_content!();
+        phrasing_content!(cite_el);
     };
 }
 html_elem!("q", Q, "Inline Quotation", q_items());
@@ -879,7 +879,7 @@ html_elem!("rp", Rp, "Ruby Fallback Parenthesis", rp_items());
 // Rt element
 macro_rules! rt_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("rt", Rt, "Ruby Text", rt_items());
@@ -890,7 +890,7 @@ macro_rules! ruby_items {
         // NOTE: content rules are complex
         elem_method!(rp, Rp);
         elem_method!(rt, Rt);
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("ruby", Ruby, "Ruby Annotation", ruby_items());
@@ -898,7 +898,7 @@ html_elem!("ruby", Ruby, "Ruby Annotation", ruby_items());
 // S element
 macro_rules! s_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("s", S, "Strikethrough", s_items());
@@ -906,7 +906,7 @@ html_elem!("s", S, "Strikethrough", s_items());
 // Samp element
 macro_rules! samp_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("samp", Samp, "Sample Output", samp_items());
@@ -980,7 +980,7 @@ html_elem!("slot", Slot, "Web Component Slot", slot_items());
 // Small element
 macro_rules! small_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("small", Small, "Side Comment (Small)", small_items());
@@ -1009,7 +1009,7 @@ html_elem!(
 // Span element
 macro_rules! span_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("span", Span, "Content Span", span_items());
@@ -1017,7 +1017,7 @@ html_elem!("span", Span, "Content Span", span_items());
 // Strong element
 macro_rules! strong_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("strong", Strong, "Strong Importance", strong_items());
@@ -1036,7 +1036,7 @@ html_elem!("style", Style, "Style Information", style_items());
 // Sub element
 macro_rules! sub_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("sub", Sub, "Subscript", sub_items());
@@ -1045,7 +1045,7 @@ html_elem!("sub", Sub, "Subscript", sub_items());
 macro_rules! summary_items {
     ( $el:literal ) => {
         // FIXME: also heading content (h1-h6 / hgroup)
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("summary", Summary, "Disclosure Summary", summary_items());
@@ -1053,7 +1053,7 @@ html_elem!("summary", Summary, "Disclosure Summary", summary_items());
 // Sup element
 macro_rules! sup_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("sup", Sup, "Superscript", sup_items());
@@ -1163,7 +1163,7 @@ html_elem!("th", Th, "Table Header", th_items());
 macro_rules! time_items {
     ( $el:literal ) => {
         html_attr!($el, datetime);
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("time", Time, "Time / Date", time_items());
@@ -1210,7 +1210,7 @@ html_elem!(
 // U element
 macro_rules! u_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("u", U, "Unarticulated Annotation (Underline)", u_items());
@@ -1229,7 +1229,7 @@ html_elem!("ul", Ul, "Unordered List", ul_items());
 // Var element
 macro_rules! var_items {
     ( $el:literal ) => {
-        phrasing_content!();
+        phrasing_content!(cite);
     };
 }
 html_elem!("var", Var, "Variable", var_items());
