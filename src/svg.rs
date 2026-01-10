@@ -20,7 +20,7 @@ macro_rules! a_items {
         html_attr!($el, target);
         html_attr!($el, r#type, "type");
         svg_support_attr!();
-        svg_content!();
+        svg_content!(title);
     };
 }
 svg_elem!("a", A, "Anchor", a_items());
@@ -61,7 +61,7 @@ macro_rules! animate_items {
         svg_attr!(attribute_name, "attributeName");
         // NOTE: attributeType is deprecated
         animate_attr!();
-        svg_descriptive!();
+        svg_descriptive!(title);
     };
 }
 svg_elem!("animate", Animate, "Animate", animate_items());
@@ -74,7 +74,7 @@ macro_rules! animate_motion_items {
         svg_attr!(origin);
         animate_attr!();
         elem_method!(mpath, MPath);
-        svg_descriptive!();
+        svg_descriptive!(title);
     };
 }
 svg_elem!(
@@ -91,7 +91,7 @@ macro_rules! animate_transform_items {
         html_attr!($el, r#type, "type");
         // NOTE: attributeType is deprecated
         animate_attr!();
-        svg_descriptive!();
+        svg_descriptive!(title);
     };
 }
 svg_elem!(
@@ -109,7 +109,7 @@ macro_rules! circle_items {
         svg_attr!(r);
         svg_attr!(path_length, "pathLength");
         svg_support_attr!();
-        svg_descriptive!();
+        svg_descriptive!(title);
         svg_animation!();
     };
 }
@@ -121,7 +121,7 @@ macro_rules! clip_path_items {
         svg_attr!(clip_path_units, "clipPathUnits");
         svg_support_attr!();
         svg_graphics!();
-        svg_descriptive!();
+        svg_descriptive!(title);
         svg_animation!();
     };
 }
@@ -130,7 +130,7 @@ svg_elem!("clipPath", ClipPath, "Clip Path", clip_path_items());
 // Defs element
 macro_rules! defs_items {
     ( $el:literal ) => {
-        svg_content!();
+        svg_content!(title);
         svg_support_attr!();
     };
 }
@@ -153,7 +153,7 @@ macro_rules! ellipse_items {
         svg_attr!(ry);
         svg_attr!(path_length, "pathLength");
         svg_support_attr!();
-        svg_descriptive!();
+        svg_descriptive!(title);
         svg_animation!();
     };
 }
@@ -278,7 +278,7 @@ macro_rules! fe_diffuse_lighting_items {
         elem_method!(fe_distant_light, FeDistantLight);
         elem_method!(fe_point_light, FePointLight);
         elem_method!(fe_spot_light, FeSpotLight);
-        svg_descriptive!();
+        svg_descriptive!(title);
     };
 }
 svg_elem!(
@@ -520,7 +520,7 @@ macro_rules! fe_specular_lighting_items {
         elem_method!(fe_distant_light, FeDistantLight);
         elem_method!(fe_point_light, FePointLight);
         elem_method!(fe_spot_light, FeSpotLight);
-        svg_descriptive!();
+        svg_descriptive!(title);
     };
 }
 svg_elem!(
@@ -592,7 +592,7 @@ macro_rules! filter_items {
         svg_attr!(y);
         svg_attr!(width);
         svg_attr!(height);
-        svg_descriptive!();
+        svg_descriptive!(title);
         // FIXME: filter primitive elements
         elem_method!(fe_blend, FeBlend);
         elem_method!(fe_color_matrix, FeColorMatrix);
@@ -630,7 +630,7 @@ macro_rules! foreign_object_items {
         svg_attr!(width);
         svg_attr!(height);
         svg_support_attr!();
-        svg_content!();
+        svg_content!(title);
         text_content!();
     };
 }
@@ -645,7 +645,7 @@ svg_elem!(
 macro_rules! g_items {
     ( $el:literal ) => {
         svg_support_attr!();
-        svg_content!();
+        svg_content!(title);
     };
 }
 svg_elem!("g", G, "Group", g_items());
@@ -663,7 +663,7 @@ macro_rules! image_items {
         svg_attr!(decoding);
         // NOTE: fetchpriority (future)
         svg_support_attr!();
-        svg_descriptive!();
+        svg_descriptive!(title);
         svg_animation!();
         elem_method!(script, Script);
         elem_method!(style_el, Style);
@@ -680,7 +680,7 @@ macro_rules! line_items {
         svg_attr!(y2);
         svg_attr!(path_length, "pathLength");
         svg_support_attr!();
-        svg_descriptive!();
+        svg_descriptive!(title);
         svg_animation!();
     };
 }
@@ -697,7 +697,7 @@ macro_rules! linear_gradient_items {
         svg_attr!(gradient_units, "gradientUnits");
         svg_attr!(gradient_transform, "gradientTransform");
         svg_attr!(spread_method, "spreadMethod");
-        svg_descriptive!();
+        svg_descriptive!(title);
         elem_method!(animate, Animate);
         elem_method!(animate_transform, AnimateTransform);
         elem_method!(set, Set);
@@ -724,7 +724,7 @@ macro_rules! marker_items {
         svg_attr!(ref_x, "refX");
         svg_attr!(ref_y, "refY");
         svg_attr!(view_box, "viewBox");
-        svg_content!();
+        svg_content!(title);
     };
 }
 svg_elem!("marker", Marker, "Marker", marker_items());
@@ -739,7 +739,7 @@ macro_rules! mask_items {
         svg_attr!(mask_content_units, "maskContentUnits");
         svg_attr!(mask_units, "maskUnits");
         svg_support_attr!();
-        svg_content!();
+        svg_content!(title);
     };
 }
 svg_elem!("mask", Mask, "Mask", mask_items());
@@ -747,7 +747,7 @@ svg_elem!("mask", Mask, "Mask", mask_items());
 // Metadata element
 macro_rules! metadata_items {
     ( $el:literal ) => {
-        svg_content!();
+        svg_content!(title);
         text_content!();
     };
 }
@@ -757,7 +757,7 @@ svg_elem!("metadata", Metadata, "Metadata", metadata_items());
 macro_rules! mpath_items {
     ( $el:literal ) => {
         svg_attr!(href);
-        svg_descriptive!();
+        svg_descriptive!(title);
     };
 }
 svg_elem!("mpath", MPath, "Motion Path", mpath_items());
@@ -775,7 +775,7 @@ macro_rules! path_items {
         svg_attr!(d);
         svg_attr!(path_length, "pathLength");
         svg_support_attr!();
-        svg_descriptive!();
+        svg_descriptive!(title);
         svg_animation!();
     };
 }
@@ -795,7 +795,7 @@ macro_rules! pattern_items {
         svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
         svg_attr!(view_box, "viewBox");
         svg_support_attr!();
-        svg_content!();
+        svg_content!(title);
     };
 }
 svg_elem!("pattern", Pattern, "Pattern", pattern_items());
@@ -806,7 +806,7 @@ macro_rules! polygon_items {
         svg_attr!(points);
         svg_attr!(path_length, "pathLength");
         svg_support_attr!();
-        svg_descriptive!();
+        svg_descriptive!(title);
         svg_animation!();
     };
 }
@@ -818,7 +818,7 @@ macro_rules! polyline_items {
         svg_attr!(points);
         svg_attr!(path_length, "pathLength");
         svg_support_attr!();
-        svg_descriptive!();
+        svg_descriptive!(title);
         svg_animation!();
     };
 }
@@ -837,7 +837,7 @@ macro_rules! radial_gradient_items {
         svg_attr!(gradient_units, "gradientUnits");
         svg_attr!(gradient_transform, "gradientTransform");
         svg_attr!(spread_method, "spreadMethod");
-        svg_descriptive!();
+        svg_descriptive!(title);
         elem_method!(animate, Animate);
         elem_method!(animate_transform, AnimateTransform);
         elem_method!(set, Set);
@@ -864,7 +864,7 @@ macro_rules! rect_items {
         svg_attr!(ry);
         svg_attr!(path_length, "pathLength");
         svg_support_attr!();
-        svg_descriptive!();
+        svg_descriptive!(title);
         svg_animation!();
     };
 }
@@ -877,7 +877,7 @@ macro_rules! script_items {
         svg_attr!(r#type, "type");
         svg_attr!(crossorigin);
         // NOTE: fetchpriority (future)
-        svg_content!();
+        svg_content!(title);
         text_content!();
     };
 }
@@ -903,7 +903,7 @@ macro_rules! set_items {
         // NOTE: attributeType is deprecated
         svg_attr!(key_points, "keyPoints");
         svg_support_attr!();
-        svg_descriptive!();
+        svg_descriptive!(title);
     };
 }
 svg_elem!("set", Set, "Set Value", set_items());
@@ -926,7 +926,7 @@ macro_rules! style_items {
         svg_attr!(r#type, "type");
         svg_attr!(media);
         svg_attr!(title);
-        svg_content!();
+        svg_content!(title_el);
         text_content!();
     };
 }
@@ -943,7 +943,7 @@ macro_rules! svg_items {
         svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
         svg_attr!(xmlns);
         svg_support_attr!();
-        svg_content!();
+        svg_content!(title);
         elem_method!(link, Link);
     };
 }
@@ -953,7 +953,7 @@ svg_elem!("svg", Svg, "Svg", svg_items());
 macro_rules! switch_items {
     ( $el:literal ) => {
         svg_support_attr!();
-        svg_content!();
+        svg_content!(title);
     };
 }
 svg_elem!("switch", Switch, "Switch", switch_items());
@@ -969,7 +969,7 @@ macro_rules! symbol_items {
         svg_attr!(ref_x, "refX");
         svg_attr!(ref_y, "refY");
         svg_attr!(view_box, "viewBox");
-        svg_content!();
+        svg_content!(title);
     };
 }
 svg_elem!("symbol", Symbol, "Symbol", symbol_items());
@@ -990,7 +990,7 @@ macro_rules! text_items {
         elem_method!(tspan, TSpan);
         elem_method!(text_path, TextPath);
         elem_method!(a, A);
-        svg_descriptive!();
+        svg_descriptive!(title);
         svg_animation!();
     };
 }
@@ -1012,7 +1012,7 @@ macro_rules! text_path_items {
         svg_support_attr!();
         elem_method!(tspan, TSpan);
         elem_method!(a, A);
-        svg_descriptive!();
+        svg_descriptive!(title);
         elem_method!(animate, Animate);
         elem_method!(set, Set);
     };
@@ -1022,7 +1022,7 @@ svg_elem!("textPath", TextPath, "Text Path", text_path_items());
 // Title element
 macro_rules! title_items {
     ( $el:literal ) => {
-        svg_content!();
+        svg_content!(title);
         text_content!();
     };
 }
@@ -1042,7 +1042,7 @@ macro_rules! tspan_items {
         svg_attr!(text_anchor, "text-anchor");
         svg_support_attr!();
         elem_method!(tspan, TSpan);
-        svg_descriptive!();
+        svg_descriptive!(title);
         elem_method!(animate, Animate);
         elem_method!(set, Set);
     };
@@ -1058,7 +1058,7 @@ macro_rules! use_items {
         svg_attr!(width);
         svg_attr!(height);
         svg_support_attr!();
-        svg_descriptive!();
+        svg_descriptive!(title);
         svg_animation!();
     };
 }
@@ -1069,7 +1069,7 @@ macro_rules! view_items {
     ( $el:literal ) => {
         svg_attr!(view_box, "viewBox");
         svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
-        svg_descriptive!();
+        svg_descriptive!(title);
     };
 }
 svg_elem!("view", View, "View", view_items());

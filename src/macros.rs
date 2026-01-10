@@ -738,10 +738,10 @@ macro_rules! svg_container {
 
 /// Descriptive content
 macro_rules! svg_descriptive {
-    () => {
+    ($title:ident) => {
         elem_method!(desc, Desc);
         elem_method!(metadata, Metadata);
-        elem_method!(title_el, Title);
+        elem_method!($title, Title);
     };
 }
 
@@ -779,10 +779,10 @@ macro_rules! svg_animation {
 
 /// Svg content
 macro_rules! svg_content {
-    () => {
+    ($title:ident) => {
         svg_graphics!();
         svg_container!();
-        svg_descriptive!();
+        svg_descriptive!($title);
         svg_gradient!();
         svg_other!();
         svg_animation!();

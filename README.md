@@ -1,5 +1,5 @@
 _Hatmil_ is an HTML builder for Rust.  It can be used to create or modify web
-pages dynamically.
+pages dynamically, including [inline SVG].
 
 With a [Page], there are two "root" methods:
 - [html] for a full document
@@ -50,9 +50,9 @@ suffix:
 - `cite_el` on [BlockQuote], clash with `cite` attribute
 - `form_el` on [FieldSet], clash with `form` attribute
 - `slot_el` on all [element]s, clash with `slot` global attribute
-- `style_el` on [Head], [NoScript] and SVG elements, clash with `style` global
-  attribute
-- `title_el` on [Head], clash with `title` global attribute
+- `style_el` on [Head], [NoScript] and [SVG] elements, clash with `style`
+  global attribute
+- `title_el` on [Head] and [SVG Style], clash with `title` global attribute
 
 Some HTML names clash with Rust keywords.  In these cases, [raw identifiers]
 must be used to call those methods:
@@ -62,7 +62,7 @@ must be used to call those methods:
 - `r#for` on [Label] and [Output]
 - `r#in` on multiple SVG filter elements
 - `r#loop` on [Audio] and [Video]
-- `r#type` on multiple HTML and SVG elements
+- `r#type` on multiple HTML and [SVG] elements
 - `r#use` (SVG element)
 
 
@@ -78,6 +78,7 @@ must be used to call those methods:
 [frag]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.frag
 [Head]: https://docs.rs/hatmil/latest/hatmil/html/struct.Head.html
 [html]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.html
+[inline SVG]: https://developer.mozilla.org/en-US/docs/Web/SVG/Guides/SVG_in_HTML
 [Label]: https://docs.rs/hatmil/latest/hatmil/html/struct.Label.html
 [Link]: https://docs.rs/hatmil/latest/hatmil/html/struct.Link.html
 [NoScript]: https://docs.rs/hatmil/latest/hatmil/html/struct.NoScript.html
@@ -86,5 +87,7 @@ must be used to call those methods:
 [raw]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.raw
 [raw identifiers]: https://doc.rust-lang.org/rust-by-example/compatibility/raw_identifiers.html
 [Script]: https://docs.rs/hatmil/latest/hatmil/html/struct.Script.html
+[SVG]: https://docs.rs/hatmil/latest/hatmil/svg/
+[SVG Style]: https://docs.rs/hatmil/latest/hatmil/svg/struct.Style.html
 [Th]: https://docs.rs/hatmil/latest/hatmil/html/struct.Th.html
 [Video]: https://docs.rs/hatmil/latest/hatmil/html/struct.Video.html
