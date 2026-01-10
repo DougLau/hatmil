@@ -1,7 +1,7 @@
 _Hatmil_ is an HTML builder for Rust.  It can be used to create or modify web
 pages dynamically.
 
-With a [Page], there are two building methods:
+With a [Page], there are two "root" methods:
 - [html] for a full document
 - [frag] for a fragment, starting from an arbitrary [element]
 
@@ -21,35 +21,9 @@ assert_eq!(
 );
 ```
 
-NOTE: in most cases, the method names match the HTML tag exactly.  Due to
-clashes between attribute and element names, some methods for creating child
-elements have an `_el` suffix:
-
-- `abbr_el`
-- `cite_el`
-- `form_el`
-- `slot_el`
-- `style_el`
-- `title_el`
-
-NOTE: some HTML attribute names clash with Rust keywords.  In these cases,
-[raw identifiers] must be used to call those methods:
-
-- `r#as`
-- `r#async`
-- `r#for`
-- `r#in`
-- `r#loop`
-- `r#type`
-- `r#use`
-
-#### Content
-
 Text content (_character data_) can be added using the [cdata] or [cdata_len]
 methods, which will automatically escape characters as needed.  For content
 which has already been escaped, use the [raw] method.
-
-#### Display
 
 After creating the page, use [Display] ([format], `to_string()`, etc) to
 get the resulting HTML.  Any open tags will be closed automatically.
@@ -65,6 +39,28 @@ assert_eq!(
     "<div><button class=\"rounded\">Press Me!</button></div>"
 );
 ```
+
+NOTE: In most cases, the method names match the HTML tag exactly.  But due to
+clashes between attribute and element names, some methods for creating child
+elements have an `_el` suffix:
+
+- `abbr_el`
+- `cite_el`
+- `form_el`
+- `slot_el`
+- `style_el`
+- `title_el`
+
+NOTE: Some HTML attribute names clash with Rust keywords.  In these cases,
+[raw identifiers] must be used to call those methods:
+
+- `r#as`
+- `r#async`
+- `r#for`
+- `r#in`
+- `r#loop`
+- `r#type`
+- `r#use`
 
 
 [Display]: https://doc.rust-lang.org/std/fmt/trait.Display.html
