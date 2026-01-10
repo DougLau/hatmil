@@ -46,12 +46,13 @@ In most cases, element methods match the HTML tag exactly.  But due to clashes
 with attribute names, some methods for creating child elements have an `_el`
 suffix:
 
-- `slot_el` on all [element]s, clash with `slot` global attribute
-- `style_el` on all [element]s, clash with `style` global attribute
-- `title_el` on all [element]s, clash with `title` global attribute
 - `abbr_el` on [Th], clash with `abbr` attribute
 - `cite_el` on [BlockQuote], clash with `cite` attribute
 - `form_el` on [FieldSet], clash with `form` attribute
+- `slot_el` on all [element]s, clash with `slot` global attribute
+- `style_el` on [Head], [NoScript] and SVG elements, clash with `style` global
+  attribute
+- `title_el` on [Head], clash with `title` global attribute
 
 Some HTML names clash with Rust keywords.  In these cases, [raw identifiers]
 must be used to call those methods:
@@ -75,9 +76,11 @@ must be used to call those methods:
 [FieldSet]: https://docs.rs/hatmil/latest/hatmil/html/struct.FieldSet.html
 [format]: https://doc.rust-lang.org/std/macro.format.html
 [frag]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.frag
+[Head]: https://docs.rs/hatmil/latest/hatmil/html/struct.Head.html
 [html]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.html
 [Label]: https://docs.rs/hatmil/latest/hatmil/html/struct.Label.html
 [Link]: https://docs.rs/hatmil/latest/hatmil/html/struct.Link.html
+[NoScript]: https://docs.rs/hatmil/latest/hatmil/html/struct.NoScript.html
 [Output]: https://docs.rs/hatmil/latest/hatmil/html/struct.Output.html
 [page]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html
 [raw]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.raw
