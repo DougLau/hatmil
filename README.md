@@ -46,9 +46,9 @@ In most cases, element methods match the HTML tag exactly.  But due to clashes
 with attribute names, some methods for creating child elements have an `_el`
 suffix:
 
-- `slot_el` on [flow elements], clash with `slot` global attribute
-- `style_el` on [flow elements], clash with `style` global attribute
-- `title_el` on [flow elements], clash with `title` global attribute
+- `slot_el` on all [element]s, clash with `slot` global attribute
+- `style_el` on all [element]s, clash with `style` global attribute
+- `title_el` on all [element]s, clash with `title` global attribute
 - `abbr_el` on [Th], clash with `abbr` attribute
 - `cite_el` on [BlockQuote], clash with `cite` attribute
 - `form_el` on [FieldSet], clash with `form` attribute
@@ -73,7 +73,6 @@ must be used to call those methods:
 [Display]: https://doc.rust-lang.org/std/fmt/trait.Display.html
 [element]: https://docs.rs/hatmil/latest/hatmil/html/
 [FieldSet]: https://docs.rs/hatmil/latest/hatmil/html/struct.FieldSet.html
-[flow elements]: https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Content_categories#flow_content
 [format]: https://doc.rust-lang.org/std/macro.format.html
 [frag]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.frag
 [html]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.html
