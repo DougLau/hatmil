@@ -1,10 +1,11 @@
 // svg.rs
-// Copyright (C) 2025  Douglas P Lau
+// Copyright (C) 2025-2026  Douglas P Lau
 //
 //! SVG Elements -- _Scalable Vector Graphics_
 use crate::definition::PathDefBuilder;
 use crate::html::Link;
 use crate::page::{ElemType, Element, Page};
+use crate::poly::PolyPointBuilder;
 use crate::value::Value;
 
 // A element (in SVG context)
@@ -800,6 +801,13 @@ macro_rules! pattern_items {
 }
 svg_elem!("pattern", Pattern, "Pattern", pattern_items());
 
+impl Polygon<'_> {
+    /// Make a polygon point builder
+    pub fn point_builder() -> PolyPointBuilder {
+        PolyPointBuilder::new()
+    }
+}
+
 // Polygon element
 macro_rules! polygon_items {
     ( $el:literal ) => {
@@ -811,6 +819,13 @@ macro_rules! polygon_items {
     };
 }
 svg_elem!("polygon", Polygon, "Polygon", polygon_items());
+
+impl Polyline<'_> {
+    /// Make a polyline point builder
+    pub fn point_builder() -> PolyPointBuilder {
+        PolyPointBuilder::new()
+    }
+}
 
 // PolyLine element
 macro_rules! polyline_items {

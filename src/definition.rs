@@ -1,5 +1,5 @@
-// path.rs
-// Copyright (C) 2025  Douglas P Lau
+// definition.rs
+// Copyright (C) 2025-2026  Douglas P Lau
 //
 use std::fmt;
 use std::fmt::Write;

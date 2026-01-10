@@ -10,9 +10,11 @@ mod macros;
 mod definition;
 pub mod html;
 mod page;
+mod poly;
 pub mod svg;
 mod value;
 
 pub use definition::PathDefBuilder;
 pub use page::Page;
+pub use poly::PolyPointBuilder;
 pub use value::Value;
