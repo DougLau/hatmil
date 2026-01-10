@@ -705,16 +705,19 @@ macro_rules! svg_support_attr {
     };
 }
 
-/// Shape content
-macro_rules! svg_shapes {
+/// Graphics content
+macro_rules! svg_graphics {
     () => {
         elem_method!(circle, Circle);
         elem_method!(ellipse, Ellipse);
+        elem_method!(image, Image);
         elem_method!(line, Line);
         elem_method!(path, Path);
         elem_method!(polygon, Polygon);
         elem_method!(polyline, Polyline);
         elem_method!(rect, Rect);
+        elem_method!(text, Text);
+        elem_method!(r#use, Use);
     };
 }
 
@@ -757,10 +760,8 @@ macro_rules! svg_other {
         elem_method!(clip_path, ClipPath);
         elem_method!(filter, Filter);
         elem_method!(foreign_object, ForeignObject);
-        elem_method!(image, Image);
         elem_method!(script, Script);
         elem_method!(style_el, Style);
-        elem_method!(text, Text);
         elem_method!(view, View);
     };
 }
@@ -779,7 +780,7 @@ macro_rules! svg_animation {
 /// Svg content
 macro_rules! svg_content {
     () => {
-        svg_shapes!();
+        svg_graphics!();
         svg_container!();
         svg_descriptive!();
         svg_gradient!();

@@ -120,9 +120,7 @@ macro_rules! clip_path_items {
     ( $el:literal ) => {
         svg_attr!(clip_path_units, "clipPathUnits");
         svg_support_attr!();
-        svg_shapes!();
-        elem_method!(text, Text);
-        elem_method!(r#use, Use);
+        svg_graphics!();
         svg_descriptive!();
         svg_animation!();
     };
