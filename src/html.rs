@@ -44,7 +44,7 @@ html_elem!("address", Address, "Contact Address", address_items());
 // Article element
 macro_rules! article_items {
     ( $el:literal ) => {
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("article", Article, "Article Contents", article_items());
@@ -76,7 +76,7 @@ html_elem!(
 // Aside element
 macro_rules! aside_items {
     ( $el:literal ) => {
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("aside", Aside, "Aside", aside_items());
@@ -129,7 +129,7 @@ html_elem!("bdo", Bdo, "Bidirectional Override", bdo_items());
 macro_rules! blockquote_items {
     ( $el:literal ) => {
         html_attr!($el, cite);
-        flow_content!();
+        flow_content!(abbr, cite_el, form);
     };
 }
 html_elem!(
@@ -153,7 +153,7 @@ html_elem!("base", Base, "Base URL", base_items(), ElemType::HtmlVoid);
 macro_rules! body_items {
     ( $el:literal ) => {
         // FIXME: event attributes; onafterprint, onbeforeprint...
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("body", Body, "Document Body", body_items());
@@ -202,7 +202,7 @@ html_elem!("canvas", Canvas, "Graphics Canvas", canvas_items());
 // Caption element
 macro_rules! caption_items {
     ( $el:literal ) => {
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("caption", Caption, "Table Caption", caption_items());
@@ -263,7 +263,7 @@ html_elem!("datalist", DataList, "Data List", datalist_items());
 // Dd element
 macro_rules! dd_items {
     ( $el:literal ) => {
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("dd", Dd, "Description Details", dd_items());
@@ -286,7 +286,7 @@ macro_rules! details_items {
         html_attr!($el, name);
         // NOTE: summary must be first child
         elem_method!(summary, Summary);
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("details", Details, "Details Disclosure", details_items());
@@ -305,7 +305,7 @@ macro_rules! dialog_items {
     ( $el:literal ) => {
         html_attr!($el, closedby);
         html_attr!($el, open, true);
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("dialog", Dialog, "Dialog", dialog_items());
@@ -313,7 +313,7 @@ html_elem!("dialog", Dialog, "Dialog", dialog_items());
 // Div element
 macro_rules! div_items {
     ( $el:literal ) => {
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("div", Div, "Content Division", div_items());
@@ -335,7 +335,7 @@ html_elem!("dl", Dl, "Description List", dl_items());
 macro_rules! dt_items {
     ( $el:literal ) => {
         // FIXME: no header, footer, sectioning or heading descendants
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("dt", Dt, "Description Term", dt_items());
@@ -374,7 +374,7 @@ macro_rules! fieldset_items {
         html_attr!($el, name);
         // NOTE: legend optional, but must be first child
         elem_method!(legend, Legend);
-        flow_content!();
+        flow_content!(abbr, cite, form_el);
     };
 }
 html_elem!("fieldset", FieldSet, "Field Set", fieldset_items());
@@ -382,7 +382,7 @@ html_elem!("fieldset", FieldSet, "Field Set", fieldset_items());
 // FigCaption element
 macro_rules! figcaption_items {
     ( $el:literal ) => {
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!(
@@ -396,7 +396,7 @@ html_elem!(
 macro_rules! figure_items {
     ( $el:literal ) => {
         elem_method!(figcaption, FigCaption);
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("figure", Figure, "Figure", figure_items());
@@ -405,7 +405,7 @@ html_elem!("figure", Figure, "Figure", figure_items());
 macro_rules! footer_items {
     ( $el:literal ) => {
         // NOTE: descendant header/footer elements not allowed
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("footer", Footer, "Footer", footer_items());
@@ -423,7 +423,7 @@ macro_rules! form_items {
         html_attr!($el, novalidate, true);
         html_attr!($el, target);
         // FIXME: descendant form elements not allowed
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("form", Form, "Form", form_items());
@@ -454,7 +454,7 @@ html_elem!("head", Head, "Header / Document Metadata", head_items());
 macro_rules! header_items {
     ( $el:literal ) => {
         // NOTE: descendant header/footer elements not allowed
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("header", Header, "Header", header_items());
@@ -637,7 +637,7 @@ html_elem!("legend", Legend, "Field Set Legend", legend_items());
 macro_rules! li_items {
     ( $el:literal ) => {
         html_attr!($el, value);
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("li", Li, "List Item", li_items());
@@ -676,7 +676,7 @@ html_elem!(
 // Main element
 macro_rules! main_items {
     ( $el:literal ) => {
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("main", Main, "Main", main_items());
@@ -740,7 +740,7 @@ html_elem!("meter", Meter, "Meter", meter_items());
 // Nav element
 macro_rules! nav_items {
     ( $el:literal ) => {
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("nav", Nav, "Navigation Section", nav_items());
@@ -932,7 +932,7 @@ html_elem!("script", Script, "Script", script_items());
 // Search element
 macro_rules! search_items {
     ( $el:literal ) => {
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("search", Search, "Search", search_items());
@@ -940,7 +940,7 @@ html_elem!("search", Search, "Search", search_items());
 // Section element
 macro_rules! section_items {
     ( $el:literal ) => {
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("section", Section, "Section", section_items());
@@ -1106,7 +1106,7 @@ macro_rules! td_items {
         html_attr!($el, colspan);
         html_attr!($el, headers);
         html_attr!($el, rowspan);
-        flow_content!();
+        flow_content!(abbr, cite, form);
     };
 }
 html_elem!("td", Td, "Table Data Cell", td_items());
@@ -1154,7 +1154,7 @@ macro_rules! th_items {
         html_attr!($el, rowspan);
         html_attr!($el, scope);
         // NOTE: no header, footer, sectioning, or heading content
-        flow_content!();
+        flow_content!(abbr_el, cite, form);
     };
 }
 html_elem!("th", Th, "Table Header", th_items());

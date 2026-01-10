@@ -40,16 +40,16 @@ assert_eq!(
 );
 ```
 
-NOTE: In most cases, the method names match the HTML tag exactly.  But due to
-clashes between attribute and element names, some methods for creating child
-elements have an `_el` suffix:
+NOTE: In most cases, element method names match the HTML tag exactly.  But due
+to clashes with attribute names, some methods for creating child elements have
+an `_el` suffix:
 
-- `abbr_el`
-- `cite_el`
-- `form_el`
-- `slot_el`
-- `style_el`
-- `title_el`
+- `slot_el` on flow elements, clash with `slot` global attribute
+- `style_el` on flow elements, clash with `style` global attribute
+- `title_el` on flow elements, clash with `title` global attribute
+- `abbr_el` on [Th], clash with `abbr` attribute
+- `cite_el` on [BlockQuote], clash with `cite` attribute
+- `form_el` on [FieldSet], clash with `form` attribute
 
 NOTE: Some HTML attribute names clash with Rust keywords.  In these cases,
 [raw identifiers] must be used to call those methods:
@@ -63,14 +63,17 @@ NOTE: Some HTML attribute names clash with Rust keywords.  In these cases,
 - `r#use`
 
 
-[Display]: https://doc.rust-lang.org/std/fmt/trait.Display.html
-[close]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.close
-[element]: https://docs.rs/hatmil/latest/hatmil/html/
-[format]: https://doc.rust-lang.org/std/macro.format.html
-[page]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html
-[frag]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.frag
-[html]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.html
-[raw]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.raw
-[raw identifiers]: https://doc.rust-lang.org/rust-by-example/compatibility/raw_identifiers.html
+[BlockQuote]: https://docs.rs/hatmil/latest/hatmil/html/strust.BlockQuote.html
 [cdata]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.cdata
 [cdata_len]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.cdata_len
+[close]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.close
+[Display]: https://doc.rust-lang.org/std/fmt/trait.Display.html
+[element]: https://docs.rs/hatmil/latest/hatmil/html/
+[FieldSet]: https://docs.rs/hatmil/latest/hatmil/html/strust.FieldSet.html
+[format]: https://doc.rust-lang.org/std/macro.format.html
+[frag]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.frag
+[html]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.html
+[page]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html
+[raw]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.raw
+[raw identifiers]: https://doc.rust-lang.org/rust-by-example/compatibility/raw_identifiers.html
+[Th]: https://docs.rs/hatmil/latest/hatmil/html/strust.Th.html

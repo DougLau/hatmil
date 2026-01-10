@@ -294,10 +294,10 @@ macro_rules! metadata_content {
 
 /// Flow content
 macro_rules! flow_content {
-    () => {
+    ($abbr:ident, $cite:ident, $form:ident) => {
         cdata_methods!();
         elem_method!(a, A);
-        elem_method!(abbr_el, Abbr); // FIXME: th abbr
+        elem_method!($abbr, Abbr);
         elem_method!(address, Address);
         elem_method!(article, Article);
         elem_method!(aside, Aside);
@@ -309,7 +309,7 @@ macro_rules! flow_content {
         elem_method!(br, Br);
         elem_method!(button, Button);
         elem_method!(canvas, Canvas);
-        elem_method!(cite_el, Cite); // FIXME: blockquote cite
+        elem_method!($cite, Cite);
         elem_method!(code, Code);
         elem_method!(data, Data);
         elem_method!(datalist, DataList);
@@ -324,7 +324,7 @@ macro_rules! flow_content {
         elem_method!(fieldset, FieldSet);
         elem_method!(figure, Figure);
         elem_method!(footer, Footer);
-        elem_method!(form_el, Form); // FIXME: fieldset form
+        elem_method!($form, Form);
         elem_method!(h1, H1);
         elem_method!(h2, H2);
         elem_method!(h3, H3);
@@ -364,7 +364,7 @@ macro_rules! flow_content {
         elem_method!(search, Search);
         elem_method!(section, Section);
         elem_method!(select, Select);
-        elem_method!(slot_el, Slot);
+        elem_method!(slot_el, Slot); // NOTE: global attr slot
         elem_method!(small, Small);
         elem_method!(span, Span);
         elem_method!(strong, Strong);
