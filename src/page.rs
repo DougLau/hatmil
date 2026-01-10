@@ -1,6 +1,6 @@
-// html.rs
+// page.rs
 //
-// Copyright (C) 2025  Douglas P Lau
+// Copyright (C) 2025-2026  Douglas P Lau
 //
 use crate::html::Html;
 use crate::value::Value;
@@ -257,7 +257,7 @@ impl Page {
         self
     }
 
-    /// Close the leaf tag
+    /// Close the final open element
     ///
     /// Add a closing tag (e.g. `</span>`).
     pub fn close(&mut self) -> &mut Self {

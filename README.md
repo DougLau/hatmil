@@ -3,9 +3,9 @@ pages dynamically, including [inline SVG].
 
 With a [Page], there are two "root" methods:
 - [html] for a full document
-- [frag] for a fragment, starting from an arbitrary [element]
+- [frag] for a fragment, starting from an arbitrary [element] (HTML or [SVG])
 
-In either case, an [element] struct is returned which borrows from the `Page`.
+In either case, an element struct is returned which borrows from the `Page`.
 
 Each element has methods for setting valid attributes, such as `id`.  There
 are also methods for adding permitted child elements.
@@ -24,7 +24,8 @@ assert_eq!(
 Text content (_character data_) can be added using the `cdata` or `cdata_len`
 methods on an [element].  Special HTML characters will automatically be
 replaced by [character reference]s, as needed (for content which has already
-been escaped, use the [raw] method).  Use [close] to close the final element.
+been escaped, use the [raw] method).  The [close] method can be used to close
+the final open element.
 
 After creating the page, use [Display] ([format], `to_string()`, etc) to
 get the resulting HTML.  Any open tags will be closed automatically.
