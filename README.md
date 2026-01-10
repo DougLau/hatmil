@@ -21,9 +21,10 @@ assert_eq!(
 );
 ```
 
-Text content (_character data_) can be added using the [cdata] or [cdata_len]
-methods, which will automatically escape characters as needed.  For content
-which has already been escaped, use the [raw] method.
+Text content (_character data_) can be added using the `cdata` or `cdata_len`
+methods on an [element].  Special HTML characters will automatically be
+replaced by [character reference]s, as needed.  For content which has already
+been escaped, use the [raw] method.
 
 After creating the page, use [Display] ([format], `to_string()`, etc) to
 get the resulting HTML.  Any open tags will be closed automatically.
@@ -70,6 +71,7 @@ must be used to call those methods:
 [BlockQuote]: https://docs.rs/hatmil/latest/hatmil/html/struct.BlockQuote.html
 [cdata]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.cdata
 [cdata_len]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.cdata_len
+[character reference]: https://developer.mozilla.org/en-US/docs/Glossary/Character_reference
 [close]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.close
 [Display]: https://doc.rust-lang.org/std/fmt/trait.Display.html
 [element]: https://docs.rs/hatmil/latest/hatmil/html/
