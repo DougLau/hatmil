@@ -1,6 +1,6 @@
 // macros.rs
 //
-// Copyright (C) 2025  Douglas P Lau
+// Copyright (C) 2025-2026  Douglas P Lau
 
 /// Create an HTML element
 #[rustfmt::skip]
@@ -192,6 +192,7 @@ macro_rules! global_attributes {
         global_attribute!(itemtype);
         global_attribute!(lang);
         global_attribute!(nonce);
+        /* FIXME: event attributes: onauxclick, etc. */
         global_attribute!(part);
         global_attribute!(popover);
         global_attribute!(role);
@@ -399,9 +400,9 @@ macro_rules! flow_content {
 macro_rules! phrasing_content {
     ($cite:ident) => {
         cdata_methods!();
-        elem_method!(a, A); // FIXME: containing only phrasing content
+        elem_method!(a, A); // NOTE: containing only phrasing content
         elem_method!(abbr, Abbr);
-        elem_method!(area, Area); // FIXME: only descendants of <map>
+        elem_method!(area, Area); // NOTE: only descendants of <map>
         elem_method!(audio, Audio);
         elem_method!(b, B);
         elem_method!(bdi, Bdi);
@@ -413,7 +414,7 @@ macro_rules! phrasing_content {
         elem_method!(code, Code);
         elem_method!(data, Data);
         elem_method!(datalist, DataList);
-        elem_method!(del, Del); // FIXME: containing only phrasing content
+        elem_method!(del, Del); // NOTE: containing only phrasing content
         elem_method!(dfn, Dfn);
         elem_method!(em, Em);
         elem_method!(embed, Embed);
@@ -421,14 +422,14 @@ macro_rules! phrasing_content {
         elem_method!(iframe, IFrame);
         elem_method!(img, Img);
         elem_method!(input, Input);
-        elem_method!(ins, Ins); // FIXME: containing only phrasing content
+        elem_method!(ins, Ins); // NOTE: containing only phrasing content
         elem_method!(kbd, Kbd);
         elem_method!(label, Label);
-        elem_method!(link, Link); // FIXME: must have itemprop attribute
-        elem_method!(map, Map); // FIXME: containing only phrasing content
+        elem_method!(link, Link); // NOTE: must have itemprop attribute
+        elem_method!(map, Map); // NOTE: containing only phrasing content
         elem_method!(mark, Mark);
-        // elem_method!(math, Math);
-        elem_method!(meta, Meta); // FIXME: must have itemprop attribute
+        // elem_method!(math, Math); // FIXME
+        elem_method!(meta, Meta); // NOTE: must have itemprop attribute
         elem_method!(meter, Meter);
         elem_method!(noscript, NoScript);
         elem_method!(object, Object);
@@ -465,7 +466,7 @@ macro_rules! non_interactive_phrasing_content {
         cdata_methods!();
         // a with href attribute is interactive
         elem_method!(abbr, Abbr);
-        elem_method!(area, Area); // FIXME: only descendants of <map>
+        elem_method!(area, Area); // NOTE: only descendants of <map>
         // audio with controls attribute is interactive
         elem_method!(b, B);
         elem_method!(bdi, Bdi);
@@ -477,7 +478,7 @@ macro_rules! non_interactive_phrasing_content {
         elem_method!(code, Code);
         elem_method!(data, Data);
         elem_method!(datalist, DataList);
-        elem_method!(del, Del); // FIXME: containing only phrasing content
+        elem_method!(del, Del); // NOTE: containing only phrasing content
         elem_method!(dfn, Dfn);
         elem_method!(em, Em);
         // embed is interactive
@@ -485,14 +486,14 @@ macro_rules! non_interactive_phrasing_content {
         // iframe is interactive
         elem_method!(img, Img); // with usemap attribute is interactive
         // input is interactive (if not hidden)
-        elem_method!(ins, Ins); // FIXME: containing only phrasing content
+        elem_method!(ins, Ins); // NOTE: containing only phrasing content
         elem_method!(kbd, Kbd);
         // label is interactive
-        elem_method!(link, Link); // FIXME: must have itemprop attribute
-        elem_method!(map, Map); // FIXME: containing only phrasing content
+        elem_method!(link, Link); // NOTE: must have itemprop attribute
+        elem_method!(map, Map); // NOTE: containing only phrasing content
         elem_method!(mark, Mark);
         // elem_method!(math, Math);
-        elem_method!(meta, Meta); // FIXME: must have itemprop attribute
+        elem_method!(meta, Meta); // NOTE: must have itemprop attribute
         elem_method!(meter, Meter);
         elem_method!(noscript, NoScript);
         elem_method!(object, Object); // with usemap attribute is interactive
@@ -699,7 +700,7 @@ macro_rules! svg_attr {
 macro_rules! svg_global_attributes {
     () => {
         svg_attr!(id);
-        // FIXME: only allowed on *most* SVG elements, for some reason
+        // NOTE: only allowed on *most* SVG elements, for some reason
         svg_attr!(class);
         svg_attr!(style);
         // less common...

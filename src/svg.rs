@@ -594,7 +594,6 @@ macro_rules! filter_items {
         svg_attr!(width);
         svg_attr!(height);
         svg_descriptive!(title);
-        // FIXME: filter primitive elements
         elem_method!(fe_blend, FeBlend);
         elem_method!(fe_color_matrix, FeColorMatrix);
         elem_method!(fe_component_transfer, FeComponentTransfer);

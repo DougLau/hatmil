@@ -19,7 +19,7 @@ macro_rules! a_items {
         html_attr!($el, rel);
         html_attr!($el, target);
         html_attr!($el, r#type, "type");
-        // FIXME: only transparent content (not interactive, or "a")
+        // NOTE: only transparent content (interactive, or "a" disallowed)
         text_content!();
     };
 }
@@ -95,7 +95,7 @@ macro_rules! audio_items {
         // NOTE: special content rules
         elem_method!(source, Source);
         elem_method!(track, Track);
-        // FIXME: transparent content also allowed
+        // NOTE: transparent content also allowed
         comment_raw_methods!();
     };
 }
@@ -152,7 +152,6 @@ html_elem!("base", Base, "Base URL", base_items(), ElemType::HtmlVoid);
 // Body element
 macro_rules! body_items {
     ( $el:literal ) => {
-        // FIXME: event attributes; onafterprint, onbeforeprint...
         flow_content!(abbr, cite, form);
     };
 }
@@ -194,7 +193,7 @@ macro_rules! canvas_items {
     ( $el:literal ) => {
         html_attr!($el, height);
         html_attr!($el, width);
-        // FIXME: weird content rules
+        // NOTE: weird content rules
     };
 }
 html_elem!("canvas", Canvas, "Graphics Canvas", canvas_items());
@@ -273,7 +272,7 @@ macro_rules! del_items {
     ( $el:literal ) => {
         html_attr!($el, cite);
         html_attr!($el, datetime);
-        // FIXME: transparent content
+        // NOTE: only transparent content
         text_content!();
     };
 }
@@ -334,7 +333,7 @@ html_elem!("dl", Dl, "Description List", dl_items());
 // Dt element
 macro_rules! dt_items {
     ( $el:literal ) => {
-        // FIXME: no header, footer, sectioning or heading descendants
+        // NOTE: no header, footer, sectioning or heading descendants
         flow_content!(abbr, cite, form);
     };
 }
@@ -422,7 +421,7 @@ macro_rules! form_items {
         html_attr!($el, method);
         html_attr!($el, novalidate, true);
         html_attr!($el, target);
-        // FIXME: descendant form elements not allowed
+        // NOTE: descendant form elements not allowed
         flow_content!(abbr, cite, form);
     };
 }
@@ -595,7 +594,7 @@ macro_rules! ins_items {
     ( $el:literal ) => {
         html_attr!($el, cite);
         html_attr!($el, datetime);
-        // FIXME: transparent content
+        // NOTE: transparent content
         text_content!();
     };
 }
@@ -693,7 +692,7 @@ html_elem!("mark", Mark, "Mark Text", mark_items());
 macro_rules! map_items {
     ( $el:literal ) => {
         html_attr!($el, name);
-        // FIXME: transparent content
+        // NOTE: transparent content
     };
 }
 html_elem!("map", Map, "Image Map", map_items());
@@ -748,7 +747,7 @@ html_elem!("nav", Nav, "Navigation Section", nav_items());
 // NoScript element
 macro_rules! noscript_items {
     ( $el:literal ) => {
-        // FIXME: complex content rules (sometimes transparent)
+        // NOTE: complex content rules (sometimes transparent)
         elem_method!(link, Link);
         elem_method!(style_el, Style); // global attr
         elem_method!(meta, Meta);
@@ -765,7 +764,7 @@ macro_rules! object_items {
         html_attr!($el, name);
         html_attr!($el, r#type, "type");
         html_attr!($el, width);
-        // FIXME: transparent content
+        // NOTE: transparent content
     };
 }
 html_elem!("object", Object, "External Object", object_items());
@@ -964,14 +963,13 @@ macro_rules! select_items {
 }
 html_elem!("select", Select, "Select", select_items());
 
-// Selectedcontent element
-// TODO
+// FUTURE: Selectedcontent element
 
 // Slot element
 macro_rules! slot_items {
     ( $el:literal ) => {
         html_attr!($el, name);
-        // FIXME: transparent content
+        // NOTE: transparent content
         text_content!();
     };
 }
@@ -1044,8 +1042,14 @@ html_elem!("sub", Sub, "Subscript", sub_items());
 // Summary element
 macro_rules! summary_items {
     ( $el:literal ) => {
-        // FIXME: also heading content (h1-h6 / hgroup)
         phrasing_content!(cite);
+        elem_method!(h1, H1);
+        elem_method!(h2, H2);
+        elem_method!(h3, H3);
+        elem_method!(h4, H4);
+        elem_method!(h5, H5);
+        elem_method!(h6, H6);
+        elem_method!(hgroup, HGroup);
     };
 }
 html_elem!("summary", Summary, "Disclosure Summary", summary_items());
@@ -1254,7 +1258,7 @@ macro_rules! video_items {
         // NOTE: special content rules
         elem_method!(source, Source);
         elem_method!(track, Track);
-        // FIXME: transparent content also allowed
+        // NOTE: transparent content also allowed
         comment_raw_methods!();
     };
 }
