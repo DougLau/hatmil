@@ -14,10 +14,10 @@ are also methods for adding permitted child elements.
 use hatmil::Page;
 
 let mut page = Page::default();
-page.html().body().p().id("my_div").cdata("Content");
+page.html().body().p().id("para").cdata("Content");
 assert_eq!(
     page.to_string(),
-    "<html><body><p id=\"my_div\">Content</p></body></html>"
+    "<html><body><p id=\"para\">Content</p></body></html>"
 );
 ```
 
