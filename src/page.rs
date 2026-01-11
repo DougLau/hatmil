@@ -20,7 +20,7 @@ pub enum ElemType {
 /// HTML page builder
 #[derive(Default)]
 pub struct Page {
-    /// Include HTML `DOCTYPE` preamble
+    /// Include `<!DOCTYPE html>` preamble
     doctype: bool,
     /// HTML document text
     doc: String,
@@ -95,7 +95,7 @@ impl Page {
         Self::default()
     }
 
-    /// Include HTML `DOCTYPE` preamble
+    /// Include `<!DOCTYPE html>` preamble
     pub fn with_doctype(mut self) -> Self {
         self.doctype = true;
         self
