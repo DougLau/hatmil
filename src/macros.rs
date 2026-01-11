@@ -180,11 +180,16 @@ macro_rules! global_attributes {
         global_attribute!(draggable);
         global_attribute!(enterkeyhint);
         global_attribute!(exportparts);
+        /* FUTURE: headingoffset, headingreset... */
         global_attribute!(hidden);
         global_attribute!(inert, true);
-        global_attribute!(is);
         global_attribute!(inputmode);
-        /* itemid, itemprop, itemref, itemscope, itemtype */
+        global_attribute!(is);
+        global_attribute!(itemid);
+        global_attribute!(itemprop);
+        global_attribute!(itemref);
+        global_attribute!(itemscope, true);
+        global_attribute!(itemtype);
         global_attribute!(lang);
         global_attribute!(nonce);
         global_attribute!(part);
@@ -196,7 +201,7 @@ macro_rules! global_attributes {
         global_attribute!(tabindex);
         global_attribute!(title);
         global_attribute!(translate);
-        /* virtualkeyboardpolicy, writingsuggestions */
+        /* FUTURE: virtualkeyboardpolicy, writingsuggestions */
     };
 }
 
