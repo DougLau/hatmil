@@ -40,7 +40,7 @@ pub trait Element<'p> {
     /// Element type
     const TP: ElemType;
 
-    /// Make a new element
+    /// Make new "base" element
     fn new(page: &'p mut Page) -> Self;
 }
 
@@ -70,9 +70,7 @@ impl fmt::Display for Page {
 impl From<Page> for String {
     fn from(mut page: Page) -> Self {
         // zero-copy alternative to fmt::Display
-        while !page.stack.is_empty() {
-            page.close();
-        }
+        page.close_to(1);
         page.doc
     }
 }
@@ -144,13 +142,14 @@ impl Page {
     /// - `tp`: Element type
     ///
     /// [Void]: https://developer.mozilla.org/en-US/docs/Glossary/Void_element
-    pub(crate) fn elem(&mut self, tag: &'static str, tp: ElemType) {
+    pub(crate) fn elem(&mut self, tag: &'static str, tp: ElemType) -> usize {
         self.doc.push('<');
         self.doc.push_str(tag);
         self.doc.push('>');
+        self.empty = true;
         self.tp = Some(tp);
         self.stack.push(tag);
-        self.empty = true;
+        self.stack.len()
     }
 
     /// Add an attribute with value
@@ -257,6 +256,14 @@ impl Page {
         self
     }
 
+    /// Close elements to the specified depth
+    pub(crate) fn close_to(&mut self, depth: usize) -> &mut Self {
+        while self.stack.len() >= depth {
+            self.close();
+        }
+        self
+    }
+
     /// Close the final open element
     ///
     /// Add a closing tag (e.g. `</span>`).
@@ -357,12 +364,9 @@ mod test {
     fn html_builder() {
         let mut page = Page::default();
         let mut html = page.html();
-        html.lang("en")
-            .head()
-            .title_el()
-            .cdata("Title!")
-            .close()
-            .close();
+        let mut head = html.lang("en").head();
+        head.title_el().cdata("Title!");
+        head.close();
         html.body().h1().cdata("Header!");
         assert_eq!(
             page.to_string(),

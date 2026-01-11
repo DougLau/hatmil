@@ -24,6 +24,8 @@ macro_rules! html_elem {
         pub struct $elem<'p> {
             /// Borrowed Page
             pub(crate) page: &'p mut Page,
+            /// Node depth
+            pub(crate) depth: usize,
         }
 
         #[doc = concat!("`<", $el, ">` items")]
@@ -38,7 +40,7 @@ macro_rules! html_elem {
                 ">`)."
             )]
             pub fn close(&'p mut self) -> &'p mut Page {
-                self.page.close();
+                self.page.close_to(self.depth);
                 self.page
             }
         }
@@ -52,7 +54,7 @@ macro_rules! html_elem {
             const TAG: &'static str = $el;
             const TP: ElemType = $tp;
             fn new(page: &'p mut Page) -> Self {
-                $elem { page }
+                $elem { page, depth: 1 }
             }
         }
     };
@@ -203,8 +205,11 @@ macro_rules! elem_method {
         #[doc = concat!("Add `", stringify!($elem), "` child element")]
         #[allow(clippy::self_named_constructors)]
         pub fn $meth(self: &mut Self) -> $elem<'_> {
-            self.page.elem($elem::TAG, $elem::TP);
-            $elem { page: self.page }
+            let depth = self.page.elem($elem::TAG, $elem::TP);
+            $elem {
+                page: self.page,
+                depth,
+            }
         }
     };
 }
@@ -629,6 +634,8 @@ macro_rules! svg_elem {
         pub struct $elem<'p> {
             /// Borrowed Page
             pub(crate) page: &'p mut Page,
+            /// Node depth
+            pub(crate) depth: usize,
         }
 
         #[doc = concat!("`<", $el, ">` items")]
@@ -643,7 +650,7 @@ macro_rules! svg_elem {
                 ">`)."
             )]
             pub fn close(&'p mut self) -> &'p mut Page {
-                self.page.close();
+                self.page.close_to(self.depth);
                 self.page
             }
         }
@@ -657,7 +664,7 @@ macro_rules! svg_elem {
             const TAG: &'static str = $el;
             const TP: ElemType = $tp;
             fn new(page: &'p mut Page) -> Self {
-                $elem { page }
+                $elem { page, depth: 1 }
             }
         }
     }
