@@ -78,13 +78,11 @@ impl From<Page> for String {
 impl Page {
     /// Create an HTML page builder
     ///
-    /// - `doctype`: Include HTML `doctype` preamble
-    ///
     /// ```rust
     /// use hatmil::Page;
     ///
-    /// let mut page = Page::new(true);
-    /// let mut html = page.html();
+    /// let mut page = Page::new();
+    /// let mut html = page.html(true);
     /// let mut body = html.body();
     /// body.cdata("Page text");
     /// body.a().href("https://www.example.com/").cdata("Example link");
@@ -93,11 +91,8 @@ impl Page {
     ///     "<!doctype html><html><body>Page text<a href=\"https://www.example.com/\">Example link</a></body></html>",
     /// );
     /// ```
-    pub fn new(doctype: bool) -> Self {
-        Page {
-            doctype,
-            ..Default::default()
-        }
+    pub fn new() -> Self {
+        Self::default()
     }
 
     /// Convert page into a fragment
@@ -121,17 +116,15 @@ impl Page {
     where
         E: Element<'p>,
     {
-        self.doc.clear();
         self.elem(E::TAG, E::TP);
         E::new(self)
     }
 
     /// Add `<html>` root element
-    pub fn html(&mut self) -> Html<'_> {
-        self.doc.clear();
-        if self.doctype {
-            self.raw("<!doctype html>");
-        }
+    ///
+    /// - `doctype`: Include HTML `doctype` preamble
+    pub fn html(&mut self, doctype: bool) -> Html<'_> {
+        self.doctype = doctype;
         self.elem("html", ElemType::Html);
         Html::new(self)
     }
@@ -143,6 +136,12 @@ impl Page {
     ///
     /// [Void]: https://developer.mozilla.org/en-US/docs/Glossary/Void_element
     pub(crate) fn elem(&mut self, tag: &'static str, tp: ElemType) -> usize {
+        if self.stack.is_empty() {
+            self.doc.clear();
+            if self.doctype {
+                self.raw("<!doctype html>");
+            }
+        }
         self.doc.push('<');
         self.doc.push_str(tag);
         self.doc.push('>');
@@ -363,7 +362,7 @@ mod test {
     #[test]
     fn html_builder() {
         let mut page = Page::default();
-        let mut html = page.html();
+        let mut html = page.html(false);
         let mut head = html.lang("en").head();
         head.title_el().cdata("Title!");
         head.close();
@@ -376,8 +375,8 @@ mod test {
 
     #[test]
     fn string_from() {
-        let mut page = Page::new(false);
-        let mut html = page.html();
+        let mut page = Page::new();
+        let mut html = page.html(false);
         html.head().title_el().cdata("Head").close().close();
         html.body().cdata("Body");
         assert_eq!(
