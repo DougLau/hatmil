@@ -1088,7 +1088,7 @@ macro_rules! view_items {
 }
 svg_elem!("view", View, "View", view_items());
 
-// Extra Presentation attributes (Use CSS, or add?):
+// Extra Presentation attributes (FIXME: Use CSS, or add?):
 // - "alignment-baseline" alignment_baseline
 // - "baseline-shift" baseline_shift
 // - "clip-path" clip_path
