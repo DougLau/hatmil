@@ -101,7 +101,13 @@ impl Page {
         self
     }
 
-    /// Convert page into a fragment
+    /// Create page root `<html>` element
+    pub fn html(&mut self) -> Html<'_> {
+        self.elem("html", ElemType::Html);
+        Html::new(self)
+    }
+
+    /// Create fragment root `E` element
     ///
     /// - `E`: Element type, from either the [html] or [svg] modules
     ///
@@ -124,12 +130,6 @@ impl Page {
     {
         self.elem(E::TAG, E::TP);
         E::new(self)
-    }
-
-    /// Add `<html>` root element
-    pub fn html(&mut self) -> Html<'_> {
-        self.elem("html", ElemType::Html);
-        Html::new(self)
     }
 
     /// Add an element
