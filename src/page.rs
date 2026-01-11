@@ -20,7 +20,7 @@ pub enum ElemType {
 /// HTML page builder
 #[derive(Default)]
 pub struct Page {
-    /// Include HTML `doctype` preamble
+    /// Include HTML `DOCTYPE` preamble
     doctype: bool,
     /// HTML document text
     doc: String,
@@ -88,14 +88,14 @@ impl Page {
     /// body.a().href("https://www.example.com/").cdata("Example link");
     /// assert_eq!(
     ///     page.to_string(),
-    ///     "<!doctype html><html><body>Page text<a href=\"https://www.example.com/\">Example link</a></body></html>",
+    ///     "<!DOCTYPE html><html><body>Page text<a href=\"https://www.example.com/\">Example link</a></body></html>",
     /// );
     /// ```
     pub fn new() -> Self {
         Self::default()
     }
 
-    /// Include HTML `doctype` preamble
+    /// Include HTML `DOCTYPE` preamble
     pub fn with_doctype(mut self) -> Self {
         self.doctype = true;
         self
@@ -142,7 +142,7 @@ impl Page {
         if self.stack.is_empty() {
             self.doc.clear();
             if self.doctype {
-                self.raw("<!doctype html>");
+                self.raw("<!DOCTYPE html>");
             }
         }
         self.doc.push('<');
