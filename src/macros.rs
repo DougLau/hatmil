@@ -35,9 +35,10 @@ macro_rules! html_elem {
             #[doc = "Close the element"]
             #[doc = ""]
             #[doc = concat!(
-                "Adds the closing tag if necessary (e.g. `</",
+                "- Closes all child elements\n",
+                "- Adds the closing tag if necessary (e.g. `</",
                 $el,
-                ">`)."
+                ">`)"
             )]
             pub fn close(&'p mut self) -> &'p mut Page {
                 self.page.close_to(self.depth);
@@ -645,9 +646,10 @@ macro_rules! svg_elem {
             #[doc = "Close the element"]
             #[doc = ""]
             #[doc = concat!(
-                "Adds the closing tag if necessary (e.g. `</",
+                "- Closes all child elements\n",
+                "- Adds the closing tag if necessary (e.g. `</",
                 $el,
-                ">`)."
+                ">`)"
             )]
             pub fn close(&'p mut self) -> &'p mut Page {
                 self.page.close_to(self.depth);
