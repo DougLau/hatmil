@@ -81,8 +81,8 @@ impl Page {
     /// ```rust
     /// use hatmil::Page;
     ///
-    /// let mut page = Page::new();
-    /// let mut html = page.html(true);
+    /// let mut page = Page::new().with_doctype();
+    /// let mut html = page.html();
     /// let mut body = html.body();
     /// body.cdata("Page text");
     /// body.a().href("https://www.example.com/").cdata("Example link");
@@ -93,6 +93,12 @@ impl Page {
     /// ```
     pub fn new() -> Self {
         Self::default()
+    }
+
+    /// Include HTML `doctype` preamble
+    pub fn with_doctype(mut self) -> Self {
+        self.doctype = true;
+        self
     }
 
     /// Convert page into a fragment
@@ -121,10 +127,7 @@ impl Page {
     }
 
     /// Add `<html>` root element
-    ///
-    /// - `doctype`: Include HTML `doctype` preamble
-    pub fn html(&mut self, doctype: bool) -> Html<'_> {
-        self.doctype = doctype;
+    pub fn html(&mut self) -> Html<'_> {
         self.elem("html", ElemType::Html);
         Html::new(self)
     }
@@ -362,7 +365,7 @@ mod test {
     #[test]
     fn html_builder() {
         let mut page = Page::default();
-        let mut html = page.html(false);
+        let mut html = page.html();
         let mut head = html.lang("en").head();
         head.title_el().cdata("Title!");
         head.close();
@@ -376,7 +379,7 @@ mod test {
     #[test]
     fn string_from() {
         let mut page = Page::new();
-        let mut html = page.html(false);
+        let mut html = page.html();
         html.head().title_el().cdata("Head").close().close();
         html.body().cdata("Body");
         assert_eq!(
