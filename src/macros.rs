@@ -721,10 +721,10 @@ macro_rules! svg_global_attributes {
         svg_attr!(style);
         // less common...
         svg_attr!(autofocus, "autofocus", true);
-        /* FIXME: data-* */
         svg_attr!(lang);
         svg_attr!(tabindex);
         svg_attr!(transform);
+        data_attribute!();
     };
 }
 
