@@ -162,7 +162,7 @@ impl Page {
     /// |------|----------|
     /// | `&`  | `&amp;`  |
     /// | `"`  | `&quot;` |
-    pub(crate) fn attr<'a, V>(&mut self, attr: &'static str, val: V)
+    pub(crate) fn attr<'a, V>(&mut self, attr: &str, val: V)
     where
         V: Into<Value<'a>>,
     {
@@ -421,5 +421,12 @@ mod test {
         let mut page = Page::default();
         page.frag::<Img>().width(100).height(50).close();
         assert_eq!(page.to_string(), "<img width=\"100\" height=\"50\">");
+    }
+
+    #[test]
+    fn data() {
+        let mut page = Page::default();
+        page.frag::<P>().data_("macro", "macrodata");
+        assert_eq!(page.to_string(), "<p data-macro=\"macrodata\"></p>");
     }
 }

@@ -164,6 +164,22 @@ macro_rules! global_attribute {
     };
 }
 
+/// Make data-* HTML attribute method
+macro_rules! data_attribute {
+    () => {
+        /// Add [data-*] attribute
+        ///
+        /// [data-*]: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/data-*
+        pub fn data_<'a, V>(&mut self, name: &'static str, val: V) -> &mut Self
+        where
+            V: Into<Value<'a>>,
+        {
+            self.page.attr(&format!("data-{name}"), val);
+            self
+        }
+    };
+}
+
 /// Global attributes
 macro_rules! global_attributes {
     () => {
@@ -175,7 +191,7 @@ macro_rules! global_attributes {
         global_attribute!(autocorrect);
         global_attribute!(autofocus, true);
         global_attribute!(contenteditable);
-        /* FIXME: data-* */
+        data_attribute!();
         global_attribute!(dir);
         global_attribute!(draggable);
         global_attribute!(enterkeyhint);
