@@ -112,6 +112,9 @@ macro_rules! circle_items {
         svg_support_attr!();
         svg_descriptive!(title);
         svg_animation!();
+        // presentation attributes
+        svg_attr!(fill);
+        svg_attr!(stroke);
     };
 }
 svg_elem!("circle", Circle, "Circle", circle_items());
@@ -156,6 +159,9 @@ macro_rules! ellipse_items {
         svg_support_attr!();
         svg_descriptive!(title);
         svg_animation!();
+        // presentation attributes
+        svg_attr!(fill);
+        svg_attr!(stroke);
     };
 }
 svg_elem!("ellipse", Ellipse, "Ellipse", ellipse_items());
@@ -682,6 +688,8 @@ macro_rules! line_items {
         svg_support_attr!();
         svg_descriptive!(title);
         svg_animation!();
+        // presentation attributes
+        svg_attr!(stroke);
     };
 }
 svg_elem!("line", Line, "Line", line_items());
@@ -777,6 +785,9 @@ macro_rules! path_items {
         svg_support_attr!();
         svg_descriptive!(title);
         svg_animation!();
+        // presentation attributes
+        svg_attr!(fill);
+        svg_attr!(stroke);
     };
 }
 svg_elem!("path", Path, "Path", path_items());
@@ -815,6 +826,9 @@ macro_rules! polygon_items {
         svg_support_attr!();
         svg_descriptive!(title);
         svg_animation!();
+        // presentation attributes
+        svg_attr!(fill);
+        svg_attr!(stroke);
     };
 }
 svg_elem!("polygon", Polygon, "Polygon", polygon_items());
@@ -834,6 +848,9 @@ macro_rules! polyline_items {
         svg_support_attr!();
         svg_descriptive!(title);
         svg_animation!();
+        // presentation attributes
+        svg_attr!(fill);
+        svg_attr!(stroke);
     };
 }
 svg_elem!("polyline", Polyline, "Polyline", polyline_items());
@@ -880,6 +897,9 @@ macro_rules! rect_items {
         svg_support_attr!();
         svg_descriptive!(title);
         svg_animation!();
+        // presentation attributes
+        svg_attr!(fill);
+        svg_attr!(stroke);
     };
 }
 svg_elem!("rect", Rect, "Rectangle", rect_items());
@@ -1006,6 +1026,9 @@ macro_rules! text_items {
         elem_method!(a, A);
         svg_descriptive!(title);
         svg_animation!();
+        // presentation attributes
+        svg_attr!(fill);
+        svg_attr!(stroke);
     };
 }
 svg_elem!("text", Text, "Text", text_items());
@@ -1029,6 +1052,9 @@ macro_rules! text_path_items {
         svg_descriptive!(title);
         elem_method!(animate, Animate);
         elem_method!(set, Set);
+        // presentation attributes
+        svg_attr!(fill);
+        svg_attr!(stroke);
     };
 }
 svg_elem!("textPath", TextPath, "Text Path", text_path_items());
@@ -1059,6 +1085,9 @@ macro_rules! tspan_items {
         svg_descriptive!(title);
         elem_method!(animate, Animate);
         elem_method!(set, Set);
+        // presentation attributes
+        svg_attr!(fill);
+        svg_attr!(stroke);
     };
 }
 svg_elem!("tspan", TSpan, "Text Span", tspan_items());
@@ -1100,7 +1129,6 @@ svg_elem!("view", View, "View", view_items());
 // - "direction" direction
 // - "display" display
 // - "dominant-baseline" dominant_baseline
-// - "fill" fill (not the animation version!)
 // - "fill-opacity" fill_opacity
 // - "fill-rule" fill_rule
 // - "filter" filter
@@ -1127,7 +1155,6 @@ svg_elem!("view", View, "View", view_items());
 // - "shape-rendering" shape_rendering
 // - "stop-color" stop_color
 // - "stop-opacity" stop_opacity
-// - "stroke" stroke
 // - "stroke-dasharray" stroke_dasharray
 // - "stroke-dashoffset" stroke_dashoffset
 // - "stroke-linecap" stroke_linecap
