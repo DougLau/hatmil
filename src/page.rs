@@ -81,14 +81,14 @@ impl Page {
     /// ```rust
     /// use hatmil::Page;
     ///
-    /// let mut page = Page::new().with_doctype();
+    /// let mut page = Page::new();
     /// let mut html = page.html();
     /// let mut body = html.body();
     /// body.cdata("Page text");
     /// body.a().href("https://www.example.com/").cdata("Example link");
     /// assert_eq!(
     ///     String::from(page),
-    ///     "<!DOCTYPE html><html><body>Page text<a href=\"https://www.example.com/\">Example link</a></body></html>",
+    ///     "<html><body>Page text<a href=\"https://www.example.com/\">Example link</a></body></html>",
     /// );
     /// ```
     pub fn new() -> Self {
@@ -96,6 +96,19 @@ impl Page {
     }
 
     /// Include `<!DOCTYPE html>` preamble
+    ///
+    /// ```rust
+    /// use hatmil::Page;
+    ///
+    /// let mut page = Page::new().with_doctype();
+    /// let mut html = page.html();
+    /// let mut body = html.body();
+    /// body.cdata("Some text");
+    /// assert_eq!(
+    ///     String::from(page),
+    ///     "<!DOCTYPE html><html><body>Some text</body></html>",
+    /// );
+    /// ```
     pub fn with_doctype(mut self) -> Self {
         self.doctype = true;
         self
