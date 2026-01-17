@@ -148,7 +148,7 @@ macro_rules! global_attribute {
     // Make a global "value" attribute
     ( $attr:ident ) => {
         val_attr!(
-            concat!("Web/HTML/Reference/", "Global_attributes/#"),
+            "Web/HTML/Reference/Global_attributes/#",
             $attr,
             stringify!($attr)
         );
@@ -157,9 +157,21 @@ macro_rules! global_attribute {
     // Make a global Boolean attribute
     ( $attr:ident, true ) => {
         bool_attr!(
-            concat!("Web/HTML/Reference/", "Global_attributes/#"),
+            "Web/HTML/Reference/Global_attributes/#",
             $attr,
             stringify!($attr)
+        );
+    };
+}
+
+/// Make a global ARIA attribute method
+macro_rules! aria_attribute {
+    // Make a global ARIA "value" attribute
+    ( $attr:ident, $raw_attr:literal ) => {
+        val_attr!(
+            concat!("Web/Accessibility/ARIA/Reference/Attributes/"),
+            $attr,
+            $raw_attr
         );
     };
 }
@@ -219,6 +231,26 @@ macro_rules! global_attributes {
         global_attribute!(title);
         global_attribute!(translate);
         /* FUTURE: virtualkeyboardpolicy, writingsuggestions */
+        aria_attribute!(aria_atomic, "aria-atomic");
+        aria_attribute!(aria_busy, "aria-busy");
+        aria_attribute!(aria_controls, "aria-controls");
+        aria_attribute!(aria_current, "aria-current");
+        aria_attribute!(aria_describedby, "aria-describedby");
+        aria_attribute!(aria_description, "aria-description");
+        aria_attribute!(aria_details, "aria-details");
+        aria_attribute!(aria_disabled, "aria-disabled");
+        aria_attribute!(aria_errormessage, "aria-errormessage");
+        aria_attribute!(aria_flowto, "aria-flowto");
+        aria_attribute!(aria_haspopup, "aria-haspopup");
+        aria_attribute!(aria_hidden, "aria-hidden");
+        aria_attribute!(aria_invalid, "aria-invalid");
+        aria_attribute!(aria_keyshortcuts, "aria-keyshortcuts");
+        aria_attribute!(aria_label, "aria-label");
+        aria_attribute!(aria_labelledby, "aria-labelledby");
+        aria_attribute!(aria_live, "aria-live");
+        aria_attribute!(aria_owns, "aria-owns");
+        aria_attribute!(aria_relevant, "aria-relevant");
+        aria_attribute!(aria_roledescription, "aria-roledescription");
     };
 }
 
