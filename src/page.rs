@@ -87,7 +87,7 @@ impl Page {
     /// body.cdata("Page text");
     /// body.a().href("https://www.example.com/").cdata("Example link");
     /// assert_eq!(
-    ///     page.to_string(),
+    ///     String::from(page),
     ///     "<!DOCTYPE html><html><body>Page text<a href=\"https://www.example.com/\">Example link</a></body></html>",
     /// );
     /// ```
@@ -117,7 +117,7 @@ impl Page {
     /// let mut page = Page::default();
     /// page.frag::<A>().href("https://www.example.com/").cdata("Example link");
     /// assert_eq!(
-    ///     page.to_string(),
+    ///     String::from(page),
     ///     "<a href=\"https://www.example.com/\">Example link</a>",
     /// );
     /// ```

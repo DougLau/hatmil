@@ -18,7 +18,7 @@ let mut html = page.html();
 let mut body = html.body();
 body.p().id("para").cdata("Graph");
 assert_eq!(
-    page.to_string(),
+    String::from(page),
     "<html><body><p id=\"para\">Graph</p></body></html>"
 );
 ```
@@ -29,8 +29,9 @@ replaced by [character reference]s, as needed (for content which has already
 been escaped, use the [raw] method).  The [close] method can be used to close
 the final open element.
 
-After creating the page, use [Display] ([format], `to_string()`, etc) to
-get the resulting HTML.  Any open tags will be closed automatically.
+After creating the page, use `String::from(page)` to get the resulting HTML.
+Any open tags will be closed automatically.  [Display] is also implemented,
+enabling the use of [format] or `to_string()`.
 
 ```rust
 use hatmil::{Page, html::Div};
@@ -39,7 +40,7 @@ let mut page = Page::new();
 let mut div = page.frag::<Div>();
 div.button().class("rounded").cdata("Press Me!");
 assert_eq!(
-    page.to_string(),
+    String::from(page),
     "<div><button class=\"rounded\">Press Me!</button></div>"
 );
 ```
