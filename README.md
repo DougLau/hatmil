@@ -13,11 +13,13 @@ are also methods for adding permitted child elements.
 ```rust
 use hatmil::Page;
 
-let mut page = Page::default();
-page.html().body().p().id("para").cdata("Content");
+let mut page = Page::new();
+let mut html = page.html();
+let mut body = html.body();
+body.p().id("para").cdata("Graph");
 assert_eq!(
     page.to_string(),
-    "<html><body><p id=\"para\">Content</p></body></html>"
+    "<html><body><p id=\"para\">Graph</p></body></html>"
 );
 ```
 
@@ -33,7 +35,7 @@ get the resulting HTML.  Any open tags will be closed automatically.
 ```rust
 use hatmil::{Page, html::Div};
 
-let mut page = Page::default();
+let mut page = Page::new();
 let mut div = page.frag::<Div>();
 div.button().class("rounded").cdata("Press Me!");
 assert_eq!(
