@@ -1152,14 +1152,14 @@ mod test {
 
     #[test]
     fn svg() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         let _svg = page.frag::<Svg>();
         assert_eq!(page.to_string(), "<svg />");
     }
 
     #[test]
     fn circle() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         let mut svg = page.frag::<Svg>();
         svg.circle().cx("50").cy("25").r("5");
         assert_eq!(
@@ -1170,7 +1170,7 @@ mod test {
 
     #[test]
     fn path() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         let mut svg = page.frag::<Svg>();
         let mut path = Path::def_builder();
         path.absolute(true)

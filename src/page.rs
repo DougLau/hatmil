@@ -114,7 +114,7 @@ impl Page {
     /// ```rust
     /// use hatmil::{Page, html::A};
     ///
-    /// let mut page = Page::default();
+    /// let mut page = Page::new();
     /// page.frag::<A>().href("https://www.example.com/").cdata("Example link");
     /// assert_eq!(
     ///     String::from(page),
@@ -295,14 +295,14 @@ mod test {
 
     #[test]
     fn div() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         page.frag::<Div>();
         assert_eq!(page.to_string(), "<div></div>");
     }
 
     #[test]
     fn boolean() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         page.frag::<Div>().id("test").spellcheck(true);
         assert_eq!(
             page.to_string(),
@@ -312,35 +312,35 @@ mod test {
 
     #[test]
     fn paragraph() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         page.frag::<P>().cdata("This is a paragraph");
         assert_eq!(page.to_string(), "<p>This is a paragraph</p>");
     }
 
     #[test]
     fn escaping() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         page.frag::<Em>().cdata("You & I");
         assert_eq!(page.to_string(), "<em>You &amp; I</em>");
     }
 
     #[test]
     fn raw_burger() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         page.frag::<Span>().cdata("Raw").raw(" <em>Burger</em>!");
         assert_eq!(page.to_string(), "<span>Raw <em>Burger</em>!</span>");
     }
 
     #[test]
     fn void() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         page.frag::<Div>().input().r#type("text");
         assert_eq!(page.to_string(), "<div><input type=\"text\"></div>");
     }
 
     #[test]
     fn html() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         let mut ol = page.frag::<Ol>();
         ol.li().class("cat").cdata("nori").close();
         ol.li().class("cat").cdata("chashu");
@@ -352,7 +352,7 @@ mod test {
 
     #[test]
     fn build_html() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         let mut div = page.frag::<Div>();
         div.p().cdata("Paragraph Text").close();
         div.pre().cdata("Preformatted Text");
@@ -364,7 +364,7 @@ mod test {
 
     #[test]
     fn html_builder() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         let mut html = page.html();
         let mut head = html.lang("en").head();
         head.title_el().cdata("Title!");
@@ -390,42 +390,42 @@ mod test {
 
     #[test]
     fn comment() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         page.frag::<I>().comment("comment");
         assert_eq!(page.to_string(), "<i><!--comment--></i>");
     }
 
     #[test]
     fn comment_escape() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         page.comment("<-->");
         assert_eq!(page.to_string(), "<!--&lt;&hyphen;&hyphen;&gt;-->");
     }
 
     #[test]
     fn xml() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         page.frag::<Link>().rel("stylesheet").close();
         assert_eq!(page.to_string(), "<link rel=\"stylesheet\" />");
     }
 
     #[test]
     fn close() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         page.frag::<Span>().id("gle").close();
         assert_eq!(page.to_string(), "<span id=\"gle\"></span>");
     }
 
     #[test]
     fn image() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         page.frag::<Img>().width(100).height(50).close();
         assert_eq!(page.to_string(), "<img width=\"100\" height=\"50\">");
     }
 
     #[test]
     fn data() {
-        let mut page = Page::default();
+        let mut page = Page::new();
         page.frag::<P>().data_("macro", "macrodata");
         assert_eq!(page.to_string(), "<p data-macro=\"macrodata\"></p>");
     }
