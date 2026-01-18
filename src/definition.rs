@@ -24,6 +24,10 @@ pub struct PathDefBuilder {
     absolute: bool,
     /// Precision in decimal places
     precision: usize,
+    /// Start X value
+    x0: f64,
+    /// Start Y value
+    y0: f64,
     /// Current pen X value
     x: f64,
     /// Current pen Y value
@@ -52,6 +56,8 @@ impl PathDefBuilder {
         PathDefBuilder {
             absolute: false,
             precision: 2,
+            x0: 0.0,
+            y0: 0.0,
             x: 0.0,
             y: 0.0,
             d: String::new(),
@@ -102,6 +108,7 @@ impl PathDefBuilder {
     /// Close the current subpath
     pub fn close(&mut self) -> &mut Self {
         self.d.push('z');
+        (self.x, self.y) = (self.x0, self.y0);
         self
     }
 
@@ -117,11 +124,12 @@ impl PathDefBuilder {
             self.d.push('M');
         } else {
             self.d.push('m');
-            x -= self.x;
-            y -= self.y;
+            x -= self.x0;
+            y -= self.y0;
         }
         self.point(x, y);
         (self.x, self.y) = (p.0.into(), p.1.into());
+        (self.x0, self.y0) = (self.x, self.y);
         self
     }
 
@@ -388,5 +396,19 @@ mod test {
         path.line([4.444444, 8.88888]);
         path.line([5.444444, 8.88888]);
         assert_eq!(path.to_string(), "l2.222 9.994l2.222 -1.105h1");
+    }
+
+    #[test]
+    fn close_move() {
+        let mut path = PathDefBuilder::new();
+        path.move_to([0, 0]);
+        path.line([5, 5]);
+        path.line([5, 0]);
+        path.close();
+        path.move_to([10, 0]);
+        path.line([15, 5]);
+        path.line([15, 0]);
+        path.close();
+        assert_eq!(String::from(path), "m0 0l5 5v-5zm10 0l5 5v-5z");
     }
 }
