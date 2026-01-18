@@ -124,8 +124,8 @@ impl PathDefBuilder {
             self.d.push('M');
         } else {
             self.d.push('m');
-            x -= self.x0;
-            y -= self.y0;
+            x -= self.x;
+            y -= self.y;
         }
         self.point(x, y);
         (self.x, self.y) = (p.0.into(), p.1.into());
@@ -410,5 +410,18 @@ mod test {
         path.line([15, 0]);
         path.close();
         assert_eq!(String::from(path), "m0 0l5 5v-5zm10 0l5 5v-5z");
+    }
+
+    #[test]
+    fn move_move() {
+        let mut path = PathDefBuilder::new();
+        path.move_to([0, 0]);
+        path.line([5, 5]);
+        path.line([5, 0]);
+        path.move_to([10, 0]);
+        path.line([15, 5]);
+        path.line([15, 0]);
+        path.close();
+        assert_eq!(String::from(path), "m0 0l5 5v-5m5 0l5 5v-5z");
     }
 }
