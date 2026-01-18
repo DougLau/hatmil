@@ -216,8 +216,8 @@ impl Page {
     /// | Char | Entity     |
     /// |------|------------|
     /// | `-`  | `&hyphen;` |
-    /// | `<`  | `&gt;`     |
-    /// | `>`  | `&lt;`     |
+    /// | `<`  | `&lt;`     |
+    /// | `>`  | `&gt;`     |
     pub fn comment<'a, V>(&mut self, com: V) -> &mut Self
     where
         V: Into<Value<'a>>,

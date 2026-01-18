@@ -316,8 +316,8 @@ macro_rules! comment_raw_methods {
         /// | Char | Entity     |
         /// |------|------------|
         /// | `-`  | `&hyphen;` |
-        /// | `<`  | `&gt;`     |
-        /// | `>`  | `&lt;`     |
+        /// | `<`  | `&lt;`     |
+        /// | `>`  | `&gt;`     |
         pub fn comment<'v, V>(&mut self, com: V) -> &mut Self
         where
             V: Into<Value<'v>>,
