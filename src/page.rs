@@ -181,7 +181,7 @@ impl Page {
     {
         match self.doc.pop() {
             Some(gt) => assert_eq!(gt, '>'),
-            None => unreachable!(),
+            None => panic!("cannot add {attr} attribute after child content"),
         }
         self.doc.push(' ');
         self.doc.push_str(attr);
@@ -202,7 +202,7 @@ impl Page {
     pub(crate) fn attr_bool(&mut self, attr: &'static str) {
         match self.doc.pop() {
             Some(gt) => assert_eq!(gt, '>'),
-            None => unreachable!(),
+            None => panic!("cannot add {attr} attribute after child content"),
         }
         self.doc.push(' ');
         self.doc.push_str(attr);
@@ -441,5 +441,12 @@ mod test {
         let mut page = Page::new();
         page.frag::<P>().data_("macro", "macrodata");
         assert_eq!(page.to_string(), "<p data-macro=\"macrodata\"></p>");
+    }
+
+    #[test]
+    #[should_panic]
+    fn attributes() {
+        let mut page = Page::new();
+        page.frag::<P>().cdata("character data").id("123");
     }
 }
