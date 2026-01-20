@@ -116,6 +116,11 @@ impl Page {
 
     /// Create page root `<html>` element
     pub fn html(&mut self) -> Html<'_> {
+        self.stack.clear();
+        self.doc.clear();
+        if self.doctype {
+            self.raw("<!DOCTYPE html>");
+        }
         self.elem("html", ElemType::Html);
         Html::new(self)
     }
@@ -152,12 +157,6 @@ impl Page {
     ///
     /// [Void]: https://developer.mozilla.org/en-US/docs/Glossary/Void_element
     pub(crate) fn elem(&mut self, tag: &'static str, tp: ElemType) -> usize {
-        if self.stack.is_empty() {
-            self.doc.clear();
-            if self.doctype {
-                self.raw("<!DOCTYPE html>");
-            }
-        }
         self.doc.push('<');
         self.doc.push_str(tag);
         self.doc.push('>');
@@ -448,5 +447,13 @@ mod test {
     fn attributes() {
         let mut page = Page::new();
         page.frag::<P>().cdata("character data").id("123");
+    }
+
+    #[test]
+    fn double_frag() {
+        let mut page = Page::new();
+        page.frag::<Div>().close();
+        page.frag::<Div>().close();
+        assert_eq!(String::from(page), "<div></div><div></div>");
     }
 }
