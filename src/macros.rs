@@ -220,7 +220,13 @@ macro_rules! global_attributes {
         global_attribute!(itemtype);
         global_attribute!(lang);
         global_attribute!(nonce);
-        /* FIXME: event attributes: onauxclick, etc. */
+        global_attribute!(onblur);
+        global_attribute!(onchange);
+        global_attribute!(onclick);
+        global_attribute!(onclose);
+        global_attribute!(onerror);
+        global_attribute!(onfocus);
+        /* FIXME: more global event attributes? */
         global_attribute!(part);
         global_attribute!(popover);
         global_attribute!(role);
