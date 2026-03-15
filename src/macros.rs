@@ -182,7 +182,7 @@ macro_rules! data_attribute {
         /// Add [data-*] attribute
         ///
         /// [data-*]: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/data-*
-        pub fn data_<'a, V>(&mut self, name: &'static str, val: V) -> &mut Self
+        pub fn data_<'a, V>(&mut self, name: &str, val: V) -> &mut Self
         where
             V: Into<Value<'a>>,
         {
