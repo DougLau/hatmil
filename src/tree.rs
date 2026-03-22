@@ -97,13 +97,13 @@ impl Tree {
         Self::default()
     }
 
-    /// Include `<!DOCTYPE html>` preamble
+    /// Has no effect; will be removed in a future release
     #[deprecated]
     pub fn with_doctype(self) -> Self {
         self
     }
 
-    /// Create root `<html>` element
+    /// Create `<html>` element
     ///
     /// The `<!DOCTYPE html>` preamble will be included.
     pub fn html(&mut self) -> Html<'_> {
@@ -114,7 +114,7 @@ impl Tree {
         Html::new(self)
     }
 
-    /// Create fragment root `E` element
+    /// Create root snippet `E` element
     ///
     /// - `E`: Element type, from either the [html] or [svg] modules
     ///
@@ -122,7 +122,7 @@ impl Tree {
     /// use hatmil::{Tree, html::A};
     ///
     /// let mut tree = Tree::new();
-    /// tree.frag::<A>().href("https://www.example.com/").cdata("Example link");
+    /// tree.root::<A>().href("https://www.example.com/").cdata("Example link");
     /// assert_eq!(
     ///     String::from(tree),
     ///     "<a href=\"https://www.example.com/\">Example link</a>",
@@ -131,12 +131,21 @@ impl Tree {
     ///
     /// [html]: crate::html
     /// [svg]: crate::svg
-    pub fn frag<'t, E>(&'t mut self) -> E
+    pub fn root<'t, E>(&'t mut self) -> E
     where
         E: Element<'t>,
     {
         self.elem(E::TAG, E::TP);
         E::new(self)
+    }
+
+    /// Renamed to `root`; will be removed in a future release
+    #[deprecated]
+    pub fn frag<'t, E>(&'t mut self) -> E
+    where
+        E: Element<'t>,
+    {
+        self.root()
     }
 
     /// Add an element
@@ -297,14 +306,14 @@ mod test {
     #[test]
     fn div() {
         let mut tree = Tree::new();
-        tree.frag::<Div>();
+        tree.root::<Div>();
         assert_eq!(tree.to_string(), "<div></div>");
     }
 
     #[test]
     fn boolean() {
         let mut tree = Tree::new();
-        tree.frag::<Div>().id("test").spellcheck(true);
+        tree.root::<Div>().id("test").spellcheck(true);
         assert_eq!(
             tree.to_string(),
             "<div id=\"test\" spellcheck=\"true\"></div>"
@@ -314,35 +323,35 @@ mod test {
     #[test]
     fn paragraph() {
         let mut tree = Tree::new();
-        tree.frag::<P>().cdata("This is a paragraph");
+        tree.root::<P>().cdata("This is a paragraph");
         assert_eq!(tree.to_string(), "<p>This is a paragraph</p>");
     }
 
     #[test]
     fn escaping() {
         let mut tree = Tree::new();
-        tree.frag::<Em>().cdata("You & I");
+        tree.root::<Em>().cdata("You & I");
         assert_eq!(tree.to_string(), "<em>You &amp; I</em>");
     }
 
     #[test]
     fn raw_burger() {
         let mut tree = Tree::new();
-        tree.frag::<Span>().cdata("Raw").raw(" <em>Burger</em>!");
+        tree.root::<Span>().cdata("Raw").raw(" <em>Burger</em>!");
         assert_eq!(tree.to_string(), "<span>Raw <em>Burger</em>!</span>");
     }
 
     #[test]
     fn void() {
         let mut tree = Tree::new();
-        tree.frag::<Div>().input().r#type("text");
+        tree.root::<Div>().input().r#type("text");
         assert_eq!(tree.to_string(), "<div><input type=\"text\"></div>");
     }
 
     #[test]
     fn html() {
         let mut tree = Tree::new();
-        let mut ol = tree.frag::<Ol>();
+        let mut ol = tree.root::<Ol>();
         ol.li().class("cat").cdata("nori").close();
         ol.li().class("cat").cdata("chashu");
         assert_eq!(
@@ -354,7 +363,7 @@ mod test {
     #[test]
     fn build_html() {
         let mut tree = Tree::new();
-        let mut div = tree.frag::<Div>();
+        let mut div = tree.root::<Div>();
         div.p().cdata("Paragraph Text").close();
         div.pre().cdata("Preformatted Text");
         assert_eq!(
@@ -392,7 +401,7 @@ mod test {
     #[test]
     fn comment() {
         let mut tree = Tree::new();
-        tree.frag::<I>().comment("comment");
+        tree.root::<I>().comment("comment");
         assert_eq!(tree.to_string(), "<i><!--comment--></i>");
     }
 
@@ -406,28 +415,28 @@ mod test {
     #[test]
     fn xml() {
         let mut tree = Tree::new();
-        tree.frag::<Link>().rel("stylesheet").close();
+        tree.root::<Link>().rel("stylesheet").close();
         assert_eq!(tree.to_string(), "<link rel=\"stylesheet\" />");
     }
 
     #[test]
     fn close() {
         let mut tree = Tree::new();
-        tree.frag::<Span>().id("gle").close();
+        tree.root::<Span>().id("gle").close();
         assert_eq!(tree.to_string(), "<span id=\"gle\"></span>");
     }
 
     #[test]
     fn image() {
         let mut tree = Tree::new();
-        tree.frag::<Img>().width(100).height(50).close();
+        tree.root::<Img>().width(100).height(50).close();
         assert_eq!(tree.to_string(), "<img width=\"100\" height=\"50\">");
     }
 
     #[test]
     fn data() {
         let mut tree = Tree::new();
-        tree.frag::<P>().data_("macro", "macrodata");
+        tree.root::<P>().data_("macro", "macrodata");
         assert_eq!(tree.to_string(), "<p data-macro=\"macrodata\"></p>");
     }
 
@@ -435,14 +444,14 @@ mod test {
     #[should_panic]
     fn attributes() {
         let mut tree = Tree::new();
-        tree.frag::<P>().cdata("character data").id("123");
+        tree.root::<P>().cdata("character data").id("123");
     }
 
     #[test]
-    fn double_frag() {
+    fn double_root() {
         let mut tree = Tree::new();
-        tree.frag::<Div>().close();
-        tree.frag::<Div>().close();
+        tree.root::<Div>().close();
+        tree.root::<Div>().close();
         assert_eq!(String::from(tree), "<div></div><div></div>");
     }
 }

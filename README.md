@@ -3,7 +3,7 @@ pages dynamically, including [inline SVG].
 
 With a [Tree], there are two "root" methods:
 - [html] for a full document, including `DOCTYPE` declaration
-- [frag] for a fragment, starting from an arbitrary [element] (HTML or [SVG])
+- [root] for a snippet, starting from any root [element] (HTML or [SVG])
 
 In either case, an element struct is returned which borrows from the `Tree`.
 
@@ -37,7 +37,7 @@ enabling the use of [format] or `to_string()`.
 use hatmil::{Tree, html::Div};
 
 let mut tree = Tree::new();
-let mut div = tree.frag::<Div>();
+let mut div = tree.root::<Div>();
 div.button().class("rounded").cdata("Press Me!");
 assert_eq!(
     String::from(tree),
@@ -81,7 +81,7 @@ must be used to call those methods:
 [element]: https://docs.rs/hatmil/latest/hatmil/html/
 [FieldSet]: https://docs.rs/hatmil/latest/hatmil/html/struct.FieldSet.html
 [format]: https://doc.rust-lang.org/std/macro.format.html
-[frag]: https://docs.rs/hatmil/latest/hatmil/struct.Tree.html#method.frag
+[root]: https://docs.rs/hatmil/latest/hatmil/struct.Tree.html#method.root
 [Head]: https://docs.rs/hatmil/latest/hatmil/html/struct.Head.html
 [html]: https://docs.rs/hatmil/latest/hatmil/struct.Tree.html#method.html
 [inline SVG]: https://developer.mozilla.org/en-US/docs/Web/SVG/Guides/SVG_in_HTML

@@ -1181,14 +1181,14 @@ mod test {
     #[test]
     fn svg() {
         let mut tree = Tree::new();
-        let _svg = tree.frag::<Svg>();
+        let _svg = tree.root::<Svg>();
         assert_eq!(tree.to_string(), "<svg />");
     }
 
     #[test]
     fn circle() {
         let mut tree = Tree::new();
-        let mut svg = tree.frag::<Svg>();
+        let mut svg = tree.root::<Svg>();
         svg.circle().cx("50").cy("25").r("5");
         assert_eq!(
             tree.to_string(),
@@ -1199,7 +1199,7 @@ mod test {
     #[test]
     fn path() {
         let mut tree = Tree::new();
-        let mut svg = tree.frag::<Svg>();
+        let mut svg = tree.root::<Svg>();
         let mut path = Path::def_builder();
         path.absolute(true)
             .move_to((0, 0))
