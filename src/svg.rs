@@ -1,11 +1,12 @@
 // svg.rs
+//
 // Copyright (C) 2025-2026  Douglas P Lau
 //
 //! SVG Elements -- _Scalable Vector Graphics_
 use crate::definition::PathDefBuilder;
 use crate::html::Link;
-use crate::page::{ElemType, Element, Page};
 use crate::poly::PolyPointBuilder;
+use crate::tree::{ElemType, Element, Tree};
 use crate::value::Value;
 
 // A element (in SVG context)
@@ -1179,26 +1180,26 @@ mod test {
 
     #[test]
     fn svg() {
-        let mut page = Page::new();
-        let _svg = page.frag::<Svg>();
-        assert_eq!(page.to_string(), "<svg />");
+        let mut tree = Tree::new();
+        let _svg = tree.frag::<Svg>();
+        assert_eq!(tree.to_string(), "<svg />");
     }
 
     #[test]
     fn circle() {
-        let mut page = Page::new();
-        let mut svg = page.frag::<Svg>();
+        let mut tree = Tree::new();
+        let mut svg = tree.frag::<Svg>();
         svg.circle().cx("50").cy("25").r("5");
         assert_eq!(
-            page.to_string(),
+            tree.to_string(),
             "<svg><circle cx=\"50\" cy=\"25\" r=\"5\" /></svg>"
         );
     }
 
     #[test]
     fn path() {
-        let mut page = Page::new();
-        let mut svg = page.frag::<Svg>();
+        let mut tree = Tree::new();
+        let mut svg = tree.frag::<Svg>();
         let mut path = Path::def_builder();
         path.absolute(true)
             .move_to((0, 0))
@@ -1207,7 +1208,7 @@ mod test {
             .close();
         svg.path().d(String::from(path));
         assert_eq!(
-            page.to_string(),
+            tree.to_string(),
             "<svg><path d=\"M0 0H100L50 50z\" /></svg>"
         );
     }

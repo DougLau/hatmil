@@ -3,8 +3,8 @@
 // Copyright (C) 2025-2026  Douglas P Lau
 //
 //! HTML Elements -- _HyperText Markup Language_
-use crate::page::{ElemType, Element, Page};
 use crate::svg::Svg;
+use crate::tree::{ElemType, Element, Tree};
 use crate::value::Value;
 
 // A element

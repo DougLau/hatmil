@@ -9,12 +9,15 @@ mod macros;
 
 mod definition;
 pub mod html;
-mod page;
 mod poly;
 pub mod svg;
+mod tree;
 mod value;
 
+#[allow(deprecated)]
+pub use tree::Page;
+
 pub use definition::PathDefBuilder;
-pub use page::Page;
 pub use poly::PolyPointBuilder;
+pub use tree::Tree;
 pub use value::Value;

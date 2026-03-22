@@ -1,24 +1,24 @@
 _Hatmil_ is an HTML builder for Rust.  It can be used to create or modify web
 pages dynamically, including [inline SVG].
 
-With a [Page], there are two "root" methods:
+With a [Tree], there are two "root" methods:
 - [html] for a full document
 - [frag] for a fragment, starting from an arbitrary [element] (HTML or [SVG])
 
-In either case, an element struct is returned which borrows from the `Page`.
+In either case, an element struct is returned which borrows from the `Tree`.
 
 Each element has methods for setting valid attributes, such as `id`.  There
 are also methods for adding permitted child elements.
 
 ```rust
-use hatmil::Page;
+use hatmil::Tree;
 
-let mut page = Page::new();
-let mut html = page.html();
+let mut tree = Tree::new();
+let mut html = tree.html();
 let mut body = html.body();
 body.p().id("para").cdata("Graph");
 assert_eq!(
-    String::from(page),
+    String::from(tree),
     "<html><body><p id=\"para\">Graph</p></body></html>"
 );
 ```
@@ -29,18 +29,18 @@ replaced by [character reference]s, as needed (for content which has already
 been escaped, use the [raw] method).  The [close] method can be used to close
 the final open element.
 
-After creating the page, use `String::from(page)` to get the resulting HTML.
+After creating the tree, use `String::from(tree)` to get the resulting HTML.
 Any open tags will be closed automatically.  [Display] is also implemented,
 enabling the use of [format] or `to_string()`.
 
 ```rust
-use hatmil::{Page, html::Div};
+use hatmil::{Tree, html::Div};
 
-let mut page = Page::new();
-let mut div = page.frag::<Div>();
+let mut tree = Tree::new();
+let mut div = tree.frag::<Div>();
 div.button().class("rounded").cdata("Press Me!");
 assert_eq!(
-    String::from(page),
+    String::from(tree),
     "<div><button class=\"rounded\">Press Me!</button></div>"
 );
 ```
@@ -73,25 +73,25 @@ must be used to call those methods:
 
 [Audio]: https://docs.rs/hatmil/latest/hatmil/html/struct.Audio.html
 [BlockQuote]: https://docs.rs/hatmil/latest/hatmil/html/struct.BlockQuote.html
-[cdata]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.cdata
-[cdata_len]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.cdata_len
+[cdata]: https://docs.rs/hatmil/latest/hatmil/struct.Tree.html#method.cdata
+[cdata_len]: https://docs.rs/hatmil/latest/hatmil/struct.Tree.html#method.cdata_len
 [character reference]: https://developer.mozilla.org/en-US/docs/Glossary/Character_reference
-[close]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.close
+[close]: https://docs.rs/hatmil/latest/hatmil/struct.Tree.html#method.close
 [Display]: https://doc.rust-lang.org/std/fmt/trait.Display.html
 [element]: https://docs.rs/hatmil/latest/hatmil/html/
 [FieldSet]: https://docs.rs/hatmil/latest/hatmil/html/struct.FieldSet.html
 [format]: https://doc.rust-lang.org/std/macro.format.html
-[frag]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.frag
+[frag]: https://docs.rs/hatmil/latest/hatmil/struct.Tree.html#method.frag
 [Head]: https://docs.rs/hatmil/latest/hatmil/html/struct.Head.html
-[html]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.html
+[html]: https://docs.rs/hatmil/latest/hatmil/struct.Tree.html#method.html
 [inline SVG]: https://developer.mozilla.org/en-US/docs/Web/SVG/Guides/SVG_in_HTML
 [Label]: https://docs.rs/hatmil/latest/hatmil/html/struct.Label.html
 [Link]: https://docs.rs/hatmil/latest/hatmil/html/struct.Link.html
 [NoScript]: https://docs.rs/hatmil/latest/hatmil/html/struct.NoScript.html
 [Output]: https://docs.rs/hatmil/latest/hatmil/html/struct.Output.html
-[page]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html
+[tree]: https://docs.rs/hatmil/latest/hatmil/struct.Tree.html
 [Q]: https://docs.rs/hatmil/latest/hatmil/html/struct.Q.html
-[raw]: https://docs.rs/hatmil/latest/hatmil/struct.Page.html#method.raw
+[raw]: https://docs.rs/hatmil/latest/hatmil/struct.Tree.html#method.raw
 [raw identifiers]: https://doc.rust-lang.org/rust-by-example/compatibility/raw_identifiers.html
 [Script]: https://docs.rs/hatmil/latest/hatmil/html/struct.Script.html
 [SVG]: https://docs.rs/hatmil/latest/hatmil/svg/

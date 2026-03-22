@@ -1,4 +1,4 @@
-// page.rs
+// tree.rs
 //
 // Copyright (C) 2025-2026  Douglas P Lau
 //
@@ -17,9 +17,9 @@ pub enum ElemType {
     Xml,
 }
 
-/// HTML page builder
+/// HTML tree builder
 #[derive(Default)]
-pub struct Page {
+pub struct Tree {
     /// Include `<!DOCTYPE html>` preamble
     doctype: bool,
     /// HTML document text
@@ -32,8 +32,11 @@ pub struct Page {
     empty: bool,
 }
 
-/// Element borrowed from a [Page]
-pub trait Element<'p> {
+#[deprecated]
+pub type Page = Tree;
+
+/// Element borrowed from a [Tree]
+pub trait Element<'t> {
     /// Element tag
     const TAG: &'static str;
 
@@ -41,15 +44,15 @@ pub trait Element<'p> {
     const TP: ElemType;
 
     /// Make new "base" element
-    fn new(page: &'p mut Page) -> Self;
+    fn new(tree: &'t mut Tree) -> Self;
 }
 
-impl fmt::Display for Page {
+impl fmt::Display for Tree {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut void = self.tp == Some(ElemType::HtmlVoid);
         let mut self_closing = self.empty && self.tp == Some(ElemType::Xml);
-        if self_closing && let Some(page) = self.doc.strip_suffix('>') {
-            write!(f, "{}", page)?;
+        if self_closing && let Some(tree) = self.doc.strip_suffix('>') {
+            write!(f, "{tree}")?;
         } else {
             write!(f, "{}", self.doc)?;
             self_closing = false;
@@ -67,27 +70,27 @@ impl fmt::Display for Page {
     }
 }
 
-impl From<Page> for String {
-    fn from(mut page: Page) -> Self {
+impl From<Tree> for String {
+    fn from(mut tree: Tree) -> Self {
         // zero-copy alternative to fmt::Display
-        page.close_to(1);
-        page.doc
+        tree.close_to(1);
+        tree.doc
     }
 }
 
-impl Page {
-    /// Create an HTML page builder
+impl Tree {
+    /// Create an HTML tree builder
     ///
     /// ```rust
-    /// use hatmil::Page;
+    /// use hatmil::Tree;
     ///
-    /// let mut page = Page::new();
-    /// let mut html = page.html();
+    /// let mut tree = Tree::new();
+    /// let mut html = tree.html();
     /// let mut body = html.body();
     /// body.cdata("Page text");
     /// body.a().href("https://www.example.com/").cdata("Example link");
     /// assert_eq!(
-    ///     String::from(page),
+    ///     String::from(tree),
     ///     "<html><body>Page text<a href=\"https://www.example.com/\">Example link</a></body></html>",
     /// );
     /// ```
@@ -98,14 +101,14 @@ impl Page {
     /// Include `<!DOCTYPE html>` preamble
     ///
     /// ```rust
-    /// use hatmil::Page;
+    /// use hatmil::Tree;
     ///
-    /// let mut page = Page::new().with_doctype();
-    /// let mut html = page.html();
+    /// let mut tree = Tree::new().with_doctype();
+    /// let mut html = tree.html();
     /// let mut body = html.body();
     /// body.cdata("Some text");
     /// assert_eq!(
-    ///     String::from(page),
+    ///     String::from(tree),
     ///     "<!DOCTYPE html><html><body>Some text</body></html>",
     /// );
     /// ```
@@ -114,7 +117,7 @@ impl Page {
         self
     }
 
-    /// Create page root `<html>` element
+    /// Create root `<html>` element
     pub fn html(&mut self) -> Html<'_> {
         self.stack.clear();
         self.doc.clear();
@@ -130,21 +133,21 @@ impl Page {
     /// - `E`: Element type, from either the [html] or [svg] modules
     ///
     /// ```rust
-    /// use hatmil::{Page, html::A};
+    /// use hatmil::{Tree, html::A};
     ///
-    /// let mut page = Page::new();
-    /// page.frag::<A>().href("https://www.example.com/").cdata("Example link");
+    /// let mut tree = Tree::new();
+    /// tree.frag::<A>().href("https://www.example.com/").cdata("Example link");
     /// assert_eq!(
-    ///     String::from(page),
+    ///     String::from(tree),
     ///     "<a href=\"https://www.example.com/\">Example link</a>",
     /// );
     /// ```
     ///
     /// [html]: crate::html
     /// [svg]: crate::svg
-    pub fn frag<'p, E>(&'p mut self) -> E
+    pub fn frag<'t, E>(&'t mut self) -> E
     where
-        E: Element<'p>,
+        E: Element<'t>,
     {
         self.elem(E::TAG, E::TP);
         E::new(self)
@@ -307,153 +310,153 @@ mod test {
 
     #[test]
     fn div() {
-        let mut page = Page::new();
-        page.frag::<Div>();
-        assert_eq!(page.to_string(), "<div></div>");
+        let mut tree = Tree::new();
+        tree.frag::<Div>();
+        assert_eq!(tree.to_string(), "<div></div>");
     }
 
     #[test]
     fn boolean() {
-        let mut page = Page::new();
-        page.frag::<Div>().id("test").spellcheck(true);
+        let mut tree = Tree::new();
+        tree.frag::<Div>().id("test").spellcheck(true);
         assert_eq!(
-            page.to_string(),
+            tree.to_string(),
             "<div id=\"test\" spellcheck=\"true\"></div>"
         );
     }
 
     #[test]
     fn paragraph() {
-        let mut page = Page::new();
-        page.frag::<P>().cdata("This is a paragraph");
-        assert_eq!(page.to_string(), "<p>This is a paragraph</p>");
+        let mut tree = Tree::new();
+        tree.frag::<P>().cdata("This is a paragraph");
+        assert_eq!(tree.to_string(), "<p>This is a paragraph</p>");
     }
 
     #[test]
     fn escaping() {
-        let mut page = Page::new();
-        page.frag::<Em>().cdata("You & I");
-        assert_eq!(page.to_string(), "<em>You &amp; I</em>");
+        let mut tree = Tree::new();
+        tree.frag::<Em>().cdata("You & I");
+        assert_eq!(tree.to_string(), "<em>You &amp; I</em>");
     }
 
     #[test]
     fn raw_burger() {
-        let mut page = Page::new();
-        page.frag::<Span>().cdata("Raw").raw(" <em>Burger</em>!");
-        assert_eq!(page.to_string(), "<span>Raw <em>Burger</em>!</span>");
+        let mut tree = Tree::new();
+        tree.frag::<Span>().cdata("Raw").raw(" <em>Burger</em>!");
+        assert_eq!(tree.to_string(), "<span>Raw <em>Burger</em>!</span>");
     }
 
     #[test]
     fn void() {
-        let mut page = Page::new();
-        page.frag::<Div>().input().r#type("text");
-        assert_eq!(page.to_string(), "<div><input type=\"text\"></div>");
+        let mut tree = Tree::new();
+        tree.frag::<Div>().input().r#type("text");
+        assert_eq!(tree.to_string(), "<div><input type=\"text\"></div>");
     }
 
     #[test]
     fn html() {
-        let mut page = Page::new();
-        let mut ol = page.frag::<Ol>();
+        let mut tree = Tree::new();
+        let mut ol = tree.frag::<Ol>();
         ol.li().class("cat").cdata("nori").close();
         ol.li().class("cat").cdata("chashu");
         assert_eq!(
-            page.to_string(),
+            tree.to_string(),
             "<ol><li class=\"cat\">nori</li><li class=\"cat\">chashu</li></ol>"
         );
     }
 
     #[test]
     fn build_html() {
-        let mut page = Page::new();
-        let mut div = page.frag::<Div>();
+        let mut tree = Tree::new();
+        let mut div = tree.frag::<Div>();
         div.p().cdata("Paragraph Text").close();
         div.pre().cdata("Preformatted Text");
         assert_eq!(
-            page.to_string(),
+            tree.to_string(),
             "<div><p>Paragraph Text</p><pre>Preformatted Text</pre></div>"
         );
     }
 
     #[test]
     fn html_builder() {
-        let mut page = Page::new();
-        let mut html = page.html();
+        let mut tree = Tree::new();
+        let mut html = tree.html();
         let mut head = html.lang("en").head();
         head.title_el().cdata("Title!");
         head.close();
         html.body().h1().cdata("Header!");
         assert_eq!(
-            page.to_string(),
+            tree.to_string(),
             "<html lang=\"en\"><head><title>Title!</title></head><body><h1>Header!</h1></body></html>"
         );
     }
 
     #[test]
     fn string_from() {
-        let mut page = Page::new();
-        let mut html = page.html();
+        let mut tree = Tree::new();
+        let mut html = tree.html();
         html.head().title_el().cdata("Head").close().close();
         html.body().cdata("Body");
         assert_eq!(
-            String::from(page),
+            String::from(tree),
             "<html><head><title>Head</title></head><body>Body</body></html>"
         );
     }
 
     #[test]
     fn comment() {
-        let mut page = Page::new();
-        page.frag::<I>().comment("comment");
-        assert_eq!(page.to_string(), "<i><!--comment--></i>");
+        let mut tree = Tree::new();
+        tree.frag::<I>().comment("comment");
+        assert_eq!(tree.to_string(), "<i><!--comment--></i>");
     }
 
     #[test]
     fn comment_escape() {
-        let mut page = Page::new();
-        page.comment("<-->");
-        assert_eq!(page.to_string(), "<!--&lt;&hyphen;&hyphen;&gt;-->");
+        let mut tree = Tree::new();
+        tree.comment("<-->");
+        assert_eq!(tree.to_string(), "<!--&lt;&hyphen;&hyphen;&gt;-->");
     }
 
     #[test]
     fn xml() {
-        let mut page = Page::new();
-        page.frag::<Link>().rel("stylesheet").close();
-        assert_eq!(page.to_string(), "<link rel=\"stylesheet\" />");
+        let mut tree = Tree::new();
+        tree.frag::<Link>().rel("stylesheet").close();
+        assert_eq!(tree.to_string(), "<link rel=\"stylesheet\" />");
     }
 
     #[test]
     fn close() {
-        let mut page = Page::new();
-        page.frag::<Span>().id("gle").close();
-        assert_eq!(page.to_string(), "<span id=\"gle\"></span>");
+        let mut tree = Tree::new();
+        tree.frag::<Span>().id("gle").close();
+        assert_eq!(tree.to_string(), "<span id=\"gle\"></span>");
     }
 
     #[test]
     fn image() {
-        let mut page = Page::new();
-        page.frag::<Img>().width(100).height(50).close();
-        assert_eq!(page.to_string(), "<img width=\"100\" height=\"50\">");
+        let mut tree = Tree::new();
+        tree.frag::<Img>().width(100).height(50).close();
+        assert_eq!(tree.to_string(), "<img width=\"100\" height=\"50\">");
     }
 
     #[test]
     fn data() {
-        let mut page = Page::new();
-        page.frag::<P>().data_("macro", "macrodata");
-        assert_eq!(page.to_string(), "<p data-macro=\"macrodata\"></p>");
+        let mut tree = Tree::new();
+        tree.frag::<P>().data_("macro", "macrodata");
+        assert_eq!(tree.to_string(), "<p data-macro=\"macrodata\"></p>");
     }
 
     #[test]
     #[should_panic]
     fn attributes() {
-        let mut page = Page::new();
-        page.frag::<P>().cdata("character data").id("123");
+        let mut tree = Tree::new();
+        tree.frag::<P>().cdata("character data").id("123");
     }
 
     #[test]
     fn double_frag() {
-        let mut page = Page::new();
-        page.frag::<Div>().close();
-        page.frag::<Div>().close();
-        assert_eq!(String::from(page), "<div></div><div></div>");
+        let mut tree = Tree::new();
+        tree.frag::<Div>().close();
+        tree.frag::<Div>().close();
+        assert_eq!(String::from(tree), "<div></div><div></div>");
     }
 }

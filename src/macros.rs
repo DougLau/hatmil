@@ -21,15 +21,15 @@ macro_rules! html_elem {
             stringify!($elem),
             ") element",
         )]
-        pub struct $elem<'p> {
-            /// Borrowed Page
-            pub(crate) page: &'p mut Page,
+        pub struct $elem<'t> {
+            /// Borrowed Tree
+            pub(crate) tree: &'t mut Tree,
             /// Node depth
             pub(crate) depth: usize,
         }
 
         #[doc = concat!("`<", $el, ">` items")]
-        impl<'p> $elem<'p> {
+        impl<'t> $elem<'t> {
             $items!( $el );
 
             #[doc = "Close the element"]
@@ -40,22 +40,22 @@ macro_rules! html_elem {
                 $el,
                 ">`)"
             )]
-            pub fn close(&'p mut self) -> &'p mut Page {
-                self.page.close_to(self.depth);
-                self.page
+            pub fn close(&'t mut self) -> &'t mut Tree {
+                self.tree.close_to(self.depth);
+                self.tree
             }
         }
 
         #[doc = "Global attributes"]
-        impl<'p> $elem<'p> {
+        impl<'t> $elem<'t> {
             global_attributes!();
         }
 
-        impl<'p> Element<'p> for $elem<'p> {
+        impl<'t> Element<'t> for $elem<'t> {
             const TAG: &'static str = $el;
             const TP: ElemType = $tp;
-            fn new(page: &'p mut Page) -> Self {
-                $elem { page, depth: 1 }
+            fn new(tree: &'t mut Tree) -> Self {
+                $elem { tree, depth: 1 }
             }
         }
     };
@@ -78,7 +78,7 @@ macro_rules! val_attr {
         where
             V: Into<Value<'a>>,
         {
-            self.page.attr($raw_attr, val);
+            self.tree.attr($raw_attr, val);
             self
         }
     };
@@ -98,7 +98,7 @@ macro_rules! bool_attr {
             ") Boolean attribute",
         )]
         pub fn $attr(&mut self) -> &mut Self {
-            self.page.attr_bool($raw_attr);
+            self.tree.attr_bool($raw_attr);
             self
         }
     };
@@ -186,7 +186,7 @@ macro_rules! data_attribute {
         where
             V: Into<Value<'a>>,
         {
-            self.page.attr(&format!("data-{name}"), val);
+            self.tree.attr(&format!("data-{name}"), val);
             self
         }
     };
@@ -266,9 +266,9 @@ macro_rules! elem_method {
         #[doc = concat!("Add `", stringify!($elem), "` child element")]
         #[allow(clippy::self_named_constructors)]
         pub fn $meth(self: &mut Self) -> $elem<'_> {
-            let depth = self.page.elem($elem::TAG, $elem::TP);
+            let depth = self.tree.elem($elem::TAG, $elem::TP);
             $elem {
-                page: self.page,
+                tree: self.tree,
                 depth,
             }
         }
@@ -291,7 +291,7 @@ macro_rules! cdata_methods {
         where
             V: Into<Value<'a>>,
         {
-            self.page.cdata(text);
+            self.tree.cdata(text);
             self
         }
 
@@ -306,7 +306,7 @@ macro_rules! cdata_methods {
         where
             V: Into<Value<'a>>,
         {
-            self.page.cdata_len(text, len);
+            self.tree.cdata_len(text, len);
             self
         }
     };
@@ -328,7 +328,7 @@ macro_rules! comment_raw_methods {
         where
             V: Into<Value<'v>>,
         {
-            self.page.comment(com);
+            self.tree.comment(com);
             self
         }
 
@@ -337,7 +337,7 @@ macro_rules! comment_raw_methods {
         /// **WARNING**: `trusted` is used verbatim, with no escaping;
         ///              do not call with untrusted content.
         pub fn raw(&mut self, trusted: impl AsRef<str>) -> &mut Self {
-            self.page.raw(trusted);
+            self.tree.raw(trusted);
             self
         }
     };
@@ -692,15 +692,15 @@ macro_rules! svg_elem {
             stringify!($elem),
             ") SVG element",
         )]
-        pub struct $elem<'p> {
-            /// Borrowed Page
-            pub(crate) page: &'p mut Page,
+        pub struct $elem<'t> {
+            /// Borrowed Tree
+            pub(crate) tree: &'t mut Tree,
             /// Node depth
             pub(crate) depth: usize,
         }
 
         #[doc = concat!("`<", $el, ">` items")]
-        impl<'p> $elem<'p> {
+        impl<'t> $elem<'t> {
             $items!( $el );
 
             #[doc = "Close the element"]
@@ -711,22 +711,22 @@ macro_rules! svg_elem {
                 $el,
                 ">`)"
             )]
-            pub fn close(&'p mut self) -> &'p mut Page {
-                self.page.close_to(self.depth);
-                self.page
+            pub fn close(&'t mut self) -> &'t mut Tree {
+                self.tree.close_to(self.depth);
+                self.tree
             }
         }
 
         #[doc = "Global SVG attributes"]
-        impl<'p> $elem<'p> {
+        impl<'t> $elem<'t> {
             svg_global_attributes!();
         }
 
-        impl<'p> Element<'p> for $elem<'p> {
+        impl<'t> Element<'t> for $elem<'t> {
             const TAG: &'static str = $el;
             const TP: ElemType = $tp;
-            fn new(page: &'p mut Page) -> Self {
-                $elem { page, depth: 1 }
+            fn new(tree: &'t mut Tree) -> Self {
+                $elem { tree, depth: 1 }
             }
         }
     }
