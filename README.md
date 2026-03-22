@@ -2,7 +2,7 @@ _Hatmil_ is an HTML builder for Rust.  It can be used to create or modify web
 pages dynamically, including [inline SVG].
 
 With a [Tree], there are two "root" methods:
-- [html] for a full document
+- [html] for a full document, including `DOCTYPE` declaration
 - [frag] for a fragment, starting from an arbitrary [element] (HTML or [SVG])
 
 In either case, an element struct is returned which borrows from the `Tree`.
@@ -19,7 +19,7 @@ let mut body = html.body();
 body.p().id("para").cdata("Graph");
 assert_eq!(
     String::from(tree),
-    "<html><body><p id=\"para\">Graph</p></body></html>"
+    "<!DOCTYPE html><html><body><p id=\"para\">Graph</p></body></html>"
 );
 ```
 

@@ -20,8 +20,6 @@ pub enum ElemType {
 /// HTML tree builder
 #[derive(Default)]
 pub struct Tree {
-    /// Include `<!DOCTYPE html>` preamble
-    doctype: bool,
     /// HTML document text
     doc: String,
     /// Stack of element tags
@@ -32,10 +30,11 @@ pub struct Tree {
     empty: bool,
 }
 
+/// Renamed to `Tree`; will be removed in a future release
 #[deprecated]
 pub type Page = Tree;
 
-/// Element borrowed from a [Tree]
+/// Element borrowed from a `Tree`
 pub trait Element<'t> {
     /// Element tag
     const TAG: &'static str;
@@ -43,7 +42,7 @@ pub trait Element<'t> {
     /// Element type
     const TP: ElemType;
 
-    /// Make new "base" element
+    /// Make new "root" element
     fn new(tree: &'t mut Tree) -> Self;
 }
 
@@ -91,7 +90,7 @@ impl Tree {
     /// body.a().href("https://www.example.com/").cdata("Example link");
     /// assert_eq!(
     ///     String::from(tree),
-    ///     "<html><body>Page text<a href=\"https://www.example.com/\">Example link</a></body></html>",
+    ///     "<!DOCTYPE html><html><body>Page text<a href=\"https://www.example.com/\">Example link</a></body></html>",
     /// );
     /// ```
     pub fn new() -> Self {
@@ -99,31 +98,18 @@ impl Tree {
     }
 
     /// Include `<!DOCTYPE html>` preamble
-    ///
-    /// ```rust
-    /// use hatmil::Tree;
-    ///
-    /// let mut tree = Tree::new().with_doctype();
-    /// let mut html = tree.html();
-    /// let mut body = html.body();
-    /// body.cdata("Some text");
-    /// assert_eq!(
-    ///     String::from(tree),
-    ///     "<!DOCTYPE html><html><body>Some text</body></html>",
-    /// );
-    /// ```
-    pub fn with_doctype(mut self) -> Self {
-        self.doctype = true;
+    #[deprecated]
+    pub fn with_doctype(self) -> Self {
         self
     }
 
     /// Create root `<html>` element
+    ///
+    /// The `<!DOCTYPE html>` preamble will be included.
     pub fn html(&mut self) -> Html<'_> {
         self.stack.clear();
         self.doc.clear();
-        if self.doctype {
-            self.raw("<!DOCTYPE html>");
-        }
+        self.raw("<!DOCTYPE html>");
         self.elem("html", ElemType::Html);
         Html::new(self)
     }
@@ -387,7 +373,7 @@ mod test {
         html.body().h1().cdata("Header!");
         assert_eq!(
             tree.to_string(),
-            "<html lang=\"en\"><head><title>Title!</title></head><body><h1>Header!</h1></body></html>"
+            "<!DOCTYPE html><html lang=\"en\"><head><title>Title!</title></head><body><h1>Header!</h1></body></html>"
         );
     }
 
@@ -399,7 +385,7 @@ mod test {
         html.body().cdata("Body");
         assert_eq!(
             String::from(tree),
-            "<html><head><title>Head</title></head><body>Body</body></html>"
+            "<!DOCTYPE html><html><head><title>Head</title></head><body>Body</body></html>"
         );
     }
 
