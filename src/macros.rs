@@ -282,11 +282,9 @@ macro_rules! cdata_methods {
         ///
         /// These characters will be replaced with entities:
         ///
-        /// | Char | Entity  |
-        /// |------|---------|
-        /// | `&`  | `&amp;` |
-        /// | `<`  | `&lt;`  |
-        /// | `>`  | `&gt;`  |
+        /// - `&` ⇨ `&amp;`
+        /// - `<` ⇨ `&lt;`
+        /// - `>` ⇨ `&gt;`
         pub fn cdata<'a, V>(&mut self, text: V) -> &mut Self
         where
             V: Into<Value<'a>>,
@@ -297,11 +295,9 @@ macro_rules! cdata_methods {
 
         /// Add character data content with a maximum character limit
         ///
-        /// | Char | Entity  |
-        /// |------|---------|
-        /// | `&`  | `&amp;` |
-        /// | `<`  | `&lt;`  |
-        /// | `>`  | `&gt;`  |
+        /// - `&` ⇨ `&amp;`
+        /// - `<` ⇨ `&lt;`
+        /// - `>` ⇨ `&gt;`
         pub fn cdata_len<'a, V>(&mut self, text: V, len: usize) -> &mut Self
         where
             V: Into<Value<'a>>,

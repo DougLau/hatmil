@@ -1,6 +1,6 @@
-// chariter.rs
+// value.rs
 //
-// Copyright (C) 2025  Douglas P Lau
+// Copyright (C) 2025-2026  Douglas P Lau
 //
 use std::borrow::Cow;
 
@@ -23,6 +23,76 @@ impl Value<'_> {
         match &self.iter {
             CharIter::Borrowed(s) => s.chars(),
             CharIter::Owned(s) => s.chars(),
+        }
+    }
+
+    /// Encode value to an attribute
+    ///
+    /// These characters will be replaced with entities:
+    ///
+    /// - `&` ⇨ `&amp;`
+    /// - `"` ⇨ `&quot;`
+    pub fn encode_attr(&'_ self, attr: &mut String) {
+        for c in self.chars() {
+            match c {
+                '&' => attr.push_str("&amp;"),
+                '"' => attr.push_str("&quot;"),
+                _ => attr.push(c),
+            }
+        }
+    }
+
+    /// Encode value to character data
+    ///
+    /// These characters will be replaced with entities:
+    ///
+    /// - `&` ⇨ `&amp;`
+    /// - `<` ⇨ `&lt;`
+    /// - `>` ⇨ `&gt;`
+    pub fn encode_cdata(&'_ self, cdata: &mut String) {
+        for c in self.chars() {
+            match c {
+                '&' => cdata.push_str("&amp;"),
+                '<' => cdata.push_str("&lt;"),
+                '>' => cdata.push_str("&gt;"),
+                _ => cdata.push(c),
+            }
+        }
+    }
+
+    /// Encode value to character data with length limit
+    ///
+    /// These characters will be replaced with entities:
+    ///
+    /// - `&` ⇨ `&amp;`
+    /// - `<` ⇨ `&lt;`
+    /// - `>` ⇨ `&gt;`
+    pub fn encode_cdata_len(&'_ self, cdata: &mut String, len: usize) {
+        for c in self.chars().take(len) {
+            match c {
+                '&' => cdata.push_str("&amp;"),
+                '<' => cdata.push_str("&lt;"),
+                '>' => cdata.push_str("&gt;"),
+                _ => cdata.push(c),
+            }
+        }
+    }
+
+    /// Encode value to a comment
+    ///
+    /// These characters will be replaced with entities:
+    ///
+    /// - `-` ⇨ `&hyphen;`
+    /// - `<` ⇨ `&lt;`
+    /// - `>` ⇨ `&gt;`
+    pub fn encode_comment(&'_ self, comment: &mut String) {
+        for c in self.chars() {
+            match c {
+                '-' => comment.push_str("&hyphen;"),
+                '<' => comment.push_str("&lt;"),
+                '>' => comment.push_str("&gt;"),
+                _ => comment.push(c),
+            }
         }
     }
 }

@@ -168,10 +168,8 @@ impl Tree {
     ///
     /// These characters will be replaced with entities:
     ///
-    /// | Char | Entity   |
-    /// |------|----------|
-    /// | `&`  | `&amp;`  |
-    /// | `"`  | `&quot;` |
+    /// - `&` ⇨ `&amp;`
+    /// - `"` ⇨ `&quot;`
     pub(crate) fn attr<'a, V>(&mut self, attr: &str, val: V)
     where
         V: Into<Value<'a>>,
@@ -183,13 +181,7 @@ impl Tree {
         self.doc.push(' ');
         self.doc.push_str(attr);
         self.doc.push_str("=\"");
-        for c in val.into().chars() {
-            match c {
-                '&' => self.doc.push_str("&amp;"),
-                '"' => self.doc.push_str("&quot;"),
-                _ => self.doc.push(c),
-            }
-        }
+        val.into().encode_attr(&mut self.doc);
         self.doc.push_str("\">");
     }
 
@@ -210,24 +202,15 @@ impl Tree {
     ///
     /// These characters will be replaced with entities:
     ///
-    /// | Char | Entity     |
-    /// |------|------------|
-    /// | `-`  | `&hyphen;` |
-    /// | `<`  | `&lt;`     |
-    /// | `>`  | `&gt;`     |
+    /// - `-` ⇨ `&hyphen;`
+    /// - `<` ⇨ `&lt;`
+    /// - `>` ⇨ `&gt;`
     pub fn comment<'a, V>(&mut self, com: V) -> &mut Self
     where
         V: Into<Value<'a>>,
     {
         self.doc.push_str("<!--");
-        for c in com.into().chars() {
-            match c {
-                '-' => self.doc.push_str("&hyphen;"),
-                '<' => self.doc.push_str("&lt;"),
-                '>' => self.doc.push_str("&gt;"),
-                _ => self.doc.push(c),
-            }
-        }
+        com.into().encode_comment(&mut self.doc);
         self.doc.push_str("-->");
         self.empty = false;
         self
@@ -238,7 +221,9 @@ impl Tree {
     where
         V: Into<Value<'a>>,
     {
-        self.cdata_len(text, usize::MAX)
+        text.into().encode_cdata(&mut self.doc);
+        self.empty = false;
+        self
     }
 
     /// Add character data content with a maximum character limit
@@ -246,14 +231,7 @@ impl Tree {
     where
         V: Into<Value<'a>>,
     {
-        for c in text.into().chars().take(len) {
-            match c {
-                '&' => self.doc.push_str("&amp;"),
-                '<' => self.doc.push_str("&lt;"),
-                '>' => self.doc.push_str("&gt;"),
-                _ => self.doc.push(c),
-            }
-        }
+        text.into().encode_cdata_len(&mut self.doc, len);
         self.empty = false;
         self
     }
@@ -328,10 +306,20 @@ mod test {
     }
 
     #[test]
-    fn escaping() {
+    fn escape_attr() {
         let mut tree = Tree::new();
-        tree.root::<Em>().cdata("You & I");
-        assert_eq!(tree.to_string(), "<em>You &amp; I</em>");
+        tree.root::<P>().id("quote\"ampersand&");
+        assert_eq!(
+            tree.to_string(),
+            "<p id=\"quote&quot;ampersand&amp;\"></p>"
+        );
+    }
+
+    #[test]
+    fn escape_cdata() {
+        let mut tree = Tree::new();
+        tree.root::<Em>().cdata("You <&> I");
+        assert_eq!(tree.to_string(), "<em>You &lt;&amp;&gt; I</em>");
     }
 
     #[test]
@@ -406,7 +394,7 @@ mod test {
     }
 
     #[test]
-    fn comment_escape() {
+    fn escape_comment() {
         let mut tree = Tree::new();
         tree.comment("<-->");
         assert_eq!(tree.to_string(), "<!--&lt;&hyphen;&hyphen;&gt;-->");
