@@ -853,3 +853,35 @@ macro_rules! svg_content {
         svg_animation!();
     };
 }
+
+/// Make CSS property method
+#[rustfmt::skip]
+macro_rules! css_prop {
+    ( $prop:ident, $raw_prop:expr ) => {
+        #[doc = concat!(
+            "Add [",
+            $raw_prop,
+            "](",
+            "https://developer.mozilla.org/en-US/docs/",
+            "Web/CSS/Reference/Properties/",
+            $raw_prop,
+            ") property",
+        )]
+        pub fn $prop<'a, V>(&mut self, v: V) -> &mut Self
+        where
+            V: Into<Value<'a>>,
+        {
+            self.css.push_str($raw_prop);
+            self.css.push(':');
+            v.into().encode_style(&mut self.css);
+            self
+        }
+    };
+
+    ( $prop:ident ) => {
+        css_prop!(
+            $prop,
+            stringify!($prop)
+        );
+    };
+}

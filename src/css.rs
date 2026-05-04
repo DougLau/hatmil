@@ -1,0 +1,370 @@
+// css.rs
+//
+// Copyright (C) 2026  Douglas P Lau
+//
+use crate::value::Value;
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum Selector {
+    // FIXME
+}
+
+/// CSS style properties
+///
+/// | Categories                        | …                       |
+/// |-----------------------------------|-------------------------|
+/// | [basic](Style::accent_color())    | [flex](Style::flex())   |
+/// | [animation](Style::animation())   | [font](Style::font())   |
+/// | [background](Style::background()) | [grid](Style::grid())   |
+/// | [border](Style::border())         | [inset](Style::inset()) |
+/// | [column](Style::columns())        |                         |
+#[derive(Default)]
+pub struct Style {
+    css: String,
+}
+
+/// A CSS rule contains a selector and style
+pub struct Rule {
+    selector: Selector,
+    style: Style,
+}
+
+/* Custom --*: CSS variables */
+
+impl Rule {
+    /// Create a CSS rule
+    pub fn new(selector: Selector, style: Style) -> Self {
+        Rule {
+            selector,
+            style,
+        }
+    }
+}
+
+/// Basic CSS properties
+impl Style {
+    css_prop!(accent_color, "accent-color");
+    css_prop!(align_content, "align-content");
+    css_prop!(align_items, "align-items");
+    css_prop!(align_self, "align-self");
+    css_prop!(alignment_baseline, "alignment-baseline");
+    css_prop!(all, "all");
+    css_prop!(anchor_name, "anchor-name");
+    css_prop!(anchor_scope, "anchor-scope");
+    css_prop!(appearance, "appearance");
+    css_prop!(aspect_ratio, "aspect-ratio");
+    css_prop!(backdrop_filter, "backdrop-filter");
+    css_prop!(backface_visibility, "backface-visibility");
+    css_prop!(baseline_shift, "baseline-shift");
+    css_prop!(baseline_source, "baseline-source");
+    css_prop!(block_size, "block-size");
+    css_prop!(bottom, "bottom");
+    css_prop!(box_decoration_break, "box-decoration-break");
+    css_prop!(box_shadow, "box-shadow");
+    css_prop!(box_sizing, "box-sizing");
+    css_prop!(break_after, "break-after");
+    css_prop!(break_before, "break-before");
+    css_prop!(break_inside, "break-inside");
+    css_prop!(caption_side, "caption-side");
+    // TODO: limited availability
+    //css_prop!(caret, "caret");
+    //css_prop!(caret_animation, "caret-animation");
+    css_prop!(caret_color, "caret-color");
+    css_prop!(caret_shape, "caret-shape");
+    css_prop!(clear, "clear");
+    css_prop!(clip_path, "clip-path");
+    css_prop!(clip_rule, "clip-rule");
+    css_prop!(color, "color");
+    css_prop!(color_interpolation, "color-interpolation");
+    css_prop!(color_interpolation_filters, "color-interpolation-filters");
+    css_prop!(color_scheme, "color-scheme");
+    css_prop!(contain, "contain");
+    css_prop!(contain_intrinsic_block_size, "contain-intrinsic-block-size");
+    css_prop!(contain_intrinsic_height, "contain-intrinsic-height");
+    css_prop!(contain_intrinsic_inline_size, "contain-intrinsic-inline-size");
+    css_prop!(contain_intrinsic_size, "contain-intrinsic-size");
+    css_prop!(contain_intrinsic_width, "contain-intrinsic-width");
+    css_prop!(container, "container");
+    css_prop!(container_name, "container-name");
+    css_prop!(container_type, "container-type");
+    css_prop!(content, "content");
+    css_prop!(content_visibility, "content-visibility");
+    css_prop!(counter_increment, "counter-increment");
+    css_prop!(counter_reset, "counter-reset");
+    css_prop!(counter_set, "counter-set");
+    css_prop!(cursor, "cursor");
+    css_prop!(cx, "cx");
+    css_prop!(cy, "cy");
+    css_prop!(direction, "direction");
+    css_prop!(display, "display");
+    css_prop!(dominant_baseline, "dominant-baseline");
+    // TODO: limited availability
+    //css_prop!(dynamic_range_limit, "dynamic-range-limit");
+    css_prop!(empty_cells, "empty-cells");
+    // TODO: limited availability
+    //css_prop!(field_sizing, "field-sizing");
+    css_prop!(fill, "fill");
+    css_prop!(fill_opacity, "fill-opacity");
+    css_prop!(fill_rule, "fill-rule");
+    css_prop!(filter, "filter");
+    css_prop!(float, "float");
+    // TODO: limited availability
+    //css_prop!(forced_color_adjust, "forced-color-adjust");
+    css_prop!(gap, "gap");
+    // TODO: limited availability
+    //css_prop!(hanging_punctuation, "hanging-punctuation");
+    css_prop!(height, "height");
+    css_prop!(hyphenate_character, "hyphenate-character");
+    // TODO: limited availability
+    //css_prop!(hyphenate_limit_chars, "hyphenate-limit-chars");
+    css_prop!(hyphens, "hyphens");
+    css_prop!(image_orientation, "image-orientation");
+    css_prop!(image_rendering, "image-rendering");
+    // TODO: limited availability
+    //css_prop!(image_resolution, "image-resolution");
+    //css_prop!(initial_letter, "initial-letter");
+    css_prop!(inline_size, "inline-size");
+    // TODO: limited availability
+    //css_prop!(interactivity, "interactivity");
+    //css_prop!(interest_delay, "interest-delay");
+    //css_prop!(interest_delay_end, "interest-delay-end");
+    //css_prop!(interest_delay_start, "interest-delay-start");
+    //css_prop!(interpolate_size, "interpolate-size");
+    css_prop!(isolation, "isolation");
+}
+
+/// Animation CSS properties
+impl Style {
+    css_prop!(animation, "animation");
+    css_prop!(animation_composition, "animation-composition");
+    css_prop!(animation_delay, "animation-delay");
+    css_prop!(animation_direction, "animation-direction");
+    css_prop!(animation_duration, "animation-duration");
+    css_prop!(animation_fill_mode, "animation-fill-mode");
+    css_prop!(animation_iteration_count, "animation-iteration-count");
+    css_prop!(animation_name, "animation-name");
+    css_prop!(animation_play_state, "animation-play-state");
+    css_prop!(animation_range_end, "animation-range-end");
+    css_prop!(animation_range_start, "animation-range-start");
+    css_prop!(animation_range, "animation-range");
+    css_prop!(animation_timeline, "animation-timeline");
+    css_prop!(animation_timing_function, "animation-timing-function");
+}
+
+/// Background CSS properties
+impl Style {
+    css_prop!(background, "background");
+    css_prop!(background_attachment, "background-attachment");
+    css_prop!(background_blend_mode, "background-blend-mode");
+    css_prop!(background_clip, "background-clip");
+    css_prop!(background_color, "background-color");
+    css_prop!(background_image, "background-image");
+    css_prop!(background_origin, "background-origin");
+    css_prop!(background_position, "background-position");
+    css_prop!(background_position_x, "background-position-x");
+    css_prop!(background_position_y, "background-position-y");
+    css_prop!(background_repeat, "background-repeat");
+    // TODO: limited availability
+    //css_prop!(background_repeat_x, "background-repeat-x");
+    //css_prop!(background_repeat_y, "background-repeat-y");
+    css_prop!(background_size, "background-size");
+}
+
+/// Border CSS properties
+impl Style {
+    css_prop!(border, "border");
+    css_prop!(border_block, "border-block");
+    css_prop!(border_block_color, "border-block-color");
+    css_prop!(border_block_end, "border-block-end");
+    css_prop!(border_block_end_color, "border-block-end-color");
+    css_prop!(border_block_end_style, "border-block-end-style");
+    css_prop!(border_block_end_width, "border-block-end-width");
+    css_prop!(border_block_start, "border-block-start");
+    css_prop!(border_block_start_color, "border-block-start-color");
+    css_prop!(border_block_start_style, "border-block-start-style");
+    css_prop!(border_block_start_width, "border-block-start-width");
+    css_prop!(border_block_style, "border-block-style");
+    css_prop!(border_block_width, "border-block-width");
+    css_prop!(border_bottom, "border-bottom");
+    css_prop!(border_bottom_color, "border-bottom-color");
+    css_prop!(border_bottom_left_radius, "border-bottom-left-radius");
+    css_prop!(border_bottom_right_radius, "border-bottom-right-radius");
+    css_prop!(border_bottom_style, "border-bottom-style");
+    css_prop!(border_bottom_width, "border-bottom-width");
+    css_prop!(border_collapse, "border-collapse");
+    css_prop!(border_color, "border-color");
+    css_prop!(border_end_end_radius, "border-end-end-radius");
+    css_prop!(border_end_start_radius, "border-end-start-radius");
+    css_prop!(border_image, "border-image");
+    css_prop!(border_image_outset, "border-image-outset");
+    css_prop!(border_image_repeat, "border-image-repeat");
+    css_prop!(border_image_slice, "border-image-slice");
+    css_prop!(border_image_source, "border-image-source");
+    css_prop!(border_image_width, "border-image-width");
+    css_prop!(border_inline, "border-inline");
+    css_prop!(border_inline_color, "border-inline-color");
+    css_prop!(border_inline_end, "border-inline-end");
+    css_prop!(border_inline_end_color, "border-inline-end-color");
+    css_prop!(border_inline_end_style, "border-inline-end-style");
+    css_prop!(border_inline_end_width, "border-inline-end-width");
+    css_prop!(border_inline_start, "border-inline-start");
+    css_prop!(border_inline_start_color, "border-inline-start-color");
+    css_prop!(border_inline_start_style, "border-inline-start-style");
+    css_prop!(border_inline_start_width, "border-inline-start-width");
+    css_prop!(border_inline_style, "border-inline-style");
+    css_prop!(border_inline_width, "border-inline-width");
+    css_prop!(border_left, "border-left");
+    css_prop!(border_left_color, "border-left-color");
+    css_prop!(border_left_style, "border-left-style");
+    css_prop!(border_left_width, "border-left-width");
+    css_prop!(border_radius, "border-radius");
+    css_prop!(border_right, "border-right");
+    css_prop!(border_right_color, "border-right-color");
+    css_prop!(border_right_style, "border-right-style");
+    css_prop!(border_right_width, "border-right-width");
+    css_prop!(border_spacing, "border-spacing");
+    css_prop!(border_start_end_radius, "border-start-end-radius");
+    css_prop!(border_start_start_radius, "border-start-start-radius");
+    css_prop!(border_style, "border-style");
+    css_prop!(border_top, "border-top");
+    css_prop!(border_top_color, "border-top-color");
+    css_prop!(border_top_left_radius, "border-top-left-radius");
+    css_prop!(border_top_right_radius, "border-top-right-radius");
+    css_prop!(border_top_style, "border-top-style");
+    css_prop!(border_top_width, "border-top-width");
+    css_prop!(border_width, "border-width");
+}
+
+/// Column CSS properties
+impl Style {
+    css_prop!(columns, "columns");
+    css_prop!(column_count, "column-count");
+    css_prop!(column_fill, "column-fill");
+    css_prop!(column_gap, "column-gap");
+    // TODO: limited availability
+    //css_prop!(column_height, "column-height");
+    css_prop!(column_rule, "column-rule");
+    css_prop!(column_rule_color, "column-rule-color");
+    css_prop!(column_rule_style, "column-rule-style");
+    css_prop!(column_rule_width, "column-rule-width");
+    css_prop!(column_span, "column-span");
+    css_prop!(column_width, "column-width");
+    // TODO: limited availability
+    //css_prop!(column_wrap, "column-wrap");
+}
+
+/* TODO: limited availability
+/// Corner CSS properties
+impl Style {
+    //css_prop!(corner_block_end_shape, "corner-block-end-shape");
+    //css_prop!(corner_block_start_shape, "corner-block-start-shape");
+    //css_prop!(corner_bottom_left_shape, "corner-bottom-left-shape");
+    //css_prop!(corner_bottom_right_shape, "corner-bottom-right-shape");
+    //css_prop!(corner_bottom_shape, "corner-bottom-shape");
+    //css_prop!(corner_end_end_shape, "corner-end-end-shape");
+    //css_prop!(corner_end_start_shape, "corner-end-start-shape");
+    //css_prop!(corner_inline_end_shape, "corner-inline-end-shape");
+    //css_prop!(corner_inline_start_shape, "corner-inline-start-shape");
+    //css_prop!(corner_left_shape, "corner-left-shape");
+    //css_prop!(corner_right_shape, "corner-right-shape");
+    //css_prop!(corner_shape, "corner-shape");
+    //css_prop!(corner_start_end_shape, "corner-start-end-shape");
+    //css_prop!(corner_start_start_shape, "corner-start-start-shape");
+    //css_prop!(corner_top_left_shape, "corner-top-left-shape");
+    //css_prop!(corner_top_right_shape, "corner-top-right-shape");
+    //css_prop!(corner_top_shape, "corner-top-shape");
+}
+*/
+
+/// Flex CSS properties
+impl Style {
+    css_prop!(flex, "flex");
+    css_prop!(flex_basis, "flex-basis");
+    css_prop!(flex_direction, "flex-direction");
+    css_prop!(flex_flow, "flex-flow");
+    css_prop!(flex_grow, "flex-grow");
+    css_prop!(flex_shrink, "flex-shrink");
+    css_prop!(flex_wrap, "flex-wrap");
+}
+
+/// Font CSS properties
+impl Style {
+    css_prop!(font, "font");
+    css_prop!(font_family, "font-family");
+    css_prop!(font_feature_settings, "font-feature-settings");
+    css_prop!(font_kerning, "font-kerning");
+    // TODO: limited availability
+    //css_prop!(font_language_override, "font-language-override");
+    css_prop!(font_optical_sizing, "font-optical-sizing");
+    css_prop!(font_palette, "font-palette");
+    css_prop!(font_size, "font-size");
+    css_prop!(font_size_adjust, "font-size-adjust");
+    css_prop!(font_style, "font-style");
+    css_prop!(font_synthesis, "font-synthesis");
+    // TODO: limited availability
+    //css_prop!(font_synthesis_position, "font-synthesis-position");
+    css_prop!(font_synthesis_small_caps, "font-synthesis-small-caps");
+    css_prop!(font_synthesis_style, "font-synthesis-style");
+    css_prop!(font_synthesis_weight, "font-synthesis-weight");
+    css_prop!(font_variant, "font-variant");
+    css_prop!(font_variant_alternates, "font-variant-alternates");
+    css_prop!(font_variant_caps, "font-variant-caps");
+    css_prop!(font_variant_east_asian, "font-variant-east-asian");
+    // TODO: limited availability
+    //css_prop!(font_variant_emoji, "font-variant-emoji");
+    css_prop!(font_variant_ligatures, "font-variant-ligatures");
+    css_prop!(font_variant_numeric, "font-variant-numeric");
+    css_prop!(font_variant_position, "font-variant-position");
+    css_prop!(font_variation_settings, "font-variation-settings");
+    css_prop!(font_weight, "font-weight");
+    // TODO: limited availability (replaces font-stretch)
+    //css_prop!(font_width, "font-width");
+}
+
+/// Grid CSS properties
+impl Style {
+    css_prop!(grid, "grid");
+    css_prop!(grid_area, "grid-area");
+    css_prop!(grid_auto_columns, "grid-auto-columns");
+    css_prop!(grid_auto_flow, "grid-auto-flow");
+    css_prop!(grid_auto_rows, "grid-auto-rows");
+    css_prop!(grid_column, "grid-column");
+    css_prop!(grid_column_end, "grid-column-end");
+    css_prop!(grid_column_start, "grid-column-start");
+    css_prop!(grid_row, "grid-row");
+    css_prop!(grid_row_end, "grid-row-end");
+    css_prop!(grid_row_start, "grid-row-start");
+    css_prop!(grid_template, "grid-template");
+    css_prop!(grid_template_areas, "grid-template-areas");
+    css_prop!(grid_template_columns, "grid-template-columns");
+    css_prop!(grid_template_rows, "grid-template-rows");
+}
+
+/// Inset CSS properties
+impl Style {
+    css_prop!(inset, "inset");
+    css_prop!(inset_block, "inset-block");
+    css_prop!(inset_block_end, "inset-block-end");
+    css_prop!(inset_block_start, "inset-block-start");
+    css_prop!(inset_inline, "inset-inline");
+    css_prop!(inset_inline_end, "inset-inline-end");
+    css_prop!(inset_inline_start, "inset-inline-start");
+}
+
+/// SVG style properties
+impl Style {
+    // TODO: limited availability
+    //css_prop!(d, "d");
+    css_prop!(flood_color, "flood-color");
+    css_prop!(flood_opacity, "flood-opacity");
+}
+
+impl Style {
+    css_prop!(lighting_color, "lighting-color");
+    css_prop!(outline_color, "outline-color");
+    css_prop!(scrollbar_color, "scrollbar-color");
+    css_prop!(stop_color, "stop-color");
+    css_prop!(stroke, "stroke");
+    css_prop!(text_decoration_color, "text-decoration-color");
+    css_prop!(text_emphasis_color, "text-emphasis-color");
+}

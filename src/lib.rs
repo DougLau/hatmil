@@ -7,6 +7,7 @@
 #[macro_use]
 mod macros;
 
+mod css;
 mod definition;
 pub mod html;
 mod poly;
