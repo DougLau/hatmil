@@ -70,6 +70,15 @@ must be used to call those methods:
 - `r#type` on multiple HTML and [SVG] elements
 - `r#use` (SVG element)
 
+## Features
+
+- **limited-availability** (opt-in)
+  Enabling this will add methods which are not available on all popular
+  browsers.
+- **experimental** (opt-in)
+  Enabling this will add methods which are experimental and not available on
+  all popular browsers.  Enabling this feature may cause SemVer breakage.
+
 
 [Audio]: https://docs.rs/hatmil/latest/hatmil/html/struct.Audio.html
 [BlockQuote]: https://docs.rs/hatmil/latest/hatmil/html/struct.BlockQuote.html

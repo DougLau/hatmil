@@ -2,6 +2,7 @@
 //
 // Copyright (C) 2026  Douglas P Lau
 //
+//! CSS -- _Cascading Style Sheets_
 use crate::value::Value;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -11,13 +12,16 @@ pub enum Selector {
 
 /// CSS style properties
 ///
-/// | Categories                        | …                       |
-/// |-----------------------------------|-------------------------|
-/// | [basic](Style::accent_color())    | [flex](Style::flex())   |
-/// | [animation](Style::animation())   | [font](Style::font())   |
-/// | [background](Style::background()) | [grid](Style::grid())   |
-/// | [border](Style::border())         | [inset](Style::inset()) |
-/// | [column](Style::columns())        |                         |
+/// | Categories                        | …                         |
+/// |-----------------------------------|---------------------------|
+/// | [basic](Style::align_content())   | [flex](Style::flex())     |
+/// | [animation](Style::animation())   | [font](Style::font())     |
+/// | [background](Style::background()) | [grid](Style::grid())     |
+/// | [border](Style::border())         | [inset](Style::inset())   |
+/// | [column](Style::columns())        | [margin](Style::margin()) |
+/// |                                   | [svg](Style::clip_rule()) |
+/// | [mask](Style::mask())             |                           |
+/// | [math](Style::math_depth())       |                           |
 #[derive(Default)]
 pub struct Style {
     css: String,
@@ -43,6 +47,7 @@ impl Rule {
 
 /// Basic CSS properties
 impl Style {
+    #[cfg(feature = "limited-availability")]
     css_prop!(accent_color, "accent-color");
     css_prop!(align_content, "align-content");
     css_prop!(align_items, "align-items");
@@ -56,9 +61,10 @@ impl Style {
     css_prop!(backdrop_filter, "backdrop-filter");
     css_prop!(backface_visibility, "backface-visibility");
     css_prop!(baseline_shift, "baseline-shift");
+    #[cfg(feature = "limited-availability")]
     css_prop!(baseline_source, "baseline-source");
     css_prop!(block_size, "block-size");
-    css_prop!(bottom, "bottom");
+    #[cfg(feature = "limited-availability")]
     css_prop!(box_decoration_break, "box-decoration-break");
     css_prop!(box_shadow, "box-shadow");
     css_prop!(box_sizing, "box-sizing");
@@ -66,17 +72,16 @@ impl Style {
     css_prop!(break_before, "break-before");
     css_prop!(break_inside, "break-inside");
     css_prop!(caption_side, "caption-side");
-    // TODO: limited availability
-    //css_prop!(caret, "caret");
-    //css_prop!(caret_animation, "caret-animation");
+    #[cfg(feature = "experimental")]
+    css_prop!(caret, "caret");
+    #[cfg(feature = "experimental")]
+    css_prop!(caret_animation, "caret-animation");
     css_prop!(caret_color, "caret-color");
+    #[cfg(feature = "experimental")]
     css_prop!(caret_shape, "caret-shape");
     css_prop!(clear, "clear");
     css_prop!(clip_path, "clip-path");
-    css_prop!(clip_rule, "clip-rule");
     css_prop!(color, "color");
-    css_prop!(color_interpolation, "color-interpolation");
-    css_prop!(color_interpolation_filters, "color-interpolation-filters");
     css_prop!(color_scheme, "color-scheme");
     css_prop!(contain, "contain");
     css_prop!(contain_intrinsic_block_size, "contain-intrinsic-block-size");
@@ -98,39 +103,99 @@ impl Style {
     css_prop!(direction, "direction");
     css_prop!(display, "display");
     css_prop!(dominant_baseline, "dominant-baseline");
-    // TODO: limited availability
-    //css_prop!(dynamic_range_limit, "dynamic-range-limit");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(dynamic_range_limit, "dynamic-range-limit");
     css_prop!(empty_cells, "empty-cells");
-    // TODO: limited availability
-    //css_prop!(field_sizing, "field-sizing");
-    css_prop!(fill, "fill");
-    css_prop!(fill_opacity, "fill-opacity");
-    css_prop!(fill_rule, "fill-rule");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(field_sizing, "field-sizing");
     css_prop!(filter, "filter");
     css_prop!(float, "float");
-    // TODO: limited availability
-    //css_prop!(forced_color_adjust, "forced-color-adjust");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(forced_color_adjust, "forced-color-adjust");
     css_prop!(gap, "gap");
-    // TODO: limited availability
-    //css_prop!(hanging_punctuation, "hanging-punctuation");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(hanging_punctuation, "hanging-punctuation");
     css_prop!(height, "height");
     css_prop!(hyphenate_character, "hyphenate-character");
-    // TODO: limited availability
-    //css_prop!(hyphenate_limit_chars, "hyphenate-limit-chars");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(hyphenate_limit_chars, "hyphenate-limit-chars");
     css_prop!(hyphens, "hyphens");
     css_prop!(image_orientation, "image-orientation");
     css_prop!(image_rendering, "image-rendering");
-    // TODO: limited availability
-    //css_prop!(image_resolution, "image-resolution");
-    //css_prop!(initial_letter, "initial-letter");
+    #[cfg(feature = "experimental")]
+    css_prop!(image_resolution, "image-resolution");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(initial_letter, "initial-letter");
     css_prop!(inline_size, "inline-size");
-    // TODO: limited availability
-    //css_prop!(interactivity, "interactivity");
-    //css_prop!(interest_delay, "interest-delay");
-    //css_prop!(interest_delay_end, "interest-delay-end");
-    //css_prop!(interest_delay_start, "interest-delay-start");
-    //css_prop!(interpolate_size, "interpolate-size");
+    #[cfg(feature = "experimental")]
+    css_prop!(interactivity, "interactivity");
+    #[cfg(feature = "experimental")]
+    css_prop!(interest_delay, "interest-delay");
+    #[cfg(feature = "experimental")]
+    css_prop!(interest_delay_end, "interest-delay-end");
+    #[cfg(feature = "experimental")]
+    css_prop!(interest_delay_start, "interest-delay-start");
+    #[cfg(feature = "experimental")]
+    css_prop!(interpolate_size, "interpolate-size");
     css_prop!(isolation, "isolation");
+    css_prop!(justify_content, "justify-content");
+    css_prop!(justify_items, "justify-items");
+    css_prop!(justify_self, "justify-self");
+    css_prop!(letter_spacing, "letter-spacing");
+    css_prop!(line_break, "line-break");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(line_clamp, "line-clamp");
+    css_prop!(line_height, "line-height");
+    #[cfg(feature = "experimental")]
+    css_prop!(line_height_step, "line-height-step");
+    css_prop!(list_style, "list-style");
+    css_prop!(list_style_image, "list-style-image");
+    css_prop!(list_style_position, "list-style-position");
+    css_prop!(list_style_type, "list-style-type");
+    css_prop!(max_block_size, "max-block-size");
+    css_prop!(max_height, "max-height");
+    css_prop!(max_inline_size, "max-inline-size");
+    css_prop!(max_width, "max-width");
+    css_prop!(min_block_size, "min-block-size");
+    css_prop!(min_height, "min-height");
+    css_prop!(min_inline_size, "min-inline-size");
+    css_prop!(min_width, "min-width");
+    css_prop!(mix_blend_mode, "mix-blend-mode");
+    css_prop!(object_fit, "object-fit");
+    css_prop!(object_position, "object-position");
+    #[cfg(feature = "experimental")]
+    css_prop!(object_view_box, "object-view-box");
+    css_prop!(opacity, "opacity");
+    css_prop!(order, "order");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(orphans, "orphans");
+    css_prop!(overflow, "overflow");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(overflow_anchor, "overflow-anchor");
+    css_prop!(overflow_block, "overflow-block");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(overflow_clip_margin, "overflow-clip-margin");
+    css_prop!(overflow_inline, "overflow-inline");
+    css_prop!(overflow_wrap, "overflow-wrap");
+    css_prop!(overflow_x, "overflow-x");
+    css_prop!(overflow_y, "overflow-y");
+    #[cfg(feature = "experimental")]
+    css_prop!(overlay, "overlay");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(overscroll_behavior, "overscroll-behavior");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(overscroll_behavior_block, "overscroll-behavior-block");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(overscroll_behavior_inline, "overscroll-behavior-inline");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(overscroll_behavior_x, "overscroll-behavior-x");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(overscroll_behavior_y, "overscroll-behavior-y");
+
+    // TODO: more missing properties
+    css_prop!(scrollbar_color, "scrollbar-color");
+    css_prop!(text_decoration_color, "text-decoration-color");
+    css_prop!(text_emphasis_color, "text-emphasis-color");
 }
 
 /// Animation CSS properties
@@ -144,11 +209,21 @@ impl Style {
     css_prop!(animation_iteration_count, "animation-iteration-count");
     css_prop!(animation_name, "animation-name");
     css_prop!(animation_play_state, "animation-play-state");
+    #[cfg(feature = "limited-availability")]
     css_prop!(animation_range_end, "animation-range-end");
+    #[cfg(feature = "limited-availability")]
     css_prop!(animation_range_start, "animation-range-start");
+    #[cfg(feature = "limited-availability")]
     css_prop!(animation_range, "animation-range");
+    #[cfg(feature = "limited-availability")]
     css_prop!(animation_timeline, "animation-timeline");
     css_prop!(animation_timing_function, "animation-timing-function");
+    css_prop!(offset, "offset");
+    css_prop!(offset_anchor, "offset-anchor");
+    css_prop!(offset_distance, "offset-distance");
+    css_prop!(offset_path, "offset-path");
+    css_prop!(offset_position, "offset-position");
+    css_prop!(offset_rotate, "offset-rotate");
 }
 
 /// Background CSS properties
@@ -164,13 +239,14 @@ impl Style {
     css_prop!(background_position_x, "background-position-x");
     css_prop!(background_position_y, "background-position-y");
     css_prop!(background_repeat, "background-repeat");
-    // TODO: limited availability
-    //css_prop!(background_repeat_x, "background-repeat-x");
-    //css_prop!(background_repeat_y, "background-repeat-y");
+    #[cfg(feature = "experimental")]
+    css_prop!(background_repeat_x, "background-repeat-x");
+    #[cfg(feature = "experimental")]
+    css_prop!(background_repeat_y, "background-repeat-y");
     css_prop!(background_size, "background-size");
 }
 
-/// Border CSS properties
+/// Border and outline properties
 impl Style {
     css_prop!(border, "border");
     css_prop!(border_block, "border-block");
@@ -233,6 +309,11 @@ impl Style {
     css_prop!(border_top_style, "border-top-style");
     css_prop!(border_top_width, "border-top-width");
     css_prop!(border_width, "border-width");
+    css_prop!(outline, "outline");
+    css_prop!(outline_color, "outline-color");
+    css_prop!(outline_offset, "outline-offset");
+    css_prop!(outline_style, "outline-style");
+    css_prop!(outline_width, "outline-width");
 }
 
 /// Column CSS properties
@@ -241,40 +322,39 @@ impl Style {
     css_prop!(column_count, "column-count");
     css_prop!(column_fill, "column-fill");
     css_prop!(column_gap, "column-gap");
-    // TODO: limited availability
-    //css_prop!(column_height, "column-height");
+    #[cfg(feature = "experimental")]
+    css_prop!(column_height, "column-height");
     css_prop!(column_rule, "column-rule");
     css_prop!(column_rule_color, "column-rule-color");
     css_prop!(column_rule_style, "column-rule-style");
     css_prop!(column_rule_width, "column-rule-width");
     css_prop!(column_span, "column-span");
     css_prop!(column_width, "column-width");
-    // TODO: limited availability
-    //css_prop!(column_wrap, "column-wrap");
+    #[cfg(feature = "experimental")]
+    css_prop!(column_wrap, "column-wrap");
 }
 
-/* TODO: limited availability
+#[cfg(feature = "experimental")]
 /// Corner CSS properties
 impl Style {
-    //css_prop!(corner_block_end_shape, "corner-block-end-shape");
-    //css_prop!(corner_block_start_shape, "corner-block-start-shape");
-    //css_prop!(corner_bottom_left_shape, "corner-bottom-left-shape");
-    //css_prop!(corner_bottom_right_shape, "corner-bottom-right-shape");
-    //css_prop!(corner_bottom_shape, "corner-bottom-shape");
-    //css_prop!(corner_end_end_shape, "corner-end-end-shape");
-    //css_prop!(corner_end_start_shape, "corner-end-start-shape");
-    //css_prop!(corner_inline_end_shape, "corner-inline-end-shape");
-    //css_prop!(corner_inline_start_shape, "corner-inline-start-shape");
-    //css_prop!(corner_left_shape, "corner-left-shape");
-    //css_prop!(corner_right_shape, "corner-right-shape");
-    //css_prop!(corner_shape, "corner-shape");
-    //css_prop!(corner_start_end_shape, "corner-start-end-shape");
-    //css_prop!(corner_start_start_shape, "corner-start-start-shape");
-    //css_prop!(corner_top_left_shape, "corner-top-left-shape");
-    //css_prop!(corner_top_right_shape, "corner-top-right-shape");
-    //css_prop!(corner_top_shape, "corner-top-shape");
+    css_prop!(corner_block_end_shape, "corner-block-end-shape");
+    css_prop!(corner_block_start_shape, "corner-block-start-shape");
+    css_prop!(corner_bottom_left_shape, "corner-bottom-left-shape");
+    css_prop!(corner_bottom_right_shape, "corner-bottom-right-shape");
+    css_prop!(corner_bottom_shape, "corner-bottom-shape");
+    css_prop!(corner_end_end_shape, "corner-end-end-shape");
+    css_prop!(corner_end_start_shape, "corner-end-start-shape");
+    css_prop!(corner_inline_end_shape, "corner-inline-end-shape");
+    css_prop!(corner_inline_start_shape, "corner-inline-start-shape");
+    css_prop!(corner_left_shape, "corner-left-shape");
+    css_prop!(corner_right_shape, "corner-right-shape");
+    css_prop!(corner_shape, "corner-shape");
+    css_prop!(corner_start_end_shape, "corner-start-end-shape");
+    css_prop!(corner_start_start_shape, "corner-start-start-shape");
+    css_prop!(corner_top_left_shape, "corner-top-left-shape");
+    css_prop!(corner_top_right_shape, "corner-top-right-shape");
+    css_prop!(corner_top_shape, "corner-top-shape");
 }
-*/
 
 /// Flex CSS properties
 impl Style {
@@ -293,16 +373,17 @@ impl Style {
     css_prop!(font_family, "font-family");
     css_prop!(font_feature_settings, "font-feature-settings");
     css_prop!(font_kerning, "font-kerning");
-    // TODO: limited availability
-    //css_prop!(font_language_override, "font-language-override");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(font_language_override, "font-language-override");
     css_prop!(font_optical_sizing, "font-optical-sizing");
     css_prop!(font_palette, "font-palette");
     css_prop!(font_size, "font-size");
     css_prop!(font_size_adjust, "font-size-adjust");
+    css_prop!(font_stretch, "font-stretch");
     css_prop!(font_style, "font-style");
     css_prop!(font_synthesis, "font-synthesis");
-    // TODO: limited availability
-    //css_prop!(font_synthesis_position, "font-synthesis-position");
+    #[cfg(feature = "experimental")]
+    css_prop!(font_synthesis_position, "font-synthesis-position");
     css_prop!(font_synthesis_small_caps, "font-synthesis-small-caps");
     css_prop!(font_synthesis_style, "font-synthesis-style");
     css_prop!(font_synthesis_weight, "font-synthesis-weight");
@@ -310,15 +391,15 @@ impl Style {
     css_prop!(font_variant_alternates, "font-variant-alternates");
     css_prop!(font_variant_caps, "font-variant-caps");
     css_prop!(font_variant_east_asian, "font-variant-east-asian");
-    // TODO: limited availability
-    //css_prop!(font_variant_emoji, "font-variant-emoji");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(font_variant_emoji, "font-variant-emoji");
     css_prop!(font_variant_ligatures, "font-variant-ligatures");
     css_prop!(font_variant_numeric, "font-variant-numeric");
     css_prop!(font_variant_position, "font-variant-position");
     css_prop!(font_variation_settings, "font-variation-settings");
     css_prop!(font_weight, "font-weight");
-    // TODO: limited availability (replaces font-stretch)
-    //css_prop!(font_width, "font-width");
+    #[cfg(feature = "experimental")]
+    css_prop!(font_width, "font-width");
 }
 
 /// Grid CSS properties
@@ -343,6 +424,8 @@ impl Style {
 /// Inset CSS properties
 impl Style {
     css_prop!(inset, "inset");
+    css_prop!(bottom, "bottom");
+    css_prop!(left, "left");
     css_prop!(inset_block, "inset-block");
     css_prop!(inset_block_end, "inset-block-end");
     css_prop!(inset_block_start, "inset-block-start");
@@ -351,20 +434,75 @@ impl Style {
     css_prop!(inset_inline_start, "inset-inline-start");
 }
 
-/// SVG style properties
+/// Margin CSS properties
 impl Style {
-    // TODO: limited availability
-    //css_prop!(d, "d");
-    css_prop!(flood_color, "flood-color");
-    css_prop!(flood_opacity, "flood-opacity");
+    css_prop!(margin, "margin");
+    css_prop!(margin_block, "margin-block");
+    css_prop!(margin_block_end, "margin-block-end");
+    css_prop!(margin_block_start, "margin-block-start");
+    css_prop!(margin_bottom, "margin-bottom");
+    css_prop!(margin_inline, "margin-inline");
+    css_prop!(margin_inline_end, "margin-inline-end");
+    css_prop!(margin_inline_start, "margin-inline-start");
+    css_prop!(margin_left, "margin-left");
+    css_prop!(margin_right, "margin-right");
+    css_prop!(margin_top, "margin-top");
+    #[cfg(feature = "experimental")]
+    css_prop!(margin_trim, "margin-trim");
 }
 
+/// Mask CSS properties
 impl Style {
+    css_prop!(mask, "mask");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(mask_border, "mask-border");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(mask_border_mode, "mask-border-mode");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(mask_border_outset, "mask-border-outset");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(mask_border_repeat, "mask-border-repeat");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(mask_border_slice, "mask-border-slice");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(mask_border_source, "mask-border-source");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(mask_border_width, "mask-border-width");
+    css_prop!(mask_clip, "mask-clip");
+    css_prop!(mask_composite, "mask-composite");
+    css_prop!(mask_image, "mask-image");
+    css_prop!(mask_mode, "mask-mode");
+    css_prop!(mask_origin, "mask-origin");
+    css_prop!(mask_position, "mask-position");
+    css_prop!(mask_repeat, "mask-repeat");
+    css_prop!(mask_size, "mask-size");
+}
+
+/// MathML CSS properties
+impl Style {
+    css_prop!(math_depth, "math-depth");
+    css_prop!(math_shift, "math-shift");
+    css_prop!(math_style, "math-style");
+}
+
+/// SVG style properties
+impl Style {
+    css_prop!(clip_rule, "clip-rule");
+    css_prop!(color_interpolation, "color-interpolation");
+    css_prop!(color_interpolation_filters, "color-interpolation-filters");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(d, "d");
+    css_prop!(fill, "fill");
+    css_prop!(fill_opacity, "fill-opacity");
+    css_prop!(fill_rule, "fill-rule");
+    css_prop!(flood_color, "flood-color");
+    css_prop!(flood_opacity, "flood-opacity");
     css_prop!(lighting_color, "lighting-color");
-    css_prop!(outline_color, "outline-color");
-    css_prop!(scrollbar_color, "scrollbar-color");
+    css_prop!(marker, "marker");
+    css_prop!(marker_end, "marker-end");
+    css_prop!(marker_mid, "marker-mid");
+    css_prop!(marker_start, "marker-start");
+    css_prop!(mask_type, "mask-type");
     css_prop!(stop_color, "stop-color");
     css_prop!(stroke, "stroke");
-    css_prop!(text_decoration_color, "text-decoration-color");
-    css_prop!(text_emphasis_color, "text-emphasis-color");
 }
