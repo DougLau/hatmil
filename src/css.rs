@@ -12,16 +12,14 @@ pub enum Selector {
 
 /// CSS style properties
 ///
-/// | Categories                        | …                         |
-/// |-----------------------------------|---------------------------|
-/// | [basic](Style::align_content())   | [flex](Style::flex())     |
-/// | [animation](Style::animation())   | [font](Style::font())     |
-/// | [background](Style::background()) | [grid](Style::grid())     |
-/// | [border](Style::border())         | [inset](Style::inset())   |
-/// | [column](Style::columns())        | [margin](Style::margin()) |
-/// |                                   | [svg](Style::clip_rule()) |
-/// | [mask](Style::mask())             |                           |
-/// | [math](Style::math_depth())       |                           |
+/// | Categories                          | …                                         | …                                  |
+/// |-------------------------------------|-------------------------------------------|------------------------------------|
+/// | [basic](Style::align_content())     | [corner](Style::corner_block_end_shape()) | [mask](Style::mask())              |
+/// | [alignment](Style::align_content()) | [flex](Style::flex())                     | [math](Style::math_depth())        |
+/// | [animation](Style::animation())     | [font](Style::font())                     | [padding](Style::padding())        |
+/// | [background](Style::background())   | [grid](Style::grid())                     | [scroll](Style::scroll_behavior()) |
+/// | [border](Style::border())           | [inset](Style::inset())                   | [svg](Style::clip_rule())          |
+/// | [column](Style::columns())          | [margin](Style::margin())                 |                                    |
 #[derive(Default)]
 pub struct Style {
     css: String,
@@ -45,13 +43,12 @@ impl Rule {
     }
 }
 
-/// Basic CSS properties
+/// **Basic Properties**
+///
+/// ---
 impl Style {
     #[cfg(feature = "limited-availability")]
     css_prop!(accent_color, "accent-color");
-    css_prop!(align_content, "align-content");
-    css_prop!(align_items, "align-items");
-    css_prop!(align_self, "align-self");
     css_prop!(alignment_baseline, "alignment-baseline");
     css_prop!(all, "all");
     css_prop!(anchor_name, "anchor-name");
@@ -138,9 +135,6 @@ impl Style {
     #[cfg(feature = "experimental")]
     css_prop!(interpolate_size, "interpolate-size");
     css_prop!(isolation, "isolation");
-    css_prop!(justify_content, "justify-content");
-    css_prop!(justify_items, "justify-items");
-    css_prop!(justify_self, "justify-self");
     css_prop!(letter_spacing, "letter-spacing");
     css_prop!(line_break, "line-break");
     #[cfg(feature = "limited-availability")]
@@ -181,24 +175,66 @@ impl Style {
     css_prop!(overflow_y, "overflow-y");
     #[cfg(feature = "experimental")]
     css_prop!(overlay, "overlay");
+    css_prop!(page, "page");
+    css_prop!(paint_order, "paint-order");
+    css_prop!(perspective, "perspective");
+    css_prop!(perspective_origin, "perspective-origin");
+    css_prop!(pointer_events, "pointer-events");
+    css_prop!(position, "position");
     #[cfg(feature = "limited-availability")]
-    css_prop!(overscroll_behavior, "overscroll-behavior");
+    css_prop!(position_anchor, "position-anchor");
+    css_prop!(position_area, "position-area");
+    css_prop!(position_try, "position-try");
+    css_prop!(position_try_fallbacks, "position-try-fallbacks");
+    css_prop!(position_try_order, "position-try-order");
+    css_prop!(position_visibility, "position-visibility");
+    css_prop!(print_color_adjust, "print-color-adjust");
+    css_prop!(quotes, "quotes");
+    #[cfg(feature = "experimental")]
+    css_prop!(reading_flow, "reading-flow");
+    #[cfg(feature = "experimental")]
+    css_prop!(reading_order, "reading-order");
     #[cfg(feature = "limited-availability")]
-    css_prop!(overscroll_behavior_block, "overscroll-behavior-block");
+    css_prop!(resize, "resize");
+    css_prop!(rotate, "rotate");
+    css_prop!(row_gap, "row-gap");
+    css_prop!(ruby_align, "ruby-align");
     #[cfg(feature = "limited-availability")]
-    css_prop!(overscroll_behavior_inline, "overscroll-behavior-inline");
-    #[cfg(feature = "limited-availability")]
-    css_prop!(overscroll_behavior_x, "overscroll-behavior-x");
-    #[cfg(feature = "limited-availability")]
-    css_prop!(overscroll_behavior_y, "overscroll-behavior-y");
-
-    // TODO: more missing properties
+    css_prop!(ruby_overhang, "ruby-overhang");
+    css_prop!(ruby_position, "ruby-position");
+    css_prop!(scale, "scale");
     css_prop!(scrollbar_color, "scrollbar-color");
+    css_prop!(scrollbar_gutter, "scrollbar-gutter");
+    css_prop!(scrollbar_width, "scrollbar-width");
+    css_prop!(shape_image_threshold, "shape-image-threshold");
+    css_prop!(shape_margin, "shape-margin");
+    css_prop!(shape_outside, "shape-outside");
+    #[cfg(feature = "experimental")]
+    css_prop!(speak_as, "speak-as");
+
+    // TODO: missing properties T-Z
     css_prop!(text_decoration_color, "text-decoration-color");
     css_prop!(text_emphasis_color, "text-emphasis-color");
 }
 
-/// Animation CSS properties
+/// **Alignment and Justification**
+///
+/// ---
+impl Style {
+    css_prop!(align_content, "align-content");
+    css_prop!(align_items, "align-items");
+    css_prop!(align_self, "align-self");
+    css_prop!(justify_content, "justify-content");
+    css_prop!(justify_items, "justify-items");
+    css_prop!(justify_self, "justify-self");
+    css_prop!(place_content, "place-content");
+    css_prop!(place_items, "place-items");
+    css_prop!(place_self, "place-self");
+}
+
+/// **Animation**
+///
+/// ---
 impl Style {
     css_prop!(animation, "animation");
     css_prop!(animation_composition, "animation-composition");
@@ -226,7 +262,9 @@ impl Style {
     css_prop!(offset_rotate, "offset-rotate");
 }
 
-/// Background CSS properties
+/// **Background**
+///
+/// ---
 impl Style {
     css_prop!(background, "background");
     css_prop!(background_attachment, "background-attachment");
@@ -246,7 +284,9 @@ impl Style {
     css_prop!(background_size, "background-size");
 }
 
-/// Border and outline properties
+/// **Border and Outline**
+///
+/// ---
 impl Style {
     css_prop!(border, "border");
     css_prop!(border_block, "border-block");
@@ -316,7 +356,9 @@ impl Style {
     css_prop!(outline_width, "outline-width");
 }
 
-/// Column CSS properties
+/// **Column**
+///
+/// ---
 impl Style {
     css_prop!(columns, "columns");
     css_prop!(column_count, "column-count");
@@ -335,7 +377,9 @@ impl Style {
 }
 
 #[cfg(feature = "experimental")]
-/// Corner CSS properties
+/// **Corner**
+///
+/// ---
 impl Style {
     css_prop!(corner_block_end_shape, "corner-block-end-shape");
     css_prop!(corner_block_start_shape, "corner-block-start-shape");
@@ -356,7 +400,9 @@ impl Style {
     css_prop!(corner_top_shape, "corner-top-shape");
 }
 
-/// Flex CSS properties
+/// **Flex**
+///
+/// ---
 impl Style {
     css_prop!(flex, "flex");
     css_prop!(flex_basis, "flex-basis");
@@ -367,7 +413,9 @@ impl Style {
     css_prop!(flex_wrap, "flex-wrap");
 }
 
-/// Font CSS properties
+/// **Font**
+///
+/// ---
 impl Style {
     css_prop!(font, "font");
     css_prop!(font_family, "font-family");
@@ -402,7 +450,9 @@ impl Style {
     css_prop!(font_width, "font-width");
 }
 
-/// Grid CSS properties
+/// **Grid**
+///
+/// ---
 impl Style {
     css_prop!(grid, "grid");
     css_prop!(grid_area, "grid-area");
@@ -421,7 +471,9 @@ impl Style {
     css_prop!(grid_template_rows, "grid-template-rows");
 }
 
-/// Inset CSS properties
+/// **Inset**
+///
+/// ---
 impl Style {
     css_prop!(inset, "inset");
     css_prop!(bottom, "bottom");
@@ -432,9 +484,12 @@ impl Style {
     css_prop!(inset_inline, "inset-inline");
     css_prop!(inset_inline_end, "inset-inline-end");
     css_prop!(inset_inline_start, "inset-inline-start");
+    css_prop!(right, "right");
 }
 
-/// Margin CSS properties
+/// **Margin**
+///
+/// ---
 impl Style {
     css_prop!(margin, "margin");
     css_prop!(margin_block, "margin-block");
@@ -451,7 +506,9 @@ impl Style {
     css_prop!(margin_trim, "margin-trim");
 }
 
-/// Mask CSS properties
+/// **Mask**
+///
+/// ---
 impl Style {
     css_prop!(mask, "mask");
     #[cfg(feature = "limited-availability")]
@@ -478,14 +535,89 @@ impl Style {
     css_prop!(mask_size, "mask-size");
 }
 
-/// MathML CSS properties
+/// **MathML**
+///
+/// ---
 impl Style {
     css_prop!(math_depth, "math-depth");
     css_prop!(math_shift, "math-shift");
     css_prop!(math_style, "math-style");
 }
 
-/// SVG style properties
+/// **Padding**
+///
+/// ---
+impl Style {
+    css_prop!(padding, "padding");
+    css_prop!(padding_block, "padding-block");
+    css_prop!(padding_block_end, "padding-block-end");
+    css_prop!(padding_block_start, "padding-block-start");
+    css_prop!(padding_bottom, "padding-bottom");
+    css_prop!(padding_inline, "padding-inline");
+    css_prop!(padding_inline_end, "padding-inline-end");
+    css_prop!(padding_inline_start, "padding-inline-start");
+    css_prop!(padding_left, "padding-left");
+    css_prop!(padding_right, "padding-right");
+    css_prop!(padding_top, "padding-top");
+}
+
+/// **Scrolling Area**
+///
+/// ---
+impl Style {
+    css_prop!(scroll_behavior, "scroll-behavior");
+    #[cfg(feature = "experimental")]
+    css_prop!(scroll_initial_target, "scroll-initial-target");
+    #[cfg(feature = "experimental")]
+    css_prop!(scroll_marker_group, "scroll-marker-group");
+    css_prop!(scroll_margin, "scroll-margin");
+    css_prop!(scroll_margin_block, "scroll-margin-block");
+    css_prop!(scroll_margin_block_end, "scroll-margin-block-end");
+    css_prop!(scroll_margin_block_start, "scroll-margin-block-start");
+    css_prop!(scroll_margin_bottom, "scroll-margin-bottom");
+    css_prop!(scroll_margin_inline, "scroll-margin-inline");
+    css_prop!(scroll_margin_inline_end, "scroll-margin-inline-end");
+    css_prop!(scroll_margin_inline_start, "scroll-margin-inline-start");
+    css_prop!(scroll_margin_left, "scroll-margin-left");
+    css_prop!(scroll_margin_right, "scroll-margin-right");
+    css_prop!(scroll_margin_top, "scroll-margin-top");
+    css_prop!(scroll_padding, "scroll-padding");
+    css_prop!(scroll_padding_block, "scroll-padding-block");
+    css_prop!(scroll_padding_block_end, "scroll-padding-block-end");
+    css_prop!(scroll_padding_block_start, "scroll-padding-block-start");
+    css_prop!(scroll_padding_bottom, "scroll-padding-bottom");
+    css_prop!(scroll_padding_inline, "scroll-padding-inline");
+    css_prop!(scroll_padding_inline_end, "scroll-padding-inline-end");
+    css_prop!(scroll_padding_inline_start, "scroll-padding-inline-start");
+    css_prop!(scroll_padding_left, "scroll-padding-left");
+    css_prop!(scroll_padding_right, "scroll-padding-right");
+    css_prop!(scroll_padding_top, "scroll-padding-top");
+    css_prop!(scroll_snap_align, "scroll-snap-align");
+    css_prop!(scroll_snap_stop, "scroll-snap-stop");
+    css_prop!(scroll_snap_type, "scroll-snap-type");
+    #[cfg(feature = "experimental")]
+    css_prop!(scroll_target_group, "scroll-target-group");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(scroll_timeline, "scroll-timeline");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(scroll_timeline_axis, "scroll-timeline-axis");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(scroll-timeline-name, "scroll-timeline-name");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(overscroll_behavior, "overscroll-behavior");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(overscroll_behavior_block, "overscroll-behavior-block");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(overscroll_behavior_inline, "overscroll-behavior-inline");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(overscroll_behavior_x, "overscroll-behavior-x");
+    #[cfg(feature = "limited-availability")]
+    css_prop!(overscroll_behavior_y, "overscroll-behavior-y");
+}
+
+/// **SVG**
+///
+/// ---
 impl Style {
     css_prop!(clip_rule, "clip-rule");
     css_prop!(color_interpolation, "color-interpolation");
@@ -503,6 +635,18 @@ impl Style {
     css_prop!(marker_mid, "marker-mid");
     css_prop!(marker_start, "marker-start");
     css_prop!(mask_type, "mask-type");
+    css_prop!(r, "r");
+    css_prop!(rx, "rx");
+    css_prop!(ry, "ry");
+    css_prop!(shape_rendering, "shape-rendering");
     css_prop!(stop_color, "stop-color");
+    css_prop!(stop_opacity, "stop-opacity");
     css_prop!(stroke, "stroke");
+    css_prop!(stroke_dasharray, "stroke-dasharray");
+    css_prop!(stroke_dashoffset, "stroke-dashoffset");
+    css_prop!(stroke_linecap, "stroke-linecap");
+    css_prop!(stroke_linejoin, "stroke-linejoin");
+    css_prop!(stroke_miterlimit, "stroke-miterlimit");
+    css_prop!(stroke_opacity, "stroke-opacity");
+    css_prop!(stroke_width, "stroke-width");
 }
