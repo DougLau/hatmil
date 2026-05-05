@@ -365,6 +365,23 @@ html_elem!(
     ElemType::HtmlVoid
 );
 
+// FencedFrame element
+#[cfg(feature = "experimental")]
+macro_rules! fencedframe_items {
+    ( $el:literal ) => {
+        html_attr!($el, allow);
+        html_attr!($el, height);
+        html_attr!($el, width);
+    };
+}
+#[cfg(feature = "experimental")]
+html_elem!(
+    "fencedframe",
+    FencedFrame,
+    "Fenced Frame",
+    fencedframe_items()
+);
+
 // FeildSet element
 macro_rules! fieldset_items {
     ( $el:literal ) => {
@@ -426,6 +443,22 @@ macro_rules! form_items {
     };
 }
 html_elem!("form", Form, "Form", form_items());
+
+// GeoLocation element
+#[cfg(feature = "experimental")]
+macro_rules! geolocation_items {
+    ( $el:literal ) => {
+        html_attr!($el, autolocate, true);
+        html_attr!($el, watch, true);
+    };
+}
+#[cfg(feature = "experimental")]
+html_elem!(
+    "geolocation",
+    GeoLocation,
+    "GeoLocation",
+    geolocation_items()
+);
 
 // heading element
 macro_rules! heading_items {
@@ -963,7 +996,18 @@ macro_rules! select_items {
 }
 html_elem!("select", Select, "Select", select_items());
 
-// FUTURE: Selectedcontent element
+// SelectedContent element
+#[cfg(feature = "experimental")]
+macro_rules! selectedcontent_items {
+    ( $el:literal ) => {};
+}
+#[cfg(feature = "experimental")]
+html_elem!(
+    "selectedcontent",
+    SelectedContent,
+    "Selected Content",
+    selectedcontent_items()
+);
 
 // Slot element
 macro_rules! slot_items {
