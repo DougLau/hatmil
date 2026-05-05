@@ -6,64 +6,111 @@
 use crate::value::Value;
 use std::fmt;
 
-#[derive(Clone, Copy, PartialEq, Eq)]
+// NOTE: corner_shape() is behind `experimental` feature flag
+#[allow(rustdoc::broken_intra_doc_links)]
+/// Style Property
+///
+/// ## Property Categories
+///
+/// |                                    |                                |                          |                                   |
+/// |------------------------------------|--------------------------------|--------------------------|-----------------------------------|
+/// | [basic](Prop::all())               | [column](Prop::columns())      | [font](Prop::font())     | [math](Prop::math_depth())        |
+/// | [alignment](Prop::align_content()) | [content area](Prop::height()) | [grid](Prop::grid())     | [padding](Prop::padding())        |
+/// | [animation](Prop::animation())     | [containment](Prop::contain()) | [inset](Prop::inset())   | [scroll](Prop::scroll_behavior()) |
+/// | [background](Prop::background())   | [corner](Prop::corner_shape()) | [margin](Prop::margin()) | [svg](Prop::clip_rule())          |
+/// | [border](Prop::border())           | [flex](Prop::flex())           | [mask](Prop::mask())     | [text](Prop::text_autospace())    |
+#[derive(Debug, Clone)]
+pub struct Prop {
+    css: String,
+    important: bool,
+}
+
+/// CSS selector
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Selector {
     // FIXME
 }
 
-// NOTE: corner_shape() is behind `experimental` feature flag
-#[allow(rustdoc::broken_intra_doc_links)]
-/// CSS style
-///
-/// ## Property Categories
-///
-/// |                                     |                                 |                           |                                    |
-/// |-------------------------------------|---------------------------------|---------------------------|------------------------------------|
-/// | [basic](Style::all())               | [column](Style::columns())      | [font](Style::font())     | [math](Style::math_depth())        |
-/// | [alignment](Style::align_content()) | [content area](Style::height()) | [grid](Style::grid())     | [padding](Style::padding())        |
-/// | [animation](Style::animation())     | [containment](Style::contain()) | [inset](Style::inset())   | [scroll](Style::scroll_behavior()) |
-/// | [background](Style::background())   | [corner](Style::corner_shape()) | [margin](Style::margin()) | [svg](Style::clip_rule())          |
-/// | [border](Style::border())           | [flex](Style::flex())           | [mask](Style::mask())     | [text](Style::text_autospace())    |
-#[derive(Default)]
-pub struct Style {
-    css: String,
-}
-
-/// A CSS rule contains a selector and style
+/// A CSS rule contains a selector and set of properties
+#[derive(Debug, Clone)]
 pub struct Rule {
     selector: Selector,
-    style: Style,
+    prop: Prop,
 }
 
-/* Custom --*: CSS variables */
-
-impl Rule {
-    /// Create a CSS rule
-    pub fn new(selector: Selector, style: Style) -> Self {
-        Rule {
-            selector,
-            style,
+impl fmt::Display for Prop {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.css)?;
+        if self.important {
+            write!(f, " !important;")
+        } else {
+            write!(f, ";")
         }
     }
 }
 
-impl fmt::Display for Style {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.css)
+impl From<Prop> for String {
+    fn from(mut prop: Prop) -> Self {
+        // zero-copy alternative to fmt::Display
+        if prop.important {
+            prop.css.push_str(" !important;");
+        } else {
+            prop.css.push(';');
+        }
+        prop.css
     }
 }
 
-impl From<Style> for String {
-    fn from(style: Style) -> Self {
-        // zero-copy alternative to fmt::Display
-        style.css
+impl Prop {
+    /// Make a new property
+    fn new() -> Self {
+        Prop {
+            css: String::with_capacity(16),
+            important: false,
+        }
+    }
+
+    /// Make a [custom] property (variable)
+    ///
+    /// ```rust
+    /// # use hatmil::css::Prop;
+    /// let prop = Prop::custom("variable", "value");
+    /// assert_eq!(String::from(prop), "--variable: value;");
+    /// ```
+    ///
+    /// [custom]: https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascading_variables/Using_custom_properties
+    pub fn custom<'a, V>(name: &str, v: V) -> Self
+    where
+        V: Into<Value<'a>>,
+    {
+        let mut prop = Prop::new();
+        prop.css.push_str("--");
+        // TODO: check name validity
+        prop.css.push_str(name);
+        prop.css.push_str(": ");
+        v.into().encode_css(&mut prop.css);
+        prop
+    }
+
+    /// Add [!important] flag
+    ///
+    /// ```rust
+    /// # use hatmil::css::Prop;
+    /// let prop = Prop::color("rebeccapurple").important();
+    /// assert_eq!(String::from(prop), "color: rebeccapurple !important;");
+    /// ```
+    ///
+    /// [!important]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/important
+    pub fn important(mut self) -> Self {
+        self.important = true;
+        self
     }
 }
 
 /// **Basic Properties**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(all, "all");
     #[cfg(feature = "limited-availability")]
     css_prop!(accent_color, "accent-color");
@@ -233,7 +280,7 @@ impl Style {
 /// **Alignment and Justification**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(align_content, "align-content");
     css_prop!(align_items, "align-items");
     css_prop!(align_self, "align-self");
@@ -258,7 +305,7 @@ impl Style {
 /// **Animation**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(animation, "animation");
     css_prop!(animation_composition, "animation-composition");
     css_prop!(animation_delay, "animation-delay");
@@ -306,7 +353,7 @@ impl Style {
 /// **Background**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(background, "background");
     css_prop!(background_attachment, "background-attachment");
     css_prop!(background_blend_mode, "background-blend-mode");
@@ -328,7 +375,7 @@ impl Style {
 /// **Border and Outline**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(border, "border");
     css_prop!(border_collapse, "border-collapse");
     css_prop!(border_color, "border-color");
@@ -400,7 +447,7 @@ impl Style {
 /// **Column**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(columns, "columns");
     css_prop!(column_count, "column-count");
     css_prop!(column_fill, "column-fill");
@@ -420,7 +467,7 @@ impl Style {
 /// **Content Area**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(height, "height");
     css_prop!(min_height, "min-height");
     css_prop!(max_height, "max-height");
@@ -432,11 +479,14 @@ impl Style {
 /// **Containment**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(contain, "contain");
     css_prop!(contain_intrinsic_block_size, "contain-intrinsic-block-size");
     css_prop!(contain_intrinsic_height, "contain-intrinsic-height");
-    css_prop!(contain_intrinsic_inline_size, "contain-intrinsic-inline-size");
+    css_prop!(
+        contain_intrinsic_inline_size,
+        "contain-intrinsic-inline-size"
+    );
     css_prop!(contain_intrinsic_size, "contain-intrinsic-size");
     css_prop!(contain_intrinsic_width, "contain-intrinsic-width");
     css_prop!(container, "container");
@@ -449,7 +499,7 @@ impl Style {
 /// **Corner**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(corner_shape, "corner-shape");
     css_prop!(corner_bottom_shape, "corner-bottom-shape");
     css_prop!(corner_left_shape, "corner-left-shape");
@@ -472,7 +522,7 @@ impl Style {
 /// **Flex**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(flex, "flex");
     css_prop!(flex_basis, "flex-basis");
     css_prop!(flex_direction, "flex-direction");
@@ -485,7 +535,7 @@ impl Style {
 /// **Font**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(font, "font");
     css_prop!(font_family, "font-family");
     css_prop!(font_feature_settings, "font-feature-settings");
@@ -522,7 +572,7 @@ impl Style {
 /// **Grid**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(grid, "grid");
     css_prop!(grid_area, "grid-area");
     css_prop!(grid_auto_columns, "grid-auto-columns");
@@ -543,7 +593,7 @@ impl Style {
 /// **Inset**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(inset, "inset");
     css_prop!(bottom, "bottom");
     css_prop!(left, "left");
@@ -560,7 +610,7 @@ impl Style {
 /// **Margin**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(margin, "margin");
     css_prop!(margin_bottom, "margin-bottom");
     css_prop!(margin_left, "margin-left");
@@ -579,7 +629,7 @@ impl Style {
 /// **Mask**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(mask, "mask");
     #[cfg(feature = "limited-availability")]
     css_prop!(mask_border, "mask-border");
@@ -608,7 +658,7 @@ impl Style {
 /// **MathML**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(math_depth, "math-depth");
     css_prop!(math_shift, "math-shift");
     css_prop!(math_style, "math-style");
@@ -617,7 +667,7 @@ impl Style {
 /// **Padding**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(padding, "padding");
     css_prop!(padding_bottom, "padding-bottom");
     css_prop!(padding_left, "padding-left");
@@ -634,7 +684,7 @@ impl Style {
 /// **Scrolling Area**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(scroll_behavior, "scroll-behavior");
     #[cfg(feature = "experimental")]
     css_prop!(scroll_initial_target, "scroll-initial-target");
@@ -672,7 +722,7 @@ impl Style {
     #[cfg(feature = "limited-availability")]
     css_prop!(scroll_timeline_axis, "scroll-timeline-axis");
     #[cfg(feature = "limited-availability")]
-    css_prop!(scroll-timeline-name, "scroll-timeline-name");
+    css_prop!(scroll_timeline_name, "scroll-timeline-name");
     #[cfg(feature = "limited-availability")]
     css_prop!(overscroll_behavior, "overscroll-behavior");
     #[cfg(feature = "limited-availability")]
@@ -688,7 +738,7 @@ impl Style {
 /// **SVG**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(clip_rule, "clip-rule");
     css_prop!(color_interpolation, "color-interpolation");
     css_prop!(color_interpolation_filters, "color-interpolation-filters");
@@ -730,7 +780,7 @@ impl Style {
 /// **Text**
 ///
 /// ---
-impl Style {
+impl Prop {
     css_prop!(text_autospace, "text-autospace");
     #[cfg(feature = "limited-availability")]
     css_prop!(text_box, "text-box");
@@ -766,4 +816,11 @@ impl Style {
     css_prop!(text_wrap, "text-wrap");
     css_prop!(text_wrap_mode, "text-wrap-mode");
     css_prop!(text_wrap_style, "text-wrap-style");
+}
+
+impl Rule {
+    /// Create a CSS rule
+    pub fn new(selector: Selector, prop: Prop) -> Self {
+        Rule { selector, prop }
+    }
 }
