@@ -16,8 +16,7 @@ pub struct Val<'a>(Cow<'a, str>);
 ///
 /// ```rust
 /// # use hatmil::css::Prop;
-/// let mut prop = Prop::new();
-/// prop.color("white").background_color("#234");
+/// let prop = Prop::new().color("white").background_color("#234");
 /// assert_eq!(String::from(prop), "color: white; background-color: #234;");
 /// ```
 ///
@@ -25,8 +24,9 @@ pub struct Val<'a>(Cow<'a, str>);
 ///
 /// ```rust
 /// # use hatmil::css::Prop;
-/// let mut prop = Prop::new();
-/// prop.font_family(r#""Liberation""#).content("\"new\nline\"");
+/// let prop = Prop::new()
+///     .font_family(r#""Liberation""#)
+///     .content("\"new\nline\"");
 /// assert_eq!(
 ///     String::from(prop),
 ///     r#"font-family: "Liberation"; content: "new\A line";"#,
@@ -308,13 +308,12 @@ impl Prop {
     ///
     /// ```rust
     /// # use hatmil::css::Prop;
-    /// let mut prop = Prop::new();
-    /// prop.custom("variable", "value");
+    /// let prop = Prop::new().custom("variable", "value");
     /// assert_eq!(String::from(prop), "--variable: value;");
     /// ```
     ///
     /// [custom]: https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascading_variables/Using_custom_properties
-    pub fn custom<'a, V>(&mut self, name: &str, v: V) -> &mut Self
+    pub fn custom<'a, V>(mut self, name: &str, v: V) -> Self
     where
         V: Into<Val<'a>>,
     {
@@ -331,13 +330,12 @@ impl Prop {
     ///
     /// ```rust
     /// # use hatmil::css::Prop;
-    /// let mut prop = Prop::new();
-    /// prop.color("rebeccapurple").important();
+    /// let prop = Prop::new().color("rebeccapurple").important();
     /// assert_eq!(String::from(prop), "color: rebeccapurple !important;");
     /// ```
     ///
     /// [!important]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/important
-    pub fn important(&mut self) -> &mut Self {
+    pub fn important(mut self) -> Self {
         if !self.val.is_empty() {
             self.val.push_str(" !important");
         }

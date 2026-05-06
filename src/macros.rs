@@ -867,7 +867,7 @@ macro_rules! css_prop {
             $raw_prop,
             ") property",
         )]
-        pub fn $prop<'a, V>(&mut self, v: V) -> &mut Self
+        pub fn $prop<'a, V>(mut self, v: V) -> Self
         where
             V: Into<crate::css::Val<'a>>,
         {

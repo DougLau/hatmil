@@ -2,6 +2,7 @@
 //
 // Copyright (C) 2025-2026  Douglas P Lau
 //
+use crate::css;
 use std::borrow::Cow;
 
 /// Character iterator
@@ -117,6 +118,14 @@ impl<'c> From<&'c String> for Value<'c> {
     fn from(v: &'c String) -> Self {
         Value {
             iter: CharIter::Borrowed(v),
+        }
+    }
+}
+
+impl From<css::Prop> for Value<'_> {
+    fn from(v: css::Prop) -> Self {
+        Value {
+            iter: CharIter::Owned(String::from(v)),
         }
     }
 }
