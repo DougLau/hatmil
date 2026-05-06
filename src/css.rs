@@ -8,12 +8,7 @@ use std::fmt;
 use std::fmt::Write;
 
 /// CSS data value
-pub enum Val<'a> {
-    /// Borrowed string slice
-    Borrowed(&'a str),
-    /// Owned string
-    Owned(String),
-}
+pub struct Val<'a>(Cow<'a, str>);
 
 // NOTE: corner_shape() is behind `experimental` feature flag
 #[allow(rustdoc::broken_intra_doc_links)]
@@ -31,8 +26,11 @@ pub enum Val<'a> {
 /// ```rust
 /// # use hatmil::css::Prop;
 /// let mut prop = Prop::new();
-/// prop.font_family("\"Liberation\"");
-/// assert_eq!(String::from(prop), "font-family: \"Liberation\";");
+/// prop.font_family(r#""Liberation""#).content("\"new\nline\"");
+/// assert_eq!(
+///     String::from(prop),
+///     r#"font-family: "Liberation"; content: "new\A line";"#,
+/// );
 /// ```
 ///
 /// ## Property Categories
@@ -68,23 +66,23 @@ pub struct Rule {
 impl Val<'_> {
     /// Get character iterator
     pub(crate) fn chars(&'_ self) -> impl Iterator<Item = char> {
-        match &self {
-            Val::Borrowed(s) => s.chars(),
-            Val::Owned(s) => s.chars(),
+        match &self.0 {
+            Cow::Borrowed(s) => s.chars(),
+            Cow::Owned(s) => s.chars(),
         }
     }
 
     /// Return `<string>` value
     fn string(&self) -> Option<&str> {
-        match &self {
-            Val::Borrowed(s) => {
+        match &self.0 {
+            Cow::Borrowed(s) => {
                 if let Some(("", s)) = s.split_once('"')
                     && let Some((s, "")) = s.rsplit_once('"')
                 {
                     return Some(s);
                 }
             }
-            Val::Owned(s) => {
+            Cow::Owned(s) => {
                 if let Some(("", s)) = s.split_once('"')
                     && let Some((s, "")) = s.rsplit_once('"')
                 {
@@ -145,124 +143,121 @@ impl<'a> fmt::Display for Val<'a> {
 
 impl<'c> From<&'c str> for Val<'c> {
     fn from(v: &'c str) -> Self {
-        Val::Borrowed(v)
+        Val(Cow::Borrowed(v))
     }
 }
 
 impl From<String> for Val<'_> {
     fn from(v: String) -> Self {
-        Val::Owned(v)
+        Val(Cow::Owned(v))
     }
 }
 
 impl<'c> From<&'c String> for Val<'c> {
     fn from(v: &'c String) -> Self {
-        Val::Borrowed(v)
+        Val(Cow::Borrowed(v))
     }
 }
 
 impl<'c> From<Cow<'c, str>> for Val<'c> {
     fn from(v: Cow<'c, str>) -> Self {
-        match v {
-            Cow::Borrowed(v) => Val::Borrowed(v),
-            Cow::Owned(v) => Val::Owned(v),
-        }
+        Val(v)
     }
 }
 
 impl From<char> for Val<'_> {
     fn from(v: char) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
 impl From<bool> for Val<'_> {
     fn from(v: bool) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
 impl From<i8> for Val<'_> {
     fn from(v: i8) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
 impl From<u8> for Val<'_> {
     fn from(v: u8) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
 impl From<i16> for Val<'_> {
     fn from(v: i16) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
 impl From<u16> for Val<'_> {
     fn from(v: u16) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
 impl From<i32> for Val<'_> {
     fn from(v: i32) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
 impl From<u32> for Val<'_> {
     fn from(v: u32) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
 impl From<i64> for Val<'_> {
     fn from(v: i64) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
 impl From<u64> for Val<'_> {
     fn from(v: u64) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
 impl From<i128> for Val<'_> {
     fn from(v: i128) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
 impl From<u128> for Val<'_> {
     fn from(v: u128) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
 impl From<isize> for Val<'_> {
     fn from(v: isize) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
 impl From<usize> for Val<'_> {
     fn from(v: usize) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
 impl From<f32> for Val<'_> {
     fn from(v: f32) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
 impl From<f64> for Val<'_> {
     fn from(v: f64) -> Self {
-        Val::Owned(v.to_string())
+        Val(Cow::Owned(v.to_string()))
     }
 }
 
