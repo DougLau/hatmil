@@ -95,16 +95,6 @@ impl Value<'_> {
             }
         }
     }
-
-    /// Encode value to a CSS style
-    pub fn encode_css(&'_ self, style: &mut String) {
-        // FIXME
-        for c in self.chars() {
-            match c {
-                _ => style.push(c),
-            }
-        }
-    }
 }
 
 impl<'c> From<&'c str> for Value<'c> {

@@ -3,8 +3,17 @@
 // Copyright (C) 2026  Douglas P Lau
 //
 //! CSS -- _Cascading Style Sheets_
-use crate::value::Value;
+use std::borrow::Cow;
 use std::fmt;
+use std::fmt::Write;
+
+/// CSS data value
+pub enum Val<'a> {
+    /// Borrowed string slice
+    Borrowed(&'a str),
+    /// Owned string
+    Owned(String),
+}
 
 // NOTE: corner_shape() is behind `experimental` feature flag
 #[allow(rustdoc::broken_intra_doc_links)]
@@ -17,7 +26,7 @@ use std::fmt;
 /// assert_eq!(String::from(prop), "color: white; background-color: #234;");
 /// ```
 ///
-/// Quotes must be included in `string` values:
+/// Quotes must enclose `<string>` values:
 ///
 /// ```rust
 /// # use hatmil::css::Prop;
@@ -56,17 +65,230 @@ pub struct Rule {
     prop: Prop,
 }
 
+impl Val<'_> {
+    /// Get character iterator
+    pub(crate) fn chars(&'_ self) -> impl Iterator<Item = char> {
+        match &self {
+            Val::Borrowed(s) => s.chars(),
+            Val::Owned(s) => s.chars(),
+        }
+    }
+
+    /// Return `<string>` value
+    fn string(&self) -> Option<&str> {
+        match &self {
+            Val::Borrowed(s) => {
+                if let Some(("", s)) = s.split_once('"')
+                    && let Some((s, "")) = s.rsplit_once('"')
+                {
+                    return Some(s);
+                }
+            }
+            Val::Owned(s) => {
+                if let Some(("", s)) = s.split_once('"')
+                    && let Some((s, "")) = s.rsplit_once('"')
+                {
+                    return Some(s);
+                }
+            }
+        }
+        None
+    }
+
+    /// Format a `<string>` value
+    fn fmt_string(&self, f: &mut fmt::Formatter, s: &str) -> fmt::Result {
+        write!(f, "\"")?;
+        for c in s.chars() {
+            match c {
+                // NULL => REPLACEMENT CHARACTER
+                '\0' => write!(f, "\u{FFFD}")?,
+                '\u{0001}'..='\u{001f}' | '\u{007f}' => {
+                    if let Ok(v) = u16::try_from(c) {
+                        write!(f, "\\{v:X} ")?;
+                    }
+                }
+                '"' => write!(f, r#"\""#)?,
+                '\\' => write!(f, r"\\")?,
+                _ => write!(f, "{c}")?,
+            }
+        }
+        write!(f, "\"")
+    }
+
+    /// Format any non-`<string>` and non-`<ident>` value
+    fn fmt_other(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        for c in self.chars() {
+            match c {
+                // NULL => REPLACEMENT CHARACTER
+                '\0' => write!(f, "\u{FFFD}")?,
+                '\u{0001}'..='\u{001f}' | '\u{007f}' => {
+                    if let Ok(v) = u16::try_from(c) {
+                        write!(f, "\\{v:X} ")?;
+                    }
+                }
+                '\\' => write!(f, r"\\")?,
+                _ => write!(f, "{c}")?,
+            }
+        }
+        Ok(())
+    }
+}
+
+impl<'a> fmt::Display for Val<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self.string() {
+            Some(s) => self.fmt_string(f, s),
+            None => self.fmt_other(f),
+        }
+    }
+}
+
+impl<'c> From<&'c str> for Val<'c> {
+    fn from(v: &'c str) -> Self {
+        Val::Borrowed(v)
+    }
+}
+
+impl From<String> for Val<'_> {
+    fn from(v: String) -> Self {
+        Val::Owned(v)
+    }
+}
+
+impl<'c> From<&'c String> for Val<'c> {
+    fn from(v: &'c String) -> Self {
+        Val::Borrowed(v)
+    }
+}
+
+impl<'c> From<Cow<'c, str>> for Val<'c> {
+    fn from(v: Cow<'c, str>) -> Self {
+        match v {
+            Cow::Borrowed(v) => Val::Borrowed(v),
+            Cow::Owned(v) => Val::Owned(v),
+        }
+    }
+}
+
+impl From<char> for Val<'_> {
+    fn from(v: char) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
+impl From<bool> for Val<'_> {
+    fn from(v: bool) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
+impl From<i8> for Val<'_> {
+    fn from(v: i8) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
+impl From<u8> for Val<'_> {
+    fn from(v: u8) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
+impl From<i16> for Val<'_> {
+    fn from(v: i16) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
+impl From<u16> for Val<'_> {
+    fn from(v: u16) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
+impl From<i32> for Val<'_> {
+    fn from(v: i32) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
+impl From<u32> for Val<'_> {
+    fn from(v: u32) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
+impl From<i64> for Val<'_> {
+    fn from(v: i64) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
+impl From<u64> for Val<'_> {
+    fn from(v: u64) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
+impl From<i128> for Val<'_> {
+    fn from(v: i128) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
+impl From<u128> for Val<'_> {
+    fn from(v: u128) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
+impl From<isize> for Val<'_> {
+    fn from(v: isize) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
+impl From<usize> for Val<'_> {
+    fn from(v: usize) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
+impl From<f32> for Val<'_> {
+    fn from(v: f32) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
+impl From<f64> for Val<'_> {
+    fn from(v: f64) -> Self {
+        Val::Owned(v.to_string())
+    }
+}
+
 impl fmt::Display for Prop {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{};", self.val)
+        if self.val.is_empty() {
+            Ok(())
+        } else {
+            write!(f, "{};", self.val)
+        }
     }
 }
 
 impl From<Prop> for String {
     fn from(mut prop: Prop) -> Self {
         // zero-copy alternative to fmt::Display
-        prop.val.push(';');
+        if !prop.val.is_empty() {
+            prop.val.push(';');
+        }
         prop.val
+    }
+}
+
+impl Default for Prop {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -99,14 +321,14 @@ impl Prop {
     /// [custom]: https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascading_variables/Using_custom_properties
     pub fn custom<'a, V>(&mut self, name: &str, v: V) -> &mut Self
     where
-        V: Into<Value<'a>>,
+        V: Into<Val<'a>>,
     {
         self.push_sep();
         self.val.push_str("--");
         // TODO: check name validity
         self.val.push_str(name);
         self.val.push_str(": ");
-        v.into().encode_css(&mut self.val);
+        let _ = write!(self.val, "{}", v.into());
         self
     }
 

@@ -869,12 +869,12 @@ macro_rules! css_prop {
         )]
         pub fn $prop<'a, V>(&mut self, v: V) -> &mut Self
         where
-            V: Into<Value<'a>>,
+            V: Into<crate::css::Val<'a>>,
         {
             self.push_sep();
             self.val.push_str($raw_prop);
             self.val.push_str(": ");
-            v.into().encode_css(&mut self.val);
+            let _ = write!(self.val, "{}", v.into());
             self
         }
     };
