@@ -20,16 +20,17 @@ pub struct Val<'a>(Cow<'a, str>);
 /// assert_eq!(String::from(prop), "color: white; background-color: #234;");
 /// ```
 ///
-/// Quotes must enclose `<string>` values:
+/// Any [\<string\>](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/string)
+/// values must be enclosed in quotes:
 ///
 /// ```rust
 /// # use hatmil::css::Prop;
 /// let prop = Prop::new()
 ///     .font_family(r#""Liberation""#)
-///     .content("\"new\nline\"");
+///     .content("'new\nline'");
 /// assert_eq!(
 ///     String::from(prop),
-///     r#"font-family: "Liberation"; content: "new\A line";"#,
+///     r#"font-family: "Liberation"; content: 'new\A line';"#,
 /// );
 /// ```
 ///
@@ -72,8 +73,8 @@ impl Val<'_> {
         }
     }
 
-    /// Return `<string>` value
-    fn string(&self) -> Option<&str> {
+    /// Return `<string>` value (double quotes)
+    fn string_dbl(&self) -> Option<&str> {
         match &self.0 {
             Cow::Borrowed(s) => {
                 if let Some(("", s)) = s.split_once('"')
@@ -93,8 +94,29 @@ impl Val<'_> {
         None
     }
 
-    /// Format a `<string>` value
-    fn fmt_string(&self, f: &mut fmt::Formatter, s: &str) -> fmt::Result {
+    /// Return `<string>` value (single quotes)
+    fn string_sng(&self) -> Option<&str> {
+        match &self.0 {
+            Cow::Borrowed(s) => {
+                if let Some(("", s)) = s.split_once('\'')
+                    && let Some((s, "")) = s.rsplit_once('\'')
+                {
+                    return Some(s);
+                }
+            }
+            Cow::Owned(s) => {
+                if let Some(("", s)) = s.split_once('\'')
+                    && let Some((s, "")) = s.rsplit_once('\'')
+                {
+                    return Some(s);
+                }
+            }
+        }
+        None
+    }
+
+    /// Format a `<string>` value in double quotes
+    fn fmt_string_dbl(&self, f: &mut fmt::Formatter, s: &str) -> fmt::Result {
         write!(f, "\"")?;
         for c in s.chars() {
             match c {
@@ -111,6 +133,26 @@ impl Val<'_> {
             }
         }
         write!(f, "\"")
+    }
+
+    /// Format a `<string>` value in single quotes
+    fn fmt_string_sng(&self, f: &mut fmt::Formatter, s: &str) -> fmt::Result {
+        write!(f, "'")?;
+        for c in s.chars() {
+            match c {
+                // NULL => REPLACEMENT CHARACTER
+                '\0' => write!(f, "\u{FFFD}")?,
+                '\u{0001}'..='\u{001f}' | '\u{007f}' => {
+                    if let Ok(v) = u16::try_from(c) {
+                        write!(f, "\\{v:X} ")?;
+                    }
+                }
+                '\'' => write!(f, r"\'")?,
+                '\\' => write!(f, r"\\")?,
+                _ => write!(f, "{c}")?,
+            }
+        }
+        write!(f, "'")
     }
 
     /// Format any non-`<string>` and non-`<ident>` value
@@ -134,10 +176,13 @@ impl Val<'_> {
 
 impl<'a> fmt::Display for Val<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.string() {
-            Some(s) => self.fmt_string(f, s),
-            None => self.fmt_other(f),
+        if let Some(s) = self.string_dbl() {
+            return self.fmt_string_dbl(f, s);
         }
+        if let Some(s) = self.string_sng() {
+            return self.fmt_string_sng(f, s);
+        }
+        self.fmt_other(f)
     }
 }
 
@@ -336,7 +381,7 @@ impl Prop {
     ///
     /// [!important]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/important
     pub fn important(mut self) -> Self {
-        if !self.val.is_empty() {
+        if !self.val.is_empty() && !self.val.ends_with("!important") {
             self.val.push_str(" !important");
         }
         self
