@@ -8,7 +8,23 @@ use std::fmt;
 
 // NOTE: corner_shape() is behind `experimental` feature flag
 #[allow(rustdoc::broken_intra_doc_links)]
-/// Style Property
+/// Property list
+///
+/// ```rust
+/// # use hatmil::css::Prop;
+/// let mut prop = Prop::new();
+/// prop.color("white").background_color("#234");
+/// assert_eq!(String::from(prop), "color: white; background-color: #234;");
+/// ```
+///
+/// Quotes must be included in `string` values:
+///
+/// ```rust
+/// # use hatmil::css::Prop;
+/// let mut prop = Prop::new();
+/// prop.font_family("\"Liberation\"");
+/// assert_eq!(String::from(prop), "font-family: \"Liberation\";");
+/// ```
 ///
 /// ## Property Categories
 ///
@@ -21,8 +37,10 @@ use std::fmt;
 /// | [border](Prop::border())           | [flex](Prop::flex())           | [mask](Prop::mask())     | [text](Prop::text_autospace())    |
 #[derive(Debug, Clone)]
 pub struct Prop {
-    css: String,
-    important: bool,
+    /// Property separator
+    sep: &'static str,
+    /// Encoded values
+    val: String,
 }
 
 /// CSS selector
@@ -31,7 +49,7 @@ pub enum Selector {
     // FIXME
 }
 
-/// A CSS rule contains a selector and set of properties
+/// Rule containing a selector and property list
 #[derive(Debug, Clone)]
 pub struct Rule {
     selector: Selector,
@@ -40,69 +58,72 @@ pub struct Rule {
 
 impl fmt::Display for Prop {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.css)?;
-        if self.important {
-            write!(f, " !important;")
-        } else {
-            write!(f, ";")
-        }
+        write!(f, "{};", self.val)
     }
 }
 
 impl From<Prop> for String {
     fn from(mut prop: Prop) -> Self {
         // zero-copy alternative to fmt::Display
-        if prop.important {
-            prop.css.push_str(" !important;");
-        } else {
-            prop.css.push(';');
-        }
-        prop.css
+        prop.val.push(';');
+        prop.val
     }
 }
 
 impl Prop {
-    /// Make a new property
-    fn new() -> Self {
+    /// Make a new property list
+    pub fn new() -> Self {
         Prop {
-            css: String::with_capacity(16),
-            important: false,
+            sep: " ",
+            val: String::with_capacity(16),
         }
     }
 
-    /// Make a [custom] property (variable)
+    /// Push property separator
+    fn push_sep(&mut self) {
+        if !self.val.is_empty() {
+            self.val.push(';');
+            self.val.push_str(self.sep);
+        }
+    }
+
+    /// Add a [custom] property (variable)
     ///
     /// ```rust
     /// # use hatmil::css::Prop;
-    /// let prop = Prop::custom("variable", "value");
+    /// let mut prop = Prop::new();
+    /// prop.custom("variable", "value");
     /// assert_eq!(String::from(prop), "--variable: value;");
     /// ```
     ///
     /// [custom]: https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascading_variables/Using_custom_properties
-    pub fn custom<'a, V>(name: &str, v: V) -> Self
+    pub fn custom<'a, V>(&mut self, name: &str, v: V) -> &mut Self
     where
         V: Into<Value<'a>>,
     {
-        let mut prop = Prop::new();
-        prop.css.push_str("--");
+        self.push_sep();
+        self.val.push_str("--");
         // TODO: check name validity
-        prop.css.push_str(name);
-        prop.css.push_str(": ");
-        v.into().encode_css(&mut prop.css);
-        prop
+        self.val.push_str(name);
+        self.val.push_str(": ");
+        v.into().encode_css(&mut self.val);
+        self
     }
 
-    /// Add [!important] flag
+    /// Add [!important] flag to the previous property
     ///
     /// ```rust
     /// # use hatmil::css::Prop;
-    /// let prop = Prop::color("rebeccapurple").important();
+    /// let mut prop = Prop::new();
+    /// prop.color("rebeccapurple").important();
     /// assert_eq!(String::from(prop), "color: rebeccapurple !important;");
     /// ```
     ///
     /// [!important]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/important
-    pub fn important(mut self) -> Self {
-        self.important = true;
+    pub fn important(&mut self) -> &mut Self {
+        if !self.val.is_empty() {
+            self.val.push_str(" !important");
+        }
         self
     }
 }
@@ -820,7 +841,14 @@ impl Prop {
 
 impl Rule {
     /// Create a CSS rule
-    pub fn new(selector: Selector, prop: Prop) -> Self {
+    pub fn new(selector: Selector) -> Self {
+        let mut prop = Prop::new();
+        prop.sep = "\n";
         Rule { selector, prop }
+    }
+
+    /// Get property list
+    pub fn prop(&mut self) -> &mut Prop {
+        &mut self.prop
     }
 }

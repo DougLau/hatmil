@@ -859,7 +859,7 @@ macro_rules! svg_content {
 macro_rules! css_prop {
     ( $prop:ident, $raw_prop:expr ) => {
         #[doc = concat!(
-            "Make [",
+            "Add [",
             $raw_prop,
             "](",
             "https://developer.mozilla.org/en-US/docs/",
@@ -867,15 +867,15 @@ macro_rules! css_prop {
             $raw_prop,
             ") property",
         )]
-        pub fn $prop<'a, V>(v: V) -> Self
+        pub fn $prop<'a, V>(&mut self, v: V) -> &mut Self
         where
             V: Into<Value<'a>>,
         {
-            let mut prop = Prop::new();
-            prop.css.push_str($raw_prop);
-            prop.css.push_str(": ");
-            v.into().encode_css(&mut prop.css);
-            prop
+            self.push_sep();
+            self.val.push_str($raw_prop);
+            self.val.push_str(": ");
+            v.into().encode_css(&mut self.val);
+            self
         }
     };
 
