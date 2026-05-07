@@ -1,5 +1,5 @@
 _Hatmil_ is an HTML builder for Rust.  It can be used to create or modify web
-pages dynamically, including [inline SVG].
+pages dynamically, including [inline SVG] and CSS.
 
 With a [Tree], there are two "root" methods:
 - [html] for a full document, including `DOCTYPE` declaration
