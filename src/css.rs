@@ -52,15 +52,19 @@ pub struct Prop {
 }
 
 /// CSS selector
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+#[non_exhaustive]
 pub enum Selector {
-    // FIXME
+    /// Generic selector pattern
+    Pat(String),
 }
 
 /// Rule containing a selector and property list
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug)]
 pub struct Rule {
+    /// Selector pattern
     selector: Selector,
+    /// Property list
     prop: Prop,
 }
 
@@ -1099,16 +1103,53 @@ impl Prop {
     css_prop!(text_wrap_style, "text-wrap-style");
 }
 
+impl fmt::Display for Selector {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Selector::Pat(pat) => write!(f, "{pat}"),
+        }
+    }
+}
+
+impl Selector {
+    /// Make a pattern selector
+    pub fn pat(p: &str) -> Self {
+        Selector::Pat(p.to_string())
+    }
+}
+
+impl fmt::Display for Rule {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        writeln!(f, "{} {{\n{}\n}}", self.selector, self.prop)
+    }
+}
+
 impl Rule {
     /// Create a CSS rule
-    pub fn new(selector: Selector) -> Self {
-        let mut prop = Prop::new();
+    pub fn new(selector: Selector, mut prop: Prop) -> Self {
         prop.sep = "\n";
         Rule { selector, prop }
     }
 
+    /// Get selector
+    pub fn selector(&self) -> &Selector {
+        &self.selector
+    }
+
     /// Get property list
-    pub fn prop(&mut self) -> &mut Prop {
-        &mut self.prop
+    pub fn prop(&self) -> &Prop {
+        &self.prop
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn rule() {
+        let prop = Prop::new().color("rebeccapurple");
+        let rule = Rule::new(Selector::pat("*"), prop);
+        assert_eq!(rule.to_string(), "* {\ncolor: rebeccapurple;\n}\n");
     }
 }
