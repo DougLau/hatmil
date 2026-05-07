@@ -53,17 +53,16 @@ pub struct Prop {
 
 /// CSS selector
 #[derive(Clone, Debug, PartialEq, Eq)]
-#[non_exhaustive]
-pub enum Selector {
-    /// Generic selector pattern
-    Pat(String),
+pub struct Sel {
+    /// Encoded value
+    val: String,
 }
 
 /// Rule containing a selector and property list
 #[derive(Clone, Debug)]
 pub struct Rule {
     /// Selector pattern
-    selector: Selector,
+    sel: Sel,
     /// Property list
     prop: Prop,
 }
@@ -175,6 +174,63 @@ impl Val<'_> {
             }
         }
         Ok(())
+    }
+
+    /// Add a character to an identifier value
+    fn ident_character(val: &mut String, c: char) {
+        match c {
+            // NULL => REPLACEMENT CHARACTER
+            '\0' => val.push('\u{FFFD}'),
+            '\u{0001}'..='\u{001f}' | '\u{007f}' => {
+                if let Ok(v) = u16::try_from(c) {
+                    val.push_str(&format!("\\{v:X} "));
+                }
+            }
+            '-' | '_' | '0'..='9' | 'A'..='Z' | 'a'..='z' | '\u{0080}'.. => {
+                val.push(c)
+            }
+            _ => {
+                val.push('\\');
+                val.push(c);
+            }
+        }
+    }
+
+    /// Make identifier value
+    fn to_ident(&self) -> String {
+        let mut val = String::new();
+        let mut chars = self.chars();
+        if let Some(c) = chars.next() {
+            match c {
+                // first char is a number, escape it
+                '0'..='9' => {
+                    if let Ok(v) = u16::try_from(c) {
+                        val.push_str(&format!("\\{v:X} "));
+                    }
+                }
+                '-' => {
+                    // first char is a hyphen, check second char
+                    if let Some(c) = chars.next() {
+                        match c {
+                            '0'..='9' => {
+                                if let Ok(v) = u16::try_from(c) {
+                                    val.push_str(&format!("\\{v:X} "));
+                                }
+                            }
+                            _ => Self::ident_character(&mut val, c),
+                        }
+                    } else {
+                        // "only" char is a hyphen, escape it
+                        val.push_str(r"\-");
+                    }
+                }
+                _ => Self::ident_character(&mut val, c),
+            }
+        }
+        for c in chars {
+            Self::ident_character(&mut val, c);
+        }
+        val
     }
 }
 
@@ -1103,37 +1159,113 @@ impl Prop {
     css_prop!(text_wrap_style, "text-wrap-style");
 }
 
-impl fmt::Display for Selector {
+impl fmt::Display for Sel {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            Selector::Pat(pat) => write!(f, "{pat}"),
-        }
+        write!(f, "{}", self.val)
     }
 }
 
-impl Selector {
-    /// Make a pattern selector
-    pub fn pat(p: &str) -> Self {
-        Selector::Pat(p.to_string())
+impl Sel {
+    /// Make a universal selector `*`
+    pub fn any() -> Self {
+        Sel {
+            val: "*".to_string(),
+        }
+    }
+
+    /// Make a new [type selector]
+    ///
+    /// [type selector]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Type_selectors
+    pub fn tp<'a, V>(tp: V) -> Self
+    where
+        V: Into<Val<'a>>,
+    {
+        let val = tp.into().to_ident();
+        Sel { val }
+    }
+
+    /// Make a new [class selector]
+    ///
+    /// [class selector]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Class_selectors
+    pub fn cls<'a, V>(cls: V) -> Self
+    where
+        V: Into<Val<'a>>,
+    {
+        let mut val = cls.into().to_ident();
+        val.insert(0, '.');
+        Sel { val }
+    }
+
+    /// Make a new [ID selector]
+    ///
+    /// [ID selector]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/ID_selectors
+    pub fn ident<'a, V>(ident: V) -> Self
+    where
+        V: Into<Val<'a>>,
+    {
+        let mut val = ident.into().to_ident();
+        val.insert(0, '#');
+        Sel { val }
+    }
+
+    /// Combine with another selector
+    pub fn with(mut self, other: Self) -> Self {
+        self.val.push_str(&other.val);
+        self
+    }
+
+    /// Combine using list combinator `,`
+    pub fn list(mut self, other: Self) -> Self {
+        self.val.push_str(", ");
+        self.val.push_str(&other.val);
+        self
+    }
+
+    /// Combine using descendant combinator ` `
+    pub fn descendant(mut self, other: Self) -> Self {
+        self.val.push(' ');
+        self.val.push_str(&other.val);
+        self
+    }
+
+    /// Combine using child combinator `>`
+    pub fn child(mut self, other: Self) -> Self {
+        self.val.push_str(" > ");
+        self.val.push_str(&other.val);
+        self
+    }
+
+    /// Combine using next sibling combinator `+`
+    pub fn next_sibling(mut self, other: Self) -> Self {
+        self.val.push_str(" + ");
+        self.val.push_str(&other.val);
+        self
+    }
+
+    /// Combine using subsequent sibling combinator `+`
+    pub fn subsequent_sibling(mut self, other: Self) -> Self {
+        self.val.push_str(" ~ ");
+        self.val.push_str(&other.val);
+        self
     }
 }
 
 impl fmt::Display for Rule {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        writeln!(f, "{} {{\n{}\n}}", self.selector, self.prop)
+        writeln!(f, "{} {{\n{}\n}}", self.sel, self.prop)
     }
 }
 
 impl Rule {
     /// Create a CSS rule
-    pub fn new(selector: Selector, mut prop: Prop) -> Self {
+    pub fn new(sel: Sel, mut prop: Prop) -> Self {
         prop.sep = "\n";
-        Rule { selector, prop }
+        Rule { sel, prop }
     }
 
     /// Get selector
-    pub fn selector(&self) -> &Selector {
-        &self.selector
+    pub fn selector(&self) -> &Sel {
+        &self.sel
     }
 
     /// Get property list
@@ -1147,9 +1279,15 @@ mod test {
     use super::*;
 
     #[test]
+    fn sel() {
+        let sel = Sel::tp("td").list(Sel::tp("th"));
+        assert_eq!(sel.to_string(), "td, th");
+    }
+
+    #[test]
     fn rule() {
         let prop = Prop::new().color("rebeccapurple");
-        let rule = Rule::new(Selector::pat("*"), prop);
+        let rule = Rule::new(Sel::any(), prop);
         assert_eq!(rule.to_string(), "* {\ncolor: rebeccapurple;\n}\n");
     }
 }
