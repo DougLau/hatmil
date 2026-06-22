@@ -15,7 +15,9 @@ macro_rules! a_items {
         html_attr!($el, download);
         html_attr!($el, href);
         html_attr!($el, hreflang);
-        /* interestfor */
+        #[cfg(feature = "experimental")]
+        html_attr!($el, interestfor);
+        #[cfg(feature = "experimental")]
         html_attr!($el, ping);
         html_attr!($el, referrerpolicy);
         html_attr!($el, rel);
@@ -449,7 +451,8 @@ macro_rules! fe_image_items {
         svg_attr!(href);
         svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
         svg_attr!(crossorigin);
-        // NOTE: fetchpriority (future)
+        #[cfg(feature = "experimental")]
+        svg_attr!(fetchpriority);
         filter_attr!();
         elem_method!(animate, Animate);
         elem_method!(animate_transform, AnimateTransform);
@@ -700,7 +703,8 @@ macro_rules! image_items {
         svg_attr!(preserve_aspect_ratio, "preserveAspectRatio");
         svg_attr!(crossorigin);
         svg_attr!(decoding);
-        // NOTE: fetchpriority (future)
+        #[cfg(feature = "experimental")]
+        svg_attr!(fetchpriority);
         svg_support_attr!();
         svg_descriptive!(title);
         svg_animation!();
@@ -955,7 +959,8 @@ macro_rules! script_items {
         svg_attr!(href);
         svg_attr!(r#type, "type");
         svg_attr!(crossorigin);
-        // NOTE: fetchpriority (future)
+        #[cfg(feature = "experimental")]
+        svg_attr!(fetchpriority);
         svg_content!(title);
         text_content!();
     };
@@ -1090,12 +1095,14 @@ macro_rules! text_path_items {
         svg_attr!(href);
         svg_attr!(method);
         svg_attr!(length_adjust, "lengthAdjust");
+        #[cfg(feature = "experimental")]
+        svg_attr!(path);
+        #[cfg(feature = "experimental")]
+        svg_attr!(side);
         svg_attr!(spacing);
         svg_attr!(start_offset, "startOffset");
         svg_attr!(text_length, "textLength");
         svg_attr!(text_anchor, "text-anchor");
-        svg_attr!(path); // NOTE: experimental
-        svg_attr!(side); // NOTE: experimental
         svg_support_attr!();
         elem_method!(tspan, TSpan);
         elem_method!(a, A);

@@ -13,7 +13,8 @@ macro_rules! a_items {
         html_attr!($el, download);
         html_attr!($el, href);
         html_attr!($el, hreflang);
-        /* interestfor */
+        #[cfg(feature = "experimental")]
+        html_attr!($el, interestfor);
         html_attr!($el, ping);
         html_attr!($el, referrerpolicy);
         html_attr!($el, rel);
@@ -56,7 +57,8 @@ macro_rules! area_items {
         html_attr!($el, coords);
         html_attr!($el, download);
         html_attr!($el, href);
-        /* interestfor */
+        #[cfg(feature = "experimental")]
+        html_attr!($el, interestfor);
         html_attr!($el, ping);
         html_attr!($el, referrerpolicy);
         html_attr!($el, rel);
@@ -177,7 +179,8 @@ macro_rules! button_items {
         html_attr!($el, formmethod);
         html_attr!($el, formnovalidate, true);
         html_attr!($el, formtarget);
-        /* interestfor */
+        #[cfg(feature = "experimental")]
+        html_attr!($el, interestfor);
         html_attr!($el, name);
         html_attr!($el, popovertarget);
         html_attr!($el, popovertargetaction);
@@ -536,11 +539,15 @@ html_elem!("i", I, "Idiomatic Text (Italic)", i_items());
 macro_rules! iframe_items {
     ( $el:literal ) => {
         html_attr!($el, allow);
-        /* credentialless, csp */
+        #[cfg(feature = "experimental")]
+        html_attr!($el, credentialless);
+        #[cfg(feature = "experimental")]
+        html_attr!($el, csp);
         html_attr!($el, height);
         html_attr!($el, loading);
         html_attr!($el, name);
-        /* privatetoken */
+        #[cfg(feature = "experimental")]
+        html_attr!($el, privateToken);
         html_attr!($el, referrerpolicy);
         html_attr!($el, sandbox);
         html_attr!($el, src);
@@ -583,11 +590,13 @@ html_elem!(
 macro_rules! input_items {
     ( $el:literal ) => {
         html_attr!($el, accept);
+        #[cfg(feature = "experimental")]
         html_attr!($el, alpha);
         html_attr!($el, alt);
         html_attr!($el, autocomplete);
         html_attr!($el, capture);
         html_attr!($el, checked, true);
+        #[cfg(feature = "experimental")]
         html_attr!($el, colorspace);
         html_attr!($el, dirname);
         html_attr!($el, disabled, true);
@@ -614,6 +623,8 @@ macro_rules! input_items {
         html_attr!($el, size);
         html_attr!($el, src);
         html_attr!($el, step);
+        #[cfg(feature = "experimental")]
+        html_attr!($el, switch);
         html_attr!($el, r#type, "type");
         html_attr!($el, value);
         html_attr!($el, width);
