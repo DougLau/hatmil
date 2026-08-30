@@ -1212,12 +1212,6 @@ impl Sel {
         Sel { val }
     }
 
-    /// Combine with another selector
-    pub fn with(mut self, other: Self) -> Self {
-        self.val.push_str(&other.val);
-        self
-    }
-
     /// Combine using a [selector list] (`, `)
     ///
     /// [selector list]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Selector_list
@@ -1259,6 +1253,13 @@ impl Sel {
     /// [subsequent sibling combinator]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Subsequent-sibling_combinator
     pub fn subsequent_sibling(mut self, other: Self) -> Self {
         self.val.push_str(" ~ ");
+        self.val.push_str(&other.val);
+        self
+    }
+
+    /// Combine with another selector
+    #[deprecated]
+    pub fn with(mut self, other: Self) -> Self {
         self.val.push_str(&other.val);
         self
     }
