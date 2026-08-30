@@ -1257,6 +1257,25 @@ impl Sel {
         self
     }
 
+    /// Combine using a [namespace separator] (`|`)
+    ///
+    /// [namespace separator]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Namespace_separator
+    pub fn namespace(mut self, other: Self) -> Self {
+        self.val.push_str("|");
+        self.val.push_str(&other.val);
+        self
+    }
+
+    /// Combine using a [column combinator] (`||`)
+    ///
+    /// [column combinator]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Column_combinator
+    #[cfg(feature = "experimental")]
+    pub fn column(mut self, other: Self) -> Self {
+        self.val.push_str("||");
+        self.val.push_str(&other.val);
+        self
+    }
+
     /// Combine with another selector
     #[deprecated]
     pub fn with(mut self, other: Self) -> Self {
