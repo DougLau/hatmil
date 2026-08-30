@@ -51,7 +51,9 @@ pub struct Prop {
     val: String,
 }
 
-/// CSS selector
+/// CSS [selector]
+///
+/// [selector]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Sel {
     /// Encoded value
@@ -1166,7 +1168,9 @@ impl fmt::Display for Sel {
 }
 
 impl Sel {
-    /// Make a universal selector `*`
+    /// Make a [universal selector] (`*`)
+    ///
+    /// [universal selector]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Universal_selectors
     pub fn any() -> Self {
         Sel {
             val: "*".to_string(),
@@ -1184,7 +1188,7 @@ impl Sel {
         Sel { val }
     }
 
-    /// Make a new [class selector]
+    /// Make a new [class selector] (`.`)
     ///
     /// [class selector]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Class_selectors
     pub fn cls<'a, V>(cls: V) -> Self
@@ -1196,7 +1200,7 @@ impl Sel {
         Sel { val }
     }
 
-    /// Make a new [ID selector]
+    /// Make a new [ID selector] (`#`)
     ///
     /// [ID selector]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/ID_selectors
     pub fn ident<'a, V>(ident: V) -> Self
@@ -1214,35 +1218,45 @@ impl Sel {
         self
     }
 
-    /// Combine using list combinator `,`
+    /// Combine using a [selector list] (`, `)
+    ///
+    /// [selector list]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Selector_list
     pub fn list(mut self, other: Self) -> Self {
         self.val.push_str(", ");
         self.val.push_str(&other.val);
         self
     }
 
-    /// Combine using descendant combinator ` `
+    /// Combine using a [descendant combinator] (` `)
+    ///
+    /// [descendant combinator]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Descendant_combinator
     pub fn descendant(mut self, other: Self) -> Self {
         self.val.push(' ');
         self.val.push_str(&other.val);
         self
     }
 
-    /// Combine using child combinator `>`
+    /// Combine using a [child combinator] (` > `)
+    ///
+    /// [child combinator]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Child_combinator
     pub fn child(mut self, other: Self) -> Self {
         self.val.push_str(" > ");
         self.val.push_str(&other.val);
         self
     }
 
-    /// Combine using next sibling combinator `+`
+    /// Combine using a [next sibling combinator] (` + `)
+    ///
+    /// [next sibling combinator]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Next-sibling_combinator
     pub fn next_sibling(mut self, other: Self) -> Self {
         self.val.push_str(" + ");
         self.val.push_str(&other.val);
         self
     }
 
-    /// Combine using subsequent sibling combinator `+`
+    /// Combine using a [subsequent sibling combinator] (` ~ `)
+    ///
+    /// [subsequent sibling combinator]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Subsequent-sibling_combinator
     pub fn subsequent_sibling(mut self, other: Self) -> Self {
         self.val.push_str(" ~ ");
         self.val.push_str(&other.val);
