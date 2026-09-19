@@ -905,7 +905,7 @@ impl Prop {
     css_prop!(font_variant_position, "font-variant-position");
     css_prop!(font_variation_settings, "font-variation-settings");
     css_prop!(font_weight, "font-weight");
-    #[cfg(feature = "experimental")]
+    #[cfg(feature = "limited-availability")]
     css_prop!(font_width, "font-width");
 }
 
