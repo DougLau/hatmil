@@ -991,11 +991,11 @@ macro_rules! select_items {
 html_elem!("select", Select, "Select", select_items());
 
 // SelectedContent element
-#[cfg(feature = "experimental")]
+#[cfg(feature = "limited-availability")]
 macro_rules! selectedcontent_items {
     ( $el:literal ) => {};
 }
-#[cfg(feature = "experimental")]
+#[cfg(feature = "limited-availability")]
 html_elem!(
     "selectedcontent",
     SelectedContent,
