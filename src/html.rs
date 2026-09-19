@@ -577,6 +577,7 @@ macro_rules! input_items {
         html_attr!($el, alpha);
         html_attr!($el, alt);
         html_attr!($el, autocomplete);
+        #[cfg(feature = "limited-availability")]
         html_attr!($el, capture);
         html_attr!($el, checked, true);
         #[cfg(feature = "experimental")]
