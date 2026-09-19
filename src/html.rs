@@ -368,23 +368,6 @@ html_elem!(
     ElemType::HtmlVoid
 );
 
-// FencedFrame element
-#[cfg(feature = "experimental")]
-macro_rules! fencedframe_items {
-    ( $el:literal ) => {
-        html_attr!($el, allow);
-        html_attr!($el, height);
-        html_attr!($el, width);
-    };
-}
-#[cfg(feature = "experimental")]
-html_elem!(
-    "fencedframe",
-    FencedFrame,
-    "Fenced Frame",
-    fencedframe_items()
-);
-
 // FeildSet element
 macro_rules! fieldset_items {
     ( $el:literal ) => {
