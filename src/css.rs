@@ -493,7 +493,6 @@ impl Prop {
     #[cfg(feature = "limited-availability")]
     css_prop!(dynamic_range_limit, "dynamic-range-limit");
     css_prop!(empty_cells, "empty-cells");
-    #[cfg(feature = "limited-availability")]
     css_prop!(field_sizing, "field-sizing");
     css_prop!(filter, "filter");
     css_prop!(float, "float");
@@ -549,7 +548,6 @@ impl Prop {
     #[cfg(feature = "limited-availability")]
     css_prop!(orphans, "orphans");
     css_prop!(overflow, "overflow");
-    #[cfg(feature = "limited-availability")]
     css_prop!(overflow_anchor, "overflow-anchor");
     css_prop!(overflow_block, "overflow-block");
     #[cfg(feature = "limited-availability")]
@@ -566,7 +564,6 @@ impl Prop {
     css_prop!(perspective_origin, "perspective-origin");
     css_prop!(pointer_events, "pointer-events");
     css_prop!(position, "position");
-    #[cfg(feature = "limited-availability")]
     css_prop!(position_anchor, "position-anchor");
     css_prop!(position_area, "position-area");
     css_prop!(position_try, "position-try");
@@ -1125,11 +1122,8 @@ impl Prop {
 /// ---
 impl Prop {
     css_prop!(text_autospace, "text-autospace");
-    #[cfg(feature = "limited-availability")]
     css_prop!(text_box, "text-box");
-    #[cfg(feature = "limited-availability")]
     css_prop!(text_box_edge, "text-box-edge");
-    #[cfg(feature = "limited-availability")]
     css_prop!(text_box_trim, "text-box-trim");
     css_prop!(text_combine_upright, "text-combine-upright");
     css_prop!(text_decoration, "text-decoration");
