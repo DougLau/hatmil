@@ -1255,7 +1255,7 @@ impl Sel {
     ///
     /// [namespace separator]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Namespace_separator
     pub fn namespace(mut self, other: Self) -> Self {
-        self.val.push_str("|");
+        self.val.push('|');
         self.val.push_str(&other.val);
         self
     }
