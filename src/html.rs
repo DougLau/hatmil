@@ -252,6 +252,9 @@ macro_rules! data_items {
 html_elem!("data", Data, "Data", data_items());
 
 // DataList element
+//
+// NOTE: as of Sep 2026, this is still "limited availability" for certain
+//       input types (color, date, time) on Firefox
 macro_rules! datalist_items {
     ( $el:literal ) => {
         // NOTE: supposedly, phrasing content is allowed instead of options,
