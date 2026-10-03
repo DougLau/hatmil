@@ -785,7 +785,7 @@ macro_rules! meta_items {
     ( $el:literal ) => {
         html_attr!($el, charset);
         html_attr!($el, content);
-        /* http_equiv, */
+        html_attr!($el, http_equiv, "http-equiv");
         html_attr!($el, media);
         html_attr!($el, name);
         // no content (void)
