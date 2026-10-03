@@ -10,6 +10,14 @@ macro_rules! html_elem {
     };
 
     ( $el:literal, $elem:ident, $desc:literal, $items:ident(), $tp:expr ) => {
+        html_elem!(
+            $el, $elem, $desc, $items(), ElemType::Html, stringify!($elem)
+        );
+    };
+
+    ( $el:literal, $elem:ident, $desc:literal, $items:ident(), $tp:expr,
+        $page:expr
+    ) => {
         #[doc = concat!(
             "`<",
             $el,
@@ -18,7 +26,7 @@ macro_rules! html_elem {
             "](",
             "https://developer.mozilla.org/en-US/docs/Web/HTML/",
             "Reference/Elements/",
-            stringify!($elem),
+            $page,
             ") element",
         )]
         pub struct $elem<'t> {

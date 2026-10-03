@@ -455,13 +455,54 @@ macro_rules! heading_items {
         phrasing_content!(cite);
     };
 }
-// FIXME: MDN links broken; "Heading_Elements"
-html_elem!("h1", H1, "Section Heading 1", heading_items());
-html_elem!("h2", H2, "Section Heading 2", heading_items());
-html_elem!("h3", H3, "Section Heading 3", heading_items());
-html_elem!("h4", H4, "Section Heading 4", heading_items());
-html_elem!("h5", H5, "Section Heading 5", heading_items());
-html_elem!("h6", H6, "Section Heading 6", heading_items());
+html_elem!(
+    "h1",
+    H1,
+    "Section Heading 1",
+    heading_items(),
+    ElemType::Html,
+    "Heading_Elements"
+);
+html_elem!(
+    "h2",
+    H2,
+    "Section Heading 2",
+    heading_items(),
+    ElemType::Html,
+    "Heading_Elements"
+);
+html_elem!(
+    "h3",
+    H3,
+    "Section Heading 3",
+    heading_items(),
+    ElemType::Html,
+    "Heading_Elements"
+);
+html_elem!(
+    "h4",
+    H4,
+    "Section Heading 4",
+    heading_items(),
+    ElemType::Html,
+    "Heading_Elements"
+);
+html_elem!(
+    "h5",
+    H5,
+    "Section Heading 5",
+    heading_items(),
+    ElemType::Html,
+    "Heading_Elements"
+);
+html_elem!(
+    "h6",
+    H6,
+    "Section Heading 6",
+    heading_items(),
+    ElemType::Html,
+    "Heading_Elements"
+);
 
 // Head element
 macro_rules! head_items {
