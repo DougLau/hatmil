@@ -962,7 +962,7 @@ impl Prop {
     css_prop!(margin_inline, "margin-inline");
     css_prop!(margin_inline_start, "margin-inline-start");
     css_prop!(margin_inline_end, "margin-inline-end");
-    #[cfg(feature = "experimental")]
+    #[cfg(feature = "limited-availability")]
     css_prop!(margin_trim, "margin-trim");
 }
 
