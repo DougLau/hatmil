@@ -69,13 +69,22 @@ impl Value<'_> {
     /// - `<` ⇨ `&lt;`
     /// - `>` ⇨ `&gt;`
     pub fn encode_cdata_len(&'_ self, cdata: &mut String, len: usize) {
-        for c in self.chars().take(len) {
+        let count = self.chars().count();
+        let clen = if len > 0 && len < count {
+            len - 1
+        } else {
+            len
+        };
+        for c in self.chars().take(clen) {
             match c {
                 '&' => cdata.push_str("&amp;"),
                 '<' => cdata.push_str("&lt;"),
                 '>' => cdata.push_str("&gt;"),
                 _ => cdata.push(c),
             }
+        }
+        if clen < len {
+            cdata.push('…');
         }
     }
 
