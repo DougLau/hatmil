@@ -70,11 +70,7 @@ impl Value<'_> {
     /// - `>` ⇨ `&gt;`
     pub fn encode_cdata_len(&'_ self, cdata: &mut String, len: usize) {
         let count = self.chars().count();
-        let clen = if len > 0 && len < count {
-            len - 1
-        } else {
-            len
-        };
+        let clen = if len > 0 && len < count { len - 1 } else { len };
         for c in self.chars().take(clen) {
             match c {
                 '&' => cdata.push_str("&amp;"),

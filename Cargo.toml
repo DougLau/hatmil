@@ -1,6 +1,6 @@
 [package]
 name = "hatmil"
-version = "1.6.0"
+version = "1.7.0"
 description = "HTML/SVG Document Builder"
 license = "MIT OR Apache-2.0"
 documentation = "https://docs.rs/hatmil"
