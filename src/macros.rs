@@ -209,16 +209,25 @@ macro_rules! global_attributes {
         global_attribute!(class);
         // less-common...
         global_attribute!(accesskey);
+        #[cfg(feature = "experimental")]
+        global_attribute!(anchor);
         global_attribute!(autocapitalize);
         global_attribute!(autocorrect);
         global_attribute!(autofocus, true);
         global_attribute!(contenteditable);
+        #[cfg(feature = "limited-availability")]
+        global_attribute!(containertiming);
+        #[cfg(feature = "limited-availability")]
+        global_attribute!(containertimingignore);
         data_attribute!();
         global_attribute!(dir);
         global_attribute!(draggable);
         global_attribute!(enterkeyhint);
         global_attribute!(exportparts);
-        /* FUTURE: headingoffset, headingreset... */
+        #[cfg(feature = "experimental")]
+        global_attribute!(headingoffset);
+        #[cfg(feature = "experimental")]
+        global_attribute!(headingreset);
         global_attribute!(hidden);
         global_attribute!(inert, true);
         global_attribute!(inputmode);
@@ -246,7 +255,10 @@ macro_rules! global_attributes {
         global_attribute!(tabindex);
         global_attribute!(title);
         global_attribute!(translate);
-        /* FUTURE: virtualkeyboardpolicy, writingsuggestions */
+        #[cfg(feature = "experimental")]
+        global_attribute!(virtualkeyboardpolicy);
+        #[cfg(feature = "limited-availability")]
+        global_attribute!(writingsuggestions);
         aria_attribute!(aria_atomic, "aria-atomic");
         aria_attribute!(aria_busy, "aria-busy");
         aria_attribute!(aria_controls, "aria-controls");
