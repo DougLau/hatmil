@@ -174,6 +174,7 @@ impl Tree {
     where
         V: Into<Value<'a>>,
     {
+        // FIXME: make a compile-time error?
         match self.doc.pop() {
             Some(gt) => assert_eq!(gt, '>'),
             None => panic!("cannot add {attr} attribute after child content"),
@@ -189,6 +190,7 @@ impl Tree {
     ///
     /// [Boolean]: https://developer.mozilla.org/en-US/docs/Glossary/Boolean/HTML
     pub(crate) fn attr_bool(&mut self, attr: &'static str) {
+        // FIXME: make a compile-time error?
         match self.doc.pop() {
             Some(gt) => assert_eq!(gt, '>'),
             None => panic!("cannot add {attr} attribute after child content"),
